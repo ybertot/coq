@@ -822,21 +822,15 @@ let md5sum =
 
 let check_doc () =
   let err s =
-    printf "%s was not found; documentation will not be available\n" s;
-    raise Not_found
+    die (sprintf "A documentation build was requested, but %s was not found." s);
   in
-  try
-    if not !Prefs.withdoc then raise Not_found;
-    if not (program_in_path "latex") then err "latex";
-    if not (program_in_path "hevea") then err "hevea";
-    if not (program_in_path "hacha") then err "hacha";
-    if not (program_in_path "fig2dev") then err "fig2dev";
-    if not (program_in_path "convert") then err "convert";
-    true
-  with Not_found -> false
+  if not (program_in_path "latex") then err "latex";
+  if not (program_in_path "hevea") then err "hevea";
+  if not (program_in_path "hacha") then err "hacha";
+  if not (program_in_path "fig2dev") then err "fig2dev";
+  if not (program_in_path "convert") then err "convert"
 
-let withdoc = check_doc ()
-
+let _ = if !Prefs.withdoc then check_doc ()
 
 (** * Installation directories : bindir, libdir, mandir, docdir, etc *)
 
@@ -976,7 +970,7 @@ let print_summary () =
     pr "  Mac OS integration is on\n";
   pr "  CoqIde                      : %s\n" coqide;
   pr "  Documentation               : %s\n"
-    (if withdoc then "All" else "None");
+    (if !Prefs.withdoc then "All" else "None");
   pr "  Web browser                 : %s\n" browser;
   pr "  Coq web site                : %s\n\n" !Prefs.coqwebsite;
   if not !Prefs.nativecompiler then
@@ -1210,7 +1204,7 @@ let write_makefile f =
   pr "# Defining REVISION\n";
   pr "CHECKEDOUT=%s\n\n" vcs;
   pr "# Option to control compilation and installation of the documentation\n";
-  pr "WITHDOC=%s\n\n" (if withdoc then "all" else "no");
+  pr "WITHDOC=%s\n\n" (if !Prefs.withdoc then "all" else "no");
   pr "# Option to produce precompiled files for native_compute\n";
   pr "NATIVECOMPUTE=%s\n" (if !Prefs.nativecompiler then "-native-compiler" else "");
   close_out o;
