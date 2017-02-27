@@ -1,14 +1,9 @@
-.. only:: html
-
-   .. preamble::
-
-      \def\ensuremath#1{#1}
-
 .. preamble::
 
-   \newcommand{\WF}[2]{\ensuremath{{\cal W\!F}(#1)[#2]}}
+   \[
+   \newcommand{\WF}[2]{{\cal W\!F}(#1)[#2]}
    \newcommand{\WFE}[1]{\WF{E}{#1}}
-   \newcommand{\WT}[4]{\ensuremath{#1[#2] \vdash #3 : #4}}
+   \newcommand{\WT}[4]{#1[#2] \vdash #3 : #4}
    \newcommand{\WTE}[3]{\WT{E}{#1}{#2}{#3}}
    \newcommand{\WTEG}[2]{\WTE{\Gamma}{#1}{#2}}
 
@@ -61,3 +56,4 @@
    \newcommand{\oddS}{\textsf{odd\_S}}
    \newcommand{\Prod}{\textsf{prod}}
    \newcommand{\Pair}{\textsf{pair}}
+   \]
