@@ -107,7 +107,7 @@ let run ?(fatal=true) ?(err=StdErr) prog args =
       let cmd = String.concat " " (prog::args) in
       let exn = match e with Failure s -> s | _ -> Printexc.to_string e in
       let msg = sprintf "Error while running '%s' (%s)" cmd exn in
-      if fatal then die msg else (printf "W: %s\n" msg; "", [])
+      if fatal then die msg else (printf "W: %s\n%!" msg; "", [])
 
 let tryrun prog args = run ~fatal:false ~err:DevNull prog args
 
@@ -189,7 +189,7 @@ let win_aware_quote_executable str =
     sprintf "%S" str
   else
     let _ = if contains_suspicious_characters str then
-      printf "*Warning* The string %S contains suspicious characters; ocamlfind might fail\n" str in
+      printf "*Warning* The string %S contains suspicious characters; ocamlfind might fail\n%!" str in
     Str.global_replace (Str.regexp "\\\\") "/" str
 
 (** * Date *)
@@ -481,11 +481,11 @@ let caml_version_nums =
 
 let check_caml_version () =
   if caml_version_nums >= [4;2;1] then
-    printf "You have OCaml %s. Good!\n" caml_version
+    printf "You have OCaml %s. Good!\n%!" caml_version
   else
     let () = printf "Your version of OCaml is %s.\n" caml_version in
     if !Prefs.force_caml_version then
-      printf "*Warning* Your version of OCaml is outdated.\n"
+      printf "*Warning* Your version of OCaml is outdated.\n%!"
     else
       die "You need OCaml 4.02.1 or later."
 
@@ -577,7 +577,7 @@ let check_camlp5_version camlp5o =
   let version = List.nth (string_split ' ' version_line) 2 in
   match numeric_prefix_list version with
   | major::minor::_ when s2i major > 6 || (s2i major, s2i minor) >= (6,6) ->
-    printf "You have Camlp5 %s. Good!\n" version; version
+    printf "You have Camlp5 %s. Good!\n%!" version; version
   | _ -> die "Error: unsupported Camlp5 (version < 6.06 or unrecognized).\n"
 
 let config_camlpX () =
@@ -601,19 +601,19 @@ let camlpXlibdir = shorten_camllib fullcamlpXlibdir
 (** * Native compiler *)
 
 let msg_byteonly () =
-  printf "Only the bytecode version of Coq will be available.\n"
+  printf "Only the bytecode version of Coq will be available.\n%!"
 
 let msg_no_ocamlopt () =
-  printf "Cannot find the OCaml native-code compiler.\n"; msg_byteonly ()
+  printf "Cannot find the OCaml native-code compiler.\n%!"; msg_byteonly ()
 
 let msg_no_camlpX_cmxa () =
-  printf "Cannot find the native-code library of %s.\n" camlpX; msg_byteonly ()
+  printf "Cannot find the native-code library of %s.\n%!" camlpX; msg_byteonly ()
 
 let msg_no_dynlink_cmxa () =
   printf "Cannot find native-code dynlink library.\n"; msg_byteonly ();
   printf "For building a native-code Coq, you may try to first\n";
   printf "compile and install a dummy dynlink.cmxa (see dev/dynlink.ml)\n";
-  printf "and then run ./configure -natdynlink no\n"
+  printf "and then run ./configure -natdynlink no\n%!"
 
 let check_native () =
   let () = if !Prefs.byteonly then raise Not_found in
@@ -628,7 +628,7 @@ let check_native () =
       if version <> caml_version then
 	printf
 	  "Warning: Native and bytecode compilers do not have the same version!\n"
-    in printf "You have native-code compilation. Good!\n"
+    in printf "You have native-code compilation. Good!\n%!"
 
 let best_compiler =
   try check_native (); "opt" with Not_found -> "byte"
@@ -668,7 +668,7 @@ let get_source = function
 (** Is some location a suitable LablGtk2 installation ? *)
 
 let check_lablgtkdir ?(fatal=false) src dir =
-  let yell msg = if fatal then die msg else (printf "%s\n" msg; false) in
+  let yell msg = if fatal then die msg else (printf "%s\n%!" msg; false) in
   let msg = get_source src in
   if not (dir_exists dir) then
     yell (sprintf "No such directory '%s' (%s)." dir msg)
@@ -715,7 +715,7 @@ let check_lablgtk_version src dir = match src with
     "wrap_poll_func"; (** Introduced in lablgtk 2.16 *)
   ] in
   let ans = List.fold_left test true heuristics in
-  if ans then printf "Warning: could not check the version of lablgtk2.\n";
+  if ans then printf "Warning: could not check the version of lablgtk2.\n%!";
   (ans, "an unknown version")
 | OCamlFind ->
   let v, _ = tryrun "ocamlfind" ["query"; "-format"; "%v"; "lablgtk2"] in
@@ -734,7 +734,7 @@ let set_ide ide msg = match ide, !Prefs.coqide with
   | No, Some (Byte|Opt)
   | Byte, Some Opt -> die (msg^":\n=> cannot build requested CoqIde")
   | _ ->
-    printf "%s:\n=> %s CoqIde will be built.\n" msg (pr_ide ide);
+    printf "%s:\n=> %s CoqIde will be built.\n%!" msg (pr_ide ide);
     raise (Ide ide)
 
 let lablgtkdir = ref ""
@@ -820,6 +820,9 @@ let md5sum =
 
 (** * Documentation : do we have latex, hevea, ... *)
 
+let check_sphinx_deps () =
+  ignore (run (which "python3") ["doc/tools/coqrst/checkdeps.py"])
+
 let check_doc () =
   let err s =
     die (sprintf "A documentation build was requested, but %s was not found." s);
@@ -828,7 +831,10 @@ let check_doc () =
   if not (program_in_path "hevea") then err "hevea";
   if not (program_in_path "hacha") then err "hacha";
   if not (program_in_path "fig2dev") then err "fig2dev";
-  if not (program_in_path "convert") then err "convert"
+  if not (program_in_path "convert") then err "convert";
+  if not (program_in_path "python3") then err "python3";
+  if not (program_in_path "sphinx-build") then err "sphinx-build";
+  check_sphinx_deps ()
 
 let _ = if !Prefs.withdoc then check_doc ()
 
