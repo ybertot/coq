@@ -2,7 +2,7 @@
  Syntax extensions and interpretation scopes
 ========================================================
 
-:Source: https://coq.inria.fr/refman/Reference-Manual014.html
+:Source: https://coq.inria.fr/distrib/current/refman/syntax-extensions.html
 :Converted by: Clément Pit-Claudel
 
 In this chapter, we introduce advanced commands to modify the way Coq

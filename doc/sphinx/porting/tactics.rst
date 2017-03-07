@@ -1,8 +1,8 @@
-=============================================
+---------------------------------------------
  A subset of Coq's tactic reference
-=============================================
+---------------------------------------------
 
-:Source: https://coq.inria.fr/refman/Reference-Manual010.html.
+:Source: https://coq.inria.fr/distrib/current/refman/tactics.html
 :Converted by: Clément Pit-Claudel
 
 .. tip::

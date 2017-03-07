@@ -13,7 +13,7 @@ It's also easy to define special environments when needed:
 
 .. only:: html
 
-   .. include:: preamble.rst
+   .. include:: ../preamble.rst
 
 .. inference:: Prod-Type
 

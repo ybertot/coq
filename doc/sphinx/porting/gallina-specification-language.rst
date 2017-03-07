@@ -1,8 +1,8 @@
-====================================
+------------------------------------
  The Gallina specification language
-====================================
+------------------------------------
 
-:Source: https://coq.inria.fr/refman/Reference-Manual003.html
+:Source: https://coq.inria.fr/distrib/current/refman/gallina.html
 :Converted by: Clément Pit-Claudel
 
 This chapter describes Gallina, the specification language of Coq. It allows

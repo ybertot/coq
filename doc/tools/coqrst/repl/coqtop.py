@@ -32,7 +32,7 @@ class CoqTop:
                            the ansicolors module)
         :param args:       Additional arugments to coqtop.
         """
-        self.coqtop_bin = coqtop_bin or os.getenv('COQBIN') or "coqtop"
+        self.coqtop_bin = coqtop_bin or os.path.join(os.getenv('COQBIN'),"coqtop")
         self.args = (args or []) + ["-color", "on"] * color
         self.coqtop = None
 

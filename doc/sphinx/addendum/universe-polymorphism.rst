@@ -4,7 +4,7 @@
 
 :Author: Matthieu Sozeau
 :Converted by: Clément Pit-Claudel
-:Source: https://coq.inria.fr/refman/Reference-Manual032.html
+:Source: https://coq.inria.fr/distrib/current/refman/universes.html
 
 .. contents::
    :local:

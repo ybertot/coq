@@ -89,10 +89,11 @@ REFMANPNGFILES:=$(REFMANEPSFILES:.eps=.png)
 
 INDEXURLS:=doc/refman/html/index_urls.txt
 
-doc: sphinx refman faq tutorial rectutorial stdlib $(INDEXURLS)
+doc: sphinx tutorial
 
-sphinx:
-	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) doc/sphinx $(SPHINXBUILDDIR)/html
+sphinx: coqbinaries tools
+	$(SHOW)'SPHINXBUILD doc/sphinx'
+	$(HIDE)COQBIN="$(PWD)/bin" $(SPHINXBUILD) -b html $(ALLSPHINXOPTS) doc/sphinx $(SPHINXBUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(SPHINXBUILDDIR)/html."
 

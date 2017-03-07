@@ -1,17 +1,19 @@
-# Generated from TacticNotations.g by ANTLR 4.6
+# Generated from TacticNotations.g by ANTLR 4.7
 # encoding: utf-8
 from antlr4 import *
 from io import StringIO
+from typing.io import TextIO
+import sys
 
 def serializedATN():
     with StringIO() as buf:
-        buf.write("\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3\b")
+        buf.write("\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\b")
         buf.write("A\4\2\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b")
         buf.write("\t\b\4\t\t\t\3\2\3\2\3\2\3\3\3\3\5\3\30\n\3\3\3\7\3\33")
         buf.write("\n\3\f\3\16\3\36\13\3\3\4\3\4\3\4\3\4\5\4$\n\4\3\5\3\5")
         buf.write("\5\5(\n\5\3\5\3\5\3\5\5\5-\n\5\3\5\3\5\3\6\3\6\5\6\63")
         buf.write("\n\6\3\6\3\6\5\6\67\n\6\3\6\3\6\3\7\3\7\3\b\3\b\3\t\3")
-        buf.write("\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2A\2\22\3\2\2\2\4\25")
+        buf.write("\t\3\t\2\2\n\2\4\6\b\n\f\16\20\2\2\2A\2\22\3\2\2\2\4\25")
         buf.write("\3\2\2\2\6#\3\2\2\2\b%\3\2\2\2\n\60\3\2\2\2\f:\3\2\2\2")
         buf.write("\16<\3\2\2\2\20>\3\2\2\2\22\23\5\4\3\2\23\24\7\2\2\3\24")
         buf.write("\3\3\2\2\2\25\34\5\6\4\2\26\30\5\f\7\2\27\26\3\2\2\2\27")
@@ -65,9 +67,9 @@ class TacticNotationsParser ( Parser ):
     ID=5
     WHITESPACE=6
 
-    def __init__(self, input:TokenStream):
-        super().__init__(input)
-        self.checkVersion("4.6")
+    def __init__(self, input:TokenStream, output:TextIO = sys.stdout):
+        super().__init__(input, output)
+        self.checkVersion("4.7")
         self._interp = ParserATNSimulator(self, self.atn, self.decisionsToDFA, self.sharedContextCache)
         self._predicates = None
 

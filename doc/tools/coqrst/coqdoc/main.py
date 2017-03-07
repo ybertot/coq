@@ -23,7 +23,7 @@ COQDOC_OPTIONS = ['--body-only', '--no-glob', '--no-index', '--no-externals',
 COQDOC_SYMBOLS = ["->", "<-", "<->", "=>", "<=", ">=", "<>", "~", "/\\", "\\/", "|-", "*", "forall", "exists"]
 COQDOC_HEADER = "".join("(** remove printing {} *)".format(s) for s in COQDOC_SYMBOLS)
 
-def coqdoc(coq_code, coqdoc_bin="coqdoc"):
+def coqdoc(coq_code, coqdoc_bin = os.path.join(os.getenv("COQBIN"),"coqdoc")):
     """Get the output of coqdoc on coq_code."""
     fd, filename = mkstemp(prefix="coqdoc-", suffix=".v")
     try:

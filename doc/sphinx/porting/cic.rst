@@ -1,13 +1,13 @@
-==================================
- Typing rules of the CIC
-==================================
+-------------------------------------
+ Calculus of Inductive Constructions
+-------------------------------------
 
-:Source: https://coq.inria.fr/refman/Reference-Manual006.html#Typing-rules
+:Source: https://coq.inria.fr/distrib/current/refman/cic.html
 :Converted by: Clément Pit-Claudel
 
 .. only:: html
 
-   .. include:: preamble.rst
+   .. include:: ../preamble.rst
 
 A term :math:`t` is well typed in a global environment :math:`E` iff there exists a
 local context :math:`\Gamma` and a term :math:`T` such that the judgment :math:`\WTEG{t}{T}` can

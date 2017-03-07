@@ -2,7 +2,7 @@
  Extended pattern-matching (full text)
 ==================================================
 
-:Source: https://coq.inria.fr/distrib/current/refman/Reference-Manual020.html
+:Source: https://coq.inria.fr/distrib/current/refman/cases.html
 :Authors: Cristina Cornes and Hugo Herbelin
 :Converted by: Clément Pit-Claudel
 
