@@ -69,13 +69,13 @@ How to migrate the Coq Reference Manual to Sphinx
 
 # Checkout the sphinx-doc branch
 
- git checkout sphinx-doc
+   git checkout sphinx-doc
 
-# Pull from the remote
+  You should pull from the repo from time to time to keep your local copy up-to-date:
 
- git pull sphinx sphinx-doc
+   git pull sphinx sphinx-doc
 
- You may want to create a new branch to do your work in.
+  You may want to create a new branch to do your work in.
 
 # From your browser, download the reference manual chapter you want to migrate
 
@@ -203,6 +203,13 @@ How to migrate the Coq Reference Manual to Sphinx
   branch. If your commit is recent, you should see a link on your
   fork's code page to do that. Otherwise, you may need to go to your
   branch on GitHub to do that.
+
+# Issues/Questions/Suggestions
+
+  As the migration proceeds, if you have technical issues, have a more general question, or want to suggest something, please contact:
+
+    Paul Steckler <steck@stecksoft.com>
+    Maxime Dénès <maxime.denes@inria.fr>
 
 # Issues
 
