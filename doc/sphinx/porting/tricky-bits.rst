@@ -30,6 +30,8 @@ display (inputs, outputs, or both), whether to reset the environment (and
 optionally whether to undo the commands of that block), highlights the input
 with CoqDoc and the output by translating ANSI sequences produced by CoqTop.
 
+The arguments are for input and output are "in", "out", "all", and "none".
+
 .. coqtop:: reset
 
    Require Import Nat.

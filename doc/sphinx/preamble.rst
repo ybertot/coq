@@ -33,6 +33,7 @@
    \newcommand{\List}{\textsf{list}}
    \newcommand{\nilhl}{\textsf{nil\_hl}}
    \newcommand{\conshl}{\textsf{cons\_hl}}
+   \newcommand{\ident}{\textsf{ident}}
    \newcommand{\nat}{\textsf{nat}}
    \newcommand{\nO}{\textsf{O}}
    \newcommand{\nS}{\textsf{S}}
