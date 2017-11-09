@@ -170,13 +170,15 @@ How to migrate the Coq Reference Manual to Sphinx
 
     - Use the "g" role for inline Gallina, like :g:`fun x => x`
 
-  For text blocks you want to highlight, like a command example (rather than the command definition),
-  you can use a vertical bar in the first column to introduce it:
+    - Use code blocks for blocks of Gallina. You can use a double-colon at the end of a line::
 
-| ``A useful function is`` :g:`fun x => x + 2` ``which contains`` `x`
+        your code here
 
-  The double-backquotes are for literal text, the single-backquotes are for metavariables. You can have
-  multiple lines like this, and the line breaks will be respected.
+      which prints a single colon, or put the double-colon on a newline.
+
+::
+
+        your other code here
 
 # Making changes to the text
 
