@@ -32,7 +32,7 @@ expressions. In this sense, the ``Record`` construction allows defining
 
 In the expression:
 
-.. cmd:: Record @ident {* @param } [: @sort] := [@ident] { {*; @ident {* @binder } : @term } }.
+.. cmd:: Record @ident {* @param } {? : @sort} := {? @ident} { {*; @ident {* @binder } : @term } }.
 
 the first identifier `ident` is the name of the defined record and `sort` is its
 type. The optional identifier following ``:=`` is the name of its constructor. If it is omitted,
@@ -2180,7 +2180,7 @@ actual level of the occurrences of Type, use
 The constraints on the internal level of the occurrences of Type
 (see :ref:`TODO-4.1.1-sorts`) can be printed using the command
 
-.. cmd:: Print [Sorted] Universes.
+.. cmd:: Print {? Sorted} Universes.
 
 If the optional ``Sorted`` option is given, each universe will be made
 equivalent to a numbered label reflecting its level (with a linear
@@ -2188,7 +2188,7 @@ ordering) in the universe hierarchy.
 
 This command also accepts an optional output filename:
 
-.. cmd:: Print [Sorted] Universes @string.
+.. cmd:: Print {? Sorted} Universes @string.
 
 If `string` ends in ``.dot`` or ``.gv``, the constraints are printed in the DOT
 language, and can be processed by Graphviz tools. The format is
