@@ -1592,30 +1592,30 @@ Implicit arguments can be cleared with the following syntax:
 
 .. cmd:: Arguments @qualid : clear implicits.
 
-    .. cmdv:: Global Arguments @qualid {* @possibly_bracketed_ident }
+.. cmdv:: Global Arguments @qualid {* @possibly_bracketed_ident }
 
-       Says to recompute the implicit arguments of
-       `qualid` after ending of the current section if any, enforcing the
-       implicit arguments known from inside the section to be the ones
-       declared by the command.
+   Says to recompute the implicit arguments of
+   `qualid` after ending of the current section if any, enforcing the
+   implicit arguments known from inside the section to be the ones
+   declared by the command.
 
-    .. cmdv:: Local Arguments @qualid {* @possibly_bracketed_ident }.
+.. cmdv:: Local Arguments @qualid {* @possibly_bracketed_ident }.
 
-       When in a module, tell not to activate the
-       implicit arguments ofqualid declared by this command to contexts that
-       require the module.
+   When in a module, tell not to activate the
+   implicit arguments ofqualid declared by this command to contexts that
+   require the module.
 
-    .. cmdv:: [ Global | Local ] Arguments @qualid {*, {+ @possibly_bracketed_ident } }.
+.. cmdv:: {? Global | Local } Arguments @qualid {*, {+ @possibly_bracketed_ident } }.
 
-       For names of constants, inductive types,
-       constructors, lemmas which can only be applied to a fixed number of
-       arguments (this excludes for instance constants whose type is
-       polymorphic), multiple implicit arguments declarations can be given.
-       Depending on the number of arguments qualid is applied to in practice,
-       the longest applicable list of implicit arguments is used to select
-       which implicit arguments are inserted. For printing, the omitted
-       arguments are the ones of the longest list of implicit arguments of
-       the sequence.
+   For names of constants, inductive types,
+   constructors, lemmas which can only be applied to a fixed number of
+   arguments (this excludes for instance constants whose type is
+   polymorphic), multiple implicit arguments declarations can be given.
+   Depending on the number of arguments qualid is applied to in practice,
+   the longest applicable list of implicit arguments is used to select
+   which implicit arguments are inserted. For printing, the omitted
+   arguments are the ones of the longest list of implicit arguments of
+   the sequence.
 
 .. example::
 
