@@ -218,6 +218,16 @@ class ExceptionObject(NotationObject):
     def _name_from_signature(self, signature):
         return stringify_with_ellipses(signature)
 
+class WarningObject(NotationObject):
+    """An object to represent Coq warnings."""
+    subdomain = "warn"
+    index_suffix = "(warn)"
+    annotation = "Warning"
+
+    # Generate names automatically
+    def _name_from_signature(self, signature):
+        return stringify_with_ellipses(signature)
+
 def NotationRole(role, rawtext, text, lineno, inliner, options={}, content=[]):
     #pylint: disable=unused-argument, dangerous-default-value
     """And inline role for notations"""
@@ -585,6 +595,9 @@ class CoqGallinaIndex(CoqSubdomainsIndex):
 class CoqExceptionIndex(CoqSubdomainsIndex):
     name, localname, shortname, subdomains = "exnindex", "Error Index", "errors", ["exn"]
 
+class CoqWarningIndex(CoqSubdomainsIndex):
+    name, localname, shortname, subdomains = "warnindex", "Warning Index", "warnings", ["warn"]
+
 class IndexXRefRole(XRefRole):
     """A link to one of our domain-specific indices."""
     lowercase = True,
@@ -643,6 +656,7 @@ class CoqDomain(Domain):
         'opt': ObjType('opt', 'opt'),
         'thm': ObjType('thm', 'thm'),
         'exn': ObjType('exn', 'exn'),
+        'warn': ObjType('warn', 'warn'),
         'index': ObjType('index', 'index', searchprio=-1)
     }
 
@@ -658,6 +672,7 @@ class CoqDomain(Domain):
         'opt': OptionObject,
         'thm': GallinaObject,
         'exn': ExceptionObject,
+        'warn': WarningObject,
     }
 
     roles = {
@@ -668,6 +683,7 @@ class CoqDomain(Domain):
         'opt': XRefRole(),
         'thm': XRefRole(),
         'exn': XRefRole(),
+        'warn': XRefRole(),
         # This one is special
         'index': IndexXRefRole(),
         # These are used for highlighting
@@ -679,7 +695,7 @@ class CoqDomain(Domain):
         'l': LtacRole, #FIXME unused?
     }
 
-    indices = [CoqVernacIndex, CoqTacticIndex, CoqOptionIndex, CoqGallinaIndex, CoqExceptionIndex]
+    indices = [CoqVernacIndex, CoqTacticIndex, CoqOptionIndex, CoqGallinaIndex, CoqExceptionIndex, CoqWarningIndex]
 
     data_version = 1
     initial_data = {
@@ -692,6 +708,7 @@ class CoqDomain(Domain):
             'opt': {},
             'thm': {},
             'exn': {},
+            'warn': {},
         }
     }
 
@@ -786,5 +803,6 @@ def setup(app):
     app.add_stylesheet("coqdoc.css")
     app.add_javascript("notations.js")
     app.add_stylesheet("notations.css")
+    app.add_stylesheet("pre-text.css")
 
     return {'version': '0.1', "parallel_read_safe": True}

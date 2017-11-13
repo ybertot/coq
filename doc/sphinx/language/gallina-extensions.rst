@@ -32,7 +32,7 @@ expressions. In this sense, the ``Record`` construction allows defining
 
 In the expression:
 
-.. cmd:: Record @ident {* @param } [: @sort] := [@ident] { {*; @ident {* @binder } : @term } }.
+.. cmd:: Record @ident {* @param } {? : @sort} := {? @ident} { {*; @ident {* @binder } : @term } }.
 
 the first identifier `ident` is the name of the defined record and `sort` is its
 type. The optional identifier following ``:=`` is the name of its constructor. If it is omitted,
@@ -43,11 +43,9 @@ Remark that the type of a particular identifier may depend on a previously-given
 order of the fields is important. Finally, each `param` is a parameter of the record.
 
 More generally, a record may have explicitly defined (a.k.a. manifest)
-fields. For instance, we might have:
+fields. For instance, we might have::
 
-.. example::
-
-  ``Record`` `ident` `param` ``:`` `sort` ``:=`` ``{``\ |ident_1| ``:`` |type_1| ``;`` |ident_2| ``:=`` |term_2| ``;`` |ident_3| ``:`` |type_3|\ ``}.``
+  Record ident param : sort := { ident₁ : type₁ ; ident₂ := term₂ ; ident₃ : type₃ }.
 
 in which case the correctness of |type_3| may rely on the instance |term_2| of |ident_2| and |term_2| in turn
 may depend on |ident_1|.
@@ -349,11 +347,13 @@ can be alternatively written
 More generally, for an inductive type with constructors |C_1| and |C_2|,
 we have the following equivalence
 
-|  :g:`if term [dep_ret_type] then` |term_1| :g:`else` |term_2| ≡
-|  :g:`match term [dep_ret_type] with`
-|  :g:`|` |C_1| :g:`_ … _ =>` |term_1|
-|  :g:`|` |C_2| :g:`_ … _ =>` |term_2|
-|  end
+::
+
+  if term [dep_ret_type] then term₁ else term₂ ≡
+  match term [dep_ret_type] with
+  | C₁ _ … _ => term₁
+  | C₂ _ … _ => term₂
+  end
 
 .. example::
 
@@ -409,13 +409,18 @@ pattern can either be done using :g:`match` or the :g:`let` construction
 If term inhabits an inductive type with one constructor `C`, we have an
 equivalence between
 
-| :g:`let (`\ |ident_1|\ , … , |ident_n|\ :g:`) [dep_ret_type] := term in term`
+::
+
+   let (ident₁, …, identₙ) [dep_ret_type] := term in term'
 
 and
 
-| :g:`match term [dep_ret_type] with`
-| :g:`C` |ident_1| … |ident_n| :g:`=> term end`
+::
 
+   match term [dep_ret_type] with
+   C ident₁ … identₙ => term'
+   end
+   
 
 Second destructuring let syntax
 ```````````````````````````````
@@ -1148,11 +1153,13 @@ component is equal ``nat`` and hence ``M1.T`` as specified.
 #. Commands like ``Hint`` or ``Notation`` can also appear inside modules and
    module types. Note that in case of a module definition like:
 
-|  ``Module N : SIG := M.``
+::
 
-or
+  Module N : SIG := M.
 
-|  ``Module N : SIG. … End N.``
+or::
+
+  Module N : SIG. … End N.
 
 hints and the like valid for ``N`` are not those defined in ``M`` (or the module body) but the ones defined
 in ``SIG``.
@@ -1415,14 +1422,16 @@ applied or matched against patterns (since the original form of the
 argument can be lost by reduction).
 
 For instance, the first argument of
-
-| :g:`cons: forall A:Set, A -> list A -> list A`
+::
+   
+  cons: forall A:Set, A -> list A -> list A
 
 in module ``List.v`` is strict because :g:`list` is an inductive type and :g:`A`
 will always be inferable from the type :g:`list A` of the third argument of
 :g:`cons`. On the contrary, the second argument of a term of type
-
-|  :g:`forall P:nat->Prop, forall n:nat, P n -> ex nat P`
+::
+      
+  forall P:nat->Prop, forall n:nat, P n -> ex nat P
 
 is implicit but not strict, since it can only be inferred from the
 type :g:`P n` of the third argument and if :g:`P` is, e.g., :g:`fun _ => True`, it
@@ -1431,8 +1440,9 @@ argument :g:`P` is implicit but not strict either because it can only be
 inferred from :g:`P n` and :g:`P` is not canonically inferable from an arbitrary
 :g:`n` and the normal form of :g:`P n`. Consider, e.g., that :g:`n` is :math:`0` and the third
 argument has type :g:`True`, then any :g:`P` of the form
+::   
 
-|  :g:`fun n => match n with 0 => True | _ => anything end`
+  fun n => match n with 0 => True | _ => anything end
 
 would be a solution of the inference problem.
 
@@ -1441,16 +1451,15 @@ would be a solution of the inference problem.
 An implicit argument can be *contextual* or not. An implicit argument
 is said *contextual* if it can be inferred only from the knowledge of
 the type of the context of the current expression. For instance, the
-only argument of
+only argument of::
 
-|  :g:`nil : forall A:Set, list A`
+  nil : forall A:Set, list A`
 
-is contextual. Similarly, both arguments of a term of type
+is contextual. Similarly, both arguments of a term of type::
 
-|  :g:`forall P:nat->Prop, forall n:nat, P n \/ n = 0`
+  forall P:nat->Prop, forall n:nat, P n \/ n = 0
 
-are contextual (moreover, ``n`` is strict and ``P`` is not).
-
+are contextual (moreover, :g:`n` is strict and :g:`P` is not).
 
 **Reversible-Pattern Implicit Arguments**
 
@@ -1460,13 +1469,14 @@ This is the class of implicit arguments occurring in the type of
 another argument in position of reversible pattern, which means it is
 at the head of an application but applied only to uninstantiated
 distinct variables. Such an implicit argument is called *reversible-
-pattern implicit argument*. A typical example is the argument P of
+pattern implicit argument*. A typical example is the argument :g:`P` of
 nat_rec in
+::
 
-|  :g:`nat_rec : forall P : nat -> Set, P 0 ->`
-|  :g:`(forall n : nat, P n -> P (S n)) -> forall x : nat, P x`
+  nat_rec : forall P : nat -> Set, P 0 ->
+    (forall n : nat, P n -> P (S n)) -> forall x : nat, P x
 
-(P is reinferable by abstracting over n in the type P n).
+(:g:`P` is reinferable by abstracting over :g:`n` in the type :g:`P n`).
 
 See :ref:`controlling-rev-pattern-implicit-args` for the automatic declaration of reversible-pattern
 implicit arguments.
@@ -1504,9 +1514,7 @@ can be inferred from the type of the other arguments, the user can
 force the given argument to be guessed by replacing it by “_”. If
 possible, the correct argument will be automatically generated.
 
-**Error messages:**
-
-1. Cannot infer a term for this placeholder
+.. exn:: Cannot infer a term for this placeholder.
 
    Coq was not able to deduce an instantiation of a “_”.
 
@@ -1584,30 +1592,30 @@ Implicit arguments can be cleared with the following syntax:
 
 .. cmd:: Arguments @qualid : clear implicits.
 
-    .. cmdv:: Global Arguments @qualid {* @possibly_bracketed_ident }
+.. cmdv:: Global Arguments @qualid {* @possibly_bracketed_ident }
 
-       Says to recompute the implicit arguments of
-       `qualid` after ending of the current section if any, enforcing the
-       implicit arguments known from inside the section to be the ones
-       declared by the command.
+   Says to recompute the implicit arguments of
+   `qualid` after ending of the current section if any, enforcing the
+   implicit arguments known from inside the section to be the ones
+   declared by the command.
 
-    .. cmdv:: Local Arguments @qualid {* @possibly_bracketed_ident }.
+.. cmdv:: Local Arguments @qualid {* @possibly_bracketed_ident }.
 
-       When in a module, tell not to activate the
-       implicit arguments ofqualid declared by this command to contexts that
-       require the module.
+   When in a module, tell not to activate the
+   implicit arguments ofqualid declared by this command to contexts that
+   require the module.
 
-    .. cmdv:: [ Global | Local ] Arguments @qualid {*, {+ @possibly_bracketed_ident } }.
+.. cmdv:: {? Global | Local } Arguments @qualid {*, {+ @possibly_bracketed_ident } }.
 
-       For names of constants, inductive types,
-       constructors, lemmas which can only be applied to a fixed number of
-       arguments (this excludes for instance constants whose type is
-       polymorphic), multiple implicit arguments declarations can be given.
-       Depending on the number of arguments qualid is applied to in practice,
-       the longest applicable list of implicit arguments is used to select
-       which implicit arguments are inserted. For printing, the omitted
-       arguments are the ones of the longest list of implicit arguments of
-       the sequence.
+   For names of constants, inductive types,
+   constructors, lemmas which can only be applied to a fixed number of
+   arguments (this excludes for instance constants whose type is
+   polymorphic), multiple implicit arguments declarations can be given.
+   Depending on the number of arguments qualid is applied to in practice,
+   the longest applicable list of implicit arguments is used to select
+   which implicit arguments are inserted. For printing, the omitted
+   arguments are the ones of the longest list of implicit arguments of
+   the sequence.
 
 .. example::
 
@@ -2180,7 +2188,7 @@ actual level of the occurrences of Type, use
 The constraints on the internal level of the occurrences of Type
 (see :ref:`TODO-4.1.1-sorts`) can be printed using the command
 
-.. cmd:: Print [Sorted] Universes.
+.. cmd:: Print {? Sorted} Universes.
 
 If the optional ``Sorted`` option is given, each universe will be made
 equivalent to a numbered label reflecting its level (with a linear
@@ -2188,7 +2196,7 @@ ordering) in the universe hierarchy.
 
 This command also accepts an optional output filename:
 
-.. cmd:: Print [Sorted] Universes @string.
+.. cmd:: Print {? Sorted} Universes @string.
 
 If `string` ends in ``.dot`` or ``.gv``, the constraints are printed in the DOT
 language, and can be processed by Graphviz tools. The format is
