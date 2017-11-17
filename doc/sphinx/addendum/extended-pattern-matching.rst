@@ -1,3 +1,5 @@
+.. _extended-pattern-matching:
+
 ==================================================
  Extended pattern-matching (full text)
 ==================================================

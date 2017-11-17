@@ -74,3 +74,5 @@
 .. |x_1| replace:: `x`\ :math:`_{1}`
 .. |x_i| replace:: `x`\ :math:`_{i}`
 .. |x_n| replace:: `x`\ :math:`_{n}`
+
+.. |Program| replace:: :strong:`Program`
