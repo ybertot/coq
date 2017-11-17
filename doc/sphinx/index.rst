@@ -1389,6 +1389,8 @@ Table of contents
 
    glossary
 
+   zebibliography
+
 .. toctree::
    :caption: Porting to Sphinx
 
