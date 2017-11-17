@@ -3,6 +3,8 @@
 
 .. Gallina should be in small-caps, maybe create a role for that
 
+.. _extensionsofgallina:
+
 Extensions of Gallina
 =====================
 
@@ -95,7 +97,7 @@ to be all present if the missing ones can be inferred or prompted for
 (see Chapter :ref:`TODO-24-Programs`).
 
 .. coqtop:: all
-	
+
   Definition half' :=
     {| sign := true;
        Rat_bottom_cond := O_S 1;
@@ -163,7 +165,7 @@ It can be activated for printing with
           : | term `.` ( @`qualid` `term` … `term` )
 
   Syntax of Record projections
-	
+
 The corresponding grammar rules are given in the preceding grammar. When `qualid`
 denotes a projection, the syntax `term.(qualid)` is equivalent to `qualid term`,
 the syntax `term.(qualid` |arg_1| |arg_n| `)` to `qualid` |arg_1| `…` |arg_n| `term`,
@@ -420,7 +422,7 @@ and
    match term [dep_ret_type] with
    C ident₁ … identₙ => term'
    end
-   
+
 
 Second destructuring let syntax
 ```````````````````````````````
@@ -648,7 +650,7 @@ better to define plus like this:
 .. coqtop:: reset none
 
    Require Import FunInd.
-	
+
 .. coqtop:: all
 
    Function plus (m n : nat) {struct n} : nat :=
@@ -889,7 +891,7 @@ Reserved commands inside an interactive module
    type expression. If module is a high-order module or module type
    expression then the system tries to instantiate module by the current
    interactive module.
-	
+
 .. cmd:: Include {+<+ @module}.
 
    is a shortcut for the commands ``Include`` `module` for each `module`.
@@ -972,7 +974,7 @@ Reserved commands inside an interactive module type:
 
        Defines a functor type `ident` specifying functors taking arguments `module_bindings` and
        returning `module_type`.
-    	
+
     .. cmdv:: Module Type @ident {* @module_binding} := {+<+ @module_type }.
 
        is equivalent to an interactive module type were each `module_type` is included.
@@ -1423,14 +1425,14 @@ argument can be lost by reduction).
 
 For instance, the first argument of
 ::
-   
+
   cons: forall A:Set, A -> list A -> list A
 
 in module ``List.v`` is strict because :g:`list` is an inductive type and :g:`A`
 will always be inferable from the type :g:`list A` of the third argument of
 :g:`cons`. On the contrary, the second argument of a term of type
 ::
-      
+
   forall P:nat->Prop, forall n:nat, P n -> ex nat P
 
 is implicit but not strict, since it can only be inferred from the
@@ -1440,7 +1442,7 @@ argument :g:`P` is implicit but not strict either because it can only be
 inferred from :g:`P n` and :g:`P` is not canonically inferable from an arbitrary
 :g:`n` and the normal form of :g:`P n`. Consider, e.g., that :g:`n` is :math:`0` and the third
 argument has type :g:`True`, then any :g:`P` of the form
-::   
+::
 
   fun n => match n with 0 => True | _ => anything end
 
@@ -1704,9 +1706,9 @@ of constants. For instance, the variable ``p`` below has type
 appear strictly in the body of the type, they are implicit.
 
 .. coqtop:: reset none
-	
+
    Set Warnings "-local-declaration".
-	
+
 .. coqtop:: all
 
    Variable X : Type.
@@ -1906,7 +1908,7 @@ be deactivated by using the command
 Conversely, to force the display of non strict arguments, use command
 
 .. cmd:: Set Printing Implicit Defensive.
-	
+
 See also: ``Set Printing All`` in :ref:`printing_constructions_full`.
 
 Interaction with subtyping

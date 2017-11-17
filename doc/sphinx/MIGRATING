@@ -111,7 +111,7 @@ How to migrate the Coq Reference Manual to Sphinx
 
   Replace section, subsection numbers with reference labels:
 
-    .. _some-reference-label ::
+    .. _some-reference-label:
 
   Place the label before the section or subsection, followed by a blank line.
 
@@ -122,6 +122,18 @@ How to migrate the Coq Reference Manual to Sphinx
     :ref:`TODO-1.3.2-definitions`
 
   We can grep for those TODOs, and the existing subsection number makes it easy to find in the exisyting manual.
+
+  For the particular case of references to chapters, we can use a
+convention for the cross-reference name, so no TODO is needed.
+
+    :ref:`thegallinaspecificationlanguage`
+
+That is, the chapter label is the chapter title, all in lower-case,
+with no spaces or punctuation. For chapters with subtitles marked with
+a ":", like those for Omega and Nsatz, use just the chapter part
+preceding the ":". These labels should already be in the
+placeholder .rst files for each chapter.
+
 
   You can also label other items, like grammars, with the same syntax. To refer to such labels, not involving a
   section or subsection, use the syntax

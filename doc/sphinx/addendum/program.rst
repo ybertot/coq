@@ -227,7 +227,7 @@ compilation algorithm).
 .. coqtop:: reset none
 
    Require Import Program Arith.
-   
+
 One can use a well-founded order or a measure as termination orders
 using the syntax:
 
