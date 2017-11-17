@@ -3,7 +3,7 @@ How to migrate the Coq Reference Manual to Sphinx
 
 # Install Python3 packages (requires Python 3, python3-pip, python3-setuptools)
 
-  * pip3 install bs4 html2rest sphinx sphinx\_rtd\_theme pexpect antlr4-python3-runtime
+  * pip3 install bs4 html2rest sphinx sphinx\_rtd\_theme pexpect antlr4-python3-runtime sphinxcontrib-bibtex
 
 # Add this Elisp code to .emacs, if you're using emacs (recommended):
 

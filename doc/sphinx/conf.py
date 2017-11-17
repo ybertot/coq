@@ -32,6 +32,7 @@ sys.path.append(os.path.abspath('../tools/'))
 extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.todo',
+    'sphinxcontrib.bibtex',
     'coqrst.coqdomain'
 ]
 
