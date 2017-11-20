@@ -3,7 +3,7 @@ How to migrate the Coq Reference Manual to Sphinx
 
 # Install Python3 packages (requires Python 3, python3-pip, python3-setuptools)
 
-  * pip3 install bs4 html2rest sphinx sphinx\_rtd\_theme pexpect antlr4-python3-runtime sphinxcontrib-bibtex
+  * pip3 install bs4 sphinx sphinx_rtd_theme pexpect antlr4-python3-runtime sphinxcontrib-bibtex
 
 # Add this Elisp code to .emacs, if you're using emacs (recommended):
 
@@ -77,28 +77,23 @@ How to migrate the Coq Reference Manual to Sphinx
 
   You may want to create a new branch to do your work in.
 
-# From your browser, download the reference manual chapter you want to migrate
+# Choose a Reference Manual chapter to work on at
 
-  Current manual is at https://coq.inria.fr/refman/
-  Go to Table of Contents
-  Click on the chapter of interest
-  From browser, save page (HTML only)
+    https://docs.google.com/document/d/1Yo7dV4OI0AY9Di-lsEQ3UTmn5ygGLlhxjym7cTCMCWU
 
-# Run html2rest on the saved HTML file
+# For each chapter, raw ReStructuredText (the Sphinx format), created by the "html2rest" utility,
+   is available in the directory porting/raw-rst/
 
-  From doc directory:
+  Elsewhere, depending on the chapter, there should be an almost-empty template file already created,
+   which is in the location where the final version should go
 
-   html2rest mychapter.html > sphinx/some-dir/some-file.rst
-
-  There should be an almost-empty file already created for the output.
-  You can overwrite it.
-
-# Manually edit the .rst file
+# Manually edit the .rst file, place it in the correct location
 
   There are small examples in sphinx/porting/, a larger example in language/gallina-extensions.rst
 
-  N.B.: the migration is a work-in-progress, your suggestions are welcome
+  (N.B.: the migration is a work-in-progress, your suggestions are welcome)
 
+  Find the chapter you're working on from the online manual at https://coq.inria.fr/distrib/current/refman/.
   At the top of the file, after the chapter heading, add:
 
     :Source: https://coq.inria.fr/distrib/current/refman/the-chapter-file.html
