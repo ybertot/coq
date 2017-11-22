@@ -3,8 +3,6 @@
 
 .. Gallina should be in small-caps, maybe create a role for that
 
-.. _extensionsofgallina:
-
 Extensions of Gallina
 =====================
 
@@ -305,8 +303,8 @@ Additionally, user-written :g:`match` constructs on primitive records
 are desugared into substitution of the projections, they cannot be
 printed back as :g:`match` constructs.
 
-2.2 Variants and extensions of :g:`match`
----------------------------------------------
+Variants and extensions of :g:`match`
+-------------------------------------
 
 .. _extended pattern-matching:
 
@@ -325,8 +323,8 @@ under its expanded form (see ``Set Printing Matching`` in :ref:`controlling-matc
 See also: :ref:`extended pattern-matching`.
 
 
-2.2.2 Pattern-matching on boolean values: the if expression
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Pattern-matching on boolean values: the if expression
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For inductive types with exactly two constructors and for pattern-matching
 expressions that do not depend on the arguments of the constructors, it is possible
@@ -368,11 +366,11 @@ we have the following equivalence
      end).
 
 Notice that the printing uses the :g:`if` syntax because `sumbool` is
-declared as such (see Section 2.2.4).
+declared as such (see :ref:`controlling-match-pp`).
 
 
-2.2.3 Irrefutable patterns: the destructuring let variants
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Irrefutable patterns: the destructuring let variants
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Pattern-matching on terms inhabiting inductive type having only one
 constructor can be alternatively written using :g:`let … in …`
@@ -616,8 +614,8 @@ This example emphasizes what the printing options offer.
        Print snd.
 
 
-2.3 Advanced recursive functions
---------------------------------
+Advanced recursive functions
+----------------------------
 
 The following experimental command is available when the ``FunInd`` library has been loaded via ``Require Import FunInd``:
 
@@ -2126,8 +2124,8 @@ binding name for the bound object is optional, whereas the type is
 mandatory, dually to regular binders.
 
 
-2.8 Coercions
--------------
+Coercions
+---------
 
 Coercions can be used to implicitly inject terms from one *class* in
 which they reside into another one. A *class* is either a sort
@@ -2205,8 +2203,8 @@ language, and can be processed by Graphviz tools. The format is
 unspecified if `string` doesn’t end in ``.dot`` or ``.gv``.
 
 
-2.11 Existential variables
---------------------------
+Existential variables
+---------------------
 
 Coq terms can include existential variables which represents unknown
 subterms to eventually be replaced by actual subterms.
@@ -2280,8 +2278,8 @@ variables, use
 
 .. cmd:: Unset Printing Existential Instances.
 
-2.11.2 Solving existential variables using tactics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Solving existential variables using tactics
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Instead of letting the unification engine try to solve an existential
 variable by itself, one can also provide an explicit hole together
