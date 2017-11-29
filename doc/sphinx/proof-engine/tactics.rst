@@ -52,9 +52,7 @@ specified, the default selector (see Section
      tactic_invocation : toplevel_selector : tactic.
                        : |tactic .
 
-.. FIXME: Move to cmd?
-``Set Default Goal Selector toplevel_selector``.
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. cmd:: Set Default Goal Selector @toplevel_selector.
 
 After using this command, the default selector – used when no selector
 is specified when applying a tactic – is set to the chosen value. The
@@ -65,9 +63,7 @@ Then, to apply a tactic tac to the first goal only, you can write
 1:tac. Although more selectors are available, only ‘‘all’’ or a single
 natural number are valid default goal selectors.
 
-.. FIXME: Move to cmd?
-``Test Default Goal Selector.``
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. cmd:: Test Default Goal Selector.
 
 This command displays the current default selector.
 
@@ -79,17 +75,17 @@ so as to instantiate some parameters of the term by name or position.
 The general form of a term equipped with a bindings list is term with
 bindings_list where bindings_list may be of two different forms:
 
-+ In a bindings list of the form ``(ref 1 := term 1 ) … (ref n := term n)``,
-  ``ref`` is either an ``ident`` or a ``num``. The references are determined
-  according to the type of ``term``. If ``ref_i`` is an identifier, this
-  identifier has to be bound in the type of ``term`` and the binding
++ In a bindings list of the form `(ref 1 := term 1 ) … (ref n := term n)`,
+  `ref` is either an `ident` or a `num`. The references are determined
+  according to the type of `term`. If `ref_i` is an identifier, this
+  identifier has to be bound in the type of `term` and the binding
   provides the tactic with an instance for the parameter of this name.
-  If ``ref_i`` is some number ``n``, this number denotes the ``n``-th non
-  dependent premise of the ``term``, as determined by the type of ``term``.
+  If `ref_i` is some number `n`, this number denotes the `n`-th non
+  dependent premise of the `term`, as determined by the type of `term`.
 
   .. exn:: No such binder
 
-+ A bindings list can also be a simple list of terms ``term 1 … term n`` .
++ A bindings list can also be a simple list of terms `term 1 … term n` .
   In that case the references to which these terms correspond are
   determined by the tactic. In case of ``induction``, ``destruct``, ``elim``
   and ``case`` (see :ref:`TODO-9-The-tactic-language`) the terms have to
@@ -103,24 +99,30 @@ bindings_list where bindings_list may be of two different forms:
 Occurrences sets and occurrences clauses
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-
-
 An occurrences clause is a modifier to some tactics that obeys the
 following syntax:
-occurrence_clause ::= in goal_occurrences goal_occurrences ::= [ident
-1 [at_occurrences] , … , ident m [at_occurrences]] [|- [*
-[at_occurrences]]] | * |- [* [at_occurrences]] | * at_occurrences ::=
-at occurrences occurrences ::= [-] num 1 … num n
-The role of an occurrence clause is to select a set of occurrences of
-a term in a goal. In the first case, the ident i [at num 1 i … num n i
-i ] parts indicate that occurrences have to be selected in the
-hypotheses namedident i . If no numbers are given for hypothesis ident
-i , then all the occurrences of term in the hypothesis are selected.
-If numbers are given, they refer to occurrences of term when the term
-is printed using option Set Printing All (see Section `2.9`_),
-counting from left to right. In particular, occurrences of term in
-implicit arguments (see Section `2.7`_) or coercions (see Section
-`2.8`_) are counted.
+
+.. _tactic_occurence_grammar:
+
+  .. productionlist:: `sentence`
+     occurence_clause : in `goal_occurences`
+     goal_occurences : [ident1 [`at_occurences`], ... , identm [`at_occurences`] [|- [* [`at_occurences`]]]]
+                      :| * |- [* [`at_occurences`]]
+                      :| *
+     at_occurrences : at `occurrences`
+     occurences     : [-] `num1` ... `numn`
+
+The role of an occurrence clause is to select a set of occurrences of a term in
+a goal. In the first case, the `ident`:sub:`i` `[at` `num`:sub:`1`:sup:`i` ...
+`num`:sub:`n_i`:sup:`i` ] parts indicate that occurrences have to be selected in
+the hypotheses named `ident`\ :sub:`i`\ . If no numbers are given for hypothesis
+`ident`:sub:`i` , then all the occurrences of `term` in the hypothesis are
+selected. If numbers are given, they refer to occurrences of `term` when the
+term is printed using option ``Set Printing All`` (see
+:ref:`TODO-2.9-Printing-constructions-in-full`), counting from left to right. In
+particular, occurrences of `term` in implicit arguments (see
+:ref:`TODO-2.7-Implicit-arguments`) or coercions (see :ref:`TODO-2.8-Coercions`)
+are counted.
 
 If a minus sign is given between at and the list of occurrences, it
 negates the condition so that the clause denotes all the occurrences
@@ -130,83 +132,65 @@ As an exception to the left-to-right order, the occurrences in
 thereturn subexpression of a match are considered *before* the
 occurrences in the matched term.
 
-In the second case, the * on the left of |- means that all occurrences
+In the second case, the ``*`` on the left of ``|-`` means that all occurrences
 of term are selected in every hypothesis.
 
-In the first and second case, if * is mentioned on the right of|-, the
-occurrences of the conclusion of the goal have to be selected. If some
-numbers are given, then only the occurrences denoted by these numbers
-are selected. In no numbers are given, all occurrences of term in the
-goal are selected.
+In the first and second case, if ``*`` is mentioned on the right of ``|-``, the
+occurrences of the conclusion of the goal have to be selected. If some numbers
+are given, then only the occurrences denoted by these numbers are selected. If
+no numbers are given, all occurrences of `term` in the goal are selected.
 
-Finally, the last notation is an abbreviation for * |- *. Note also
-that |- is optional in the first case when no * is given.
+Finally, the last notation is an abbreviation for ``* |- *``. Note also
+that ``|-`` is optional in the first case when no ``*`` is given.
 
-Here are some tactics that understand occurrences clauses:set,
-remember, induction, destruct.
+Here are some tactics that understand occurrences clauses: ``set``, ``remember``
+, ``induction``, ``destruct``.
 
 
-See also: Sections 8.3.7, 8.5.2, `2.9`_.
+See also: :ref:`TODO-8.3.7-Managing-the-local-context`,
+:ref:`TODO-8.5.2-Case-analysis-and-induction`,
+:ref:`TODO-2.9-Printing-constructions-in-full`.
 
 
 Applying theorems
 ---------------------
 
 
-exact term
-~~~~~~~~~~~~~~~~
-
-
+.. cmd:: exact @term.
 
 This tactic applies to any goal. It gives directly the exact proof
-term of the goal. Let T be our goal, let p be a term of typeU then
-exact p succeeds iff T and U are convertible (see Section `4.3`_).
-
-
-Error messages:
-
-
-#. Not an exact proof
-
-
-
-Variants:
-
-
-#. eexact termThis tactic behaves like exact but is able to handle
-   terms and goals with meta-variables.
-
-
-
-assumption
-~~~~~~~~~~~~~~~~
-
-
-
-This tactic looks in the local context for an hypothesis which type is
-equal to the goal. If it is the case, the subgoal is proved.
-Otherwise, it fails.
-
+term of the goal. Let `T` be our goal, let `p` be a term of type `U` then
+``exact p`` succeeds iff `T` and `U` are convertible (see
+:ref:`TODO-4.3-Conversion-rules`).
 
 Error messages:
 
-
-#. No such assumption
-
-
+.. exn:: Not an exact proof.
 
 Variants:
 
+.. cmd:: eexact @term.
 
-#. eassumptionThis tactic behaves like assumption but is able to
-   handle goals with meta-variables.
+This tactic behaves like exact but is able to handle terms and goals with
+meta-variables.
 
+.. cmd:: assumption.
 
+This tactic looks in the local context for an hypothesis which type is equal to
+the goal. If it is the case, the subgoal is proved. Otherwise, it fails.
 
-refine term
-~~~~~~~~~~~~~~~~~
+Error messages:
 
+.. exn:: No such assumption.
 
+Variants:
+
+.. cmd:: eassumption.
+
+This tactic behaves like assumption but is able to handle goals with
+meta-variables.
+
+.. cmd:: refine @term
 
 This tactic applies to any goal. It behaves like exact with a big
 difference: the user can leave some holes (denoted by _ or(_:type)) in
