@@ -1,3 +1,5 @@
+.. _syntaxextensionsandinterpretationscopes:
+
 ========================================================
  Syntax extensions and interpretation scopes
 ========================================================
