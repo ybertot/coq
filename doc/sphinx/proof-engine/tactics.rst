@@ -75,17 +75,17 @@ so as to instantiate some parameters of the term by name or position.
 The general form of a term equipped with a bindings list is term with
 bindings_list where bindings_list may be of two different forms:
 
-+ In a bindings list of the form `(ref 1 := term 1 ) … (ref n := term n)`,
-  `ref` is either an `ident` or a `num`. The references are determined
-  according to the type of `term`. If `ref_i` is an identifier, this
-  identifier has to be bound in the type of `term` and the binding
-  provides the tactic with an instance for the parameter of this name.
-  If `ref_i` is some number `n`, this number denotes the `n`-th non
-  dependent premise of the `term`, as determined by the type of `term`.
++ In a bindings list of the form :n:`{* (ref:= term)}`, `ref` is either an
+  `ident` or a `num`. The references are determined according to the type of
+  `term`. If `ref_i` is an identifier, this identifier has to be bound in the
+  type of `term` and the binding provides the tactic with an instance for the
+  parameter of this name. If `ref` is some number `n`, this number denotes the
+  `n`-th non dependent premise of the `term`, as determined by the type of
+  `term`.
 
   .. exn:: No such binder
 
-+ A bindings list can also be a simple list of terms `term 1 … term n` .
++ A bindings list can also be a simple list of terms :n:`{* term}` `term 1 … term n` .
   In that case the references to which these terms correspond are
   determined by the tactic. In case of ``induction``, ``destruct``, ``elim``
   and ``case`` (see :ref:`TODO-9-The-tactic-language`) the terms have to
@@ -106,19 +106,18 @@ following syntax:
 
   .. productionlist:: `sentence`
      occurence_clause : in `goal_occurences`
-     goal_occurences : [ident1 [`at_occurences`], ... , identm [`at_occurences`] [|- [* [`at_occurences`]]]]
+     goal_occurences : [ident [`at_occurences`], ... , ident [`at_occurences`] [|- [* [`at_occurences`]]]]
                       :| * |- [* [`at_occurences`]]
                       :| *
      at_occurrences : at `occurrences`
-     occurences     : [-] `num1` ... `numn`
+     occurences     : [-] `num` ... `num`
 
 The role of an occurrence clause is to select a set of occurrences of a term in
-a goal. In the first case, the `ident`:sub:`i` `[at` `num`:sub:`1`:sup:`i` ...
-`num`:sub:`n_i`:sup:`i` ] parts indicate that occurrences have to be selected in
-the hypotheses named `ident`\ :sub:`i`\ . If no numbers are given for hypothesis
-`ident`:sub:`i` , then all the occurrences of `term` in the hypothesis are
-selected. If numbers are given, they refer to occurrences of `term` when the
-term is printed using option ``Set Printing All`` (see
+a goal. In the first case, the :n:`@ident [at {* num}]` parts indicate that
+occurrences have to be selected in the hypotheses named :n:`@ident`. If no numbers
+are given for hypothesis :n:`@ident`, then all the occurrences of `term` in the
+hypothesis are selected. If numbers are given, they refer to occurrences of
+`term` when the term is printed using option ``Set Printing All`` (see
 :ref:`TODO-2.9-Printing-constructions-in-full`), counting from left to right. In
 particular, occurrences of `term` in implicit arguments (see
 :ref:`TODO-2.7-Implicit-arguments`) or coercions (see :ref:`TODO-2.8-Coercions`)
@@ -193,91 +192,86 @@ meta-variables.
 .. cmd:: refine @term
 
 This tactic applies to any goal. It behaves like exact with a big
-difference: the user can leave some holes (denoted by _ or(_:type)) in
+difference: the user can leave some holes (denoted by ``_`` or``(_:type)``) in
 the term. refine will generate as many subgoals as there are holes in
 the term. The type of holes must be either synthesized by the system
-or declared by an explicit cast like `(_:nat->Prop)`. Any subgoal that
+or declared by an explicit cast like ``(_:nat->Prop)``. Any subgoal that
 occurs in other subgoals is automatically shelved, as if calling
 shelve_unifiable (see Section 8.17.4). This low-level tactic can be
 useful to advanced users.
 
+.. example::
+  .. coqtop:: reset all
 
-Example:
-Coq < Inductive Option : Set :=
-| Fail : Option
-| Ok : bool -> Option.
+     Inductive Option : Set :=
+     | Fail : Option
+     | Ok : bool -> Option.
 
-Coq < Definition get : forall x:Option, x <> Fail -> bool.
-1 subgoal
+     Definition get : forall x:Option, x <> Fail -> bool.
 
-============================
-forall x : Option, x <> Fail -> bool
+     refine
+       (fun x:Option =>
+          match x return x <> Fail -> bool with
+          | Fail => _
+          | Ok b => fun _ => b
+          end).
 
-Coq < refine
-(fun x:Option =>
-match x return x <> Fail -> bool with
-| Fail => _
-| Ok b => fun _ => b
-end).
-1 subgoal
+     intros; absurd (Fail = Fail); trivial.
 
-x : Option
-============================
-Fail <> Fail -> bool
+     Defined.
 
-Coq < intros; absurd (Fail = Fail); trivial.
-No more subgoals.
+**Error messages:**
 
-Coq < Defined.
+.. exn:: invalid argument.
 
+   The tactic ``refine`` does not know what to do with the term you gave.
 
-Error messages:
+.. exn:: Refine passed ill-formed term.
 
+   The term you gave is not a valid proof (not easy to debug in general). This
+   message may also occur in higher-level tactics that call ``refine`` internally.
 
-#. invalid argument: the tactic refine does not know what to do with
-   the term you gave.
-#. Refine passed ill-formed term: the term you gave is not a valid
-   proof (not easy to debug in general). This message may also occur in
-   higher-level tactics that callrefine internally.
-#. Cannot infer a term for this placeholder: there is a hole in the
-   term you gave which type cannot be inferred. Put a cast around it.
+.. exn:: Cannot infer a term for this placeholder.
 
+   There is a hole in the term you gave which type cannot be inferred. Put a
+   cast around it.
 
+**Variants**:
 
-Variants:
+.. cmd:: simple refine @term
 
+   This tactic behaves like refine, but it does not shelve any subgoal. It does
+   not perform any beta-reduction either.
 
-#. simple refine termThis tactic behaves like refine, but it does not
-   shelve any subgoal. It does not perform any beta-reduction either.
-#. notypeclasses refine termThis tactic behaves like refine except it
-   performs typechecking without resolution of typeclasses.
-#. simple notypeclasses refine termThis tactic behaves like simple
-   refine except it performs typechecking without resolution of
-   typeclasses.
+.. cmd:: notypeclasses refine @term
 
+   This tactic behaves like ``refine`` except it performs typechecking without
+   resolution of typeclasses.
 
+.. cmd:: simple notypeclasses refine @term
 
-8.2.4 apply term
-~~~~~~~~~~~~~~~~
+   This tactic behaves like ``simple refine`` except it performs typechecking
+   without resolution of typeclasses.
 
 
 
-This tactic applies to any goal. The argument term is a term well-
-formed in the local context. The tactic apply tries to match the
-current goal against the conclusion of the type of term. If it
-succeeds, then the tactic returns as many subgoals as the number of
-non-dependent premises of the type of term. If the conclusion of the
-type of term does not match the goal *and* the conclusion is an
-inductive type isomorphic to a tuple type, then each component of the
-tuple is recursively matched to the goal in the left-to-right order.
+.. cmd:: apply @term
 
-The tactic apply relies on first-order unification with dependent
-types unless the conclusion of the type of term is of the form (P t 1
-… t n ) with P to be instantiated. In the latter case, the behavior
-depends on the form of the goal. If the goal is of the form (fun x =>
-Q) u 1 … u n and thet i and u i unifies, then P is taken to be (fun x
-=> Q). Otherwise, apply tries to define P by abstracting overt 1 … t n
-in the goal. See pattern in Section 8.7.7 to transform the goal so
+This tactic applies to any goal. The argument term is a term well-formed in the
+local context. The tactic apply tries to match the current goal against the
+conclusion of the type of term. If it succeeds, then the tactic returns as many
+subgoals as the number of non-dependent premises of the type of term. If the
+conclusion of the type of term does not match the goal *and* the conclusion is
+an inductive type isomorphic to a tuple type, then each component of the tuple
+is recursively matched to the goal in the left-to-right order.
+
+The tactic ``apply`` relies on first-order unification with dependent types
+unless the conclusion of the type of `term` is of the form :n:`P {* t}` with
+`P` to be instantiated. In the latter case, the behavior depends on the form of
+the goal. If the goal is of the form :n:`(fun x => Q) {* u}` and the `t`:sub`i`
+and `u`:sub:`i` unifies, then `P` is taken to be `(fun x => Q)`. Otherwise,
+``apply`` tries to define `P` by abstracting over :n:`{* t}` in the goal. See
+:n:`@pattern` in _pattern_term_ to transform the goal so
 that it gets the form(fun x => Q) u 1 … u n .
 
 
@@ -2962,10 +2956,8 @@ Variants:
 #. fold term 1 … term n Equivalent to fold term 1 ;…; fold term n .
 
 
-
-8.7.7 pattern term
-~~~~~~~~~~~~~~~~~~
-
+.. _pattern_term:
+.. cmd:: pattern @term
 
 
 This command applies to any goal. The argument term must be a free
