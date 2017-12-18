@@ -155,7 +155,7 @@ See also: :ref:`TODO-8.3.7-Managing-the-local-context`,
 Applying theorems
 ---------------------
 
-.. tacn:: exact @term.
+.. tacn:: exact @term
    :name: exact
 
 This tactic applies to any goal. It gives directly the exact proof
@@ -170,7 +170,7 @@ term of the goal. Let ``T`` be our goal, let ``p`` be a term of type ``U`` then
 This tactic behaves like exact but is able to handle terms and goals with
 meta-variables.
 
-.. tacn:: assumption.
+.. tacn:: assumption
    :name: assumption
 
 This tactic looks in the local context for an hypothesis which type is equal to
@@ -178,7 +178,7 @@ the goal. If it is the case, the subgoal is proved. Otherwise, it fails.
 
 .. exn:: No such assumption.
 
-.. tacv:: eassumption.
+.. tacv:: eassumption
 
 This tactic behaves like assumption but is able to handle goals with
 meta-variables.
@@ -284,7 +284,7 @@ transitivity property. In this case, you have to use one of the variants below:
 **Variants:**
 
 
-.. cmd:: apply @term with {+ @term}.
+.. cmd:: apply @term with {+ @term}
 
 Provides apply with explicit instantiations for all dependent premises of the
 type of term that do not occur in the conclusion and consequently cannot be
@@ -467,22 +467,22 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
    This happens if the conclusion of ``ident`` does not match any of the non
    dependent premises of the type of ``term``.
 
-.. tacv:: apply {+, @term} in @ident.
+.. tacv:: apply {+, @term} in @ident
 
    This applies each of ``term`` in sequence in ``ident``.
 
-.. tacv:: apply {+, @term with @bindings_list} in @ident.
+.. tacv:: apply {+, @term with @bindings_list} in @ident
 
    This does the same but uses the bindings in each :n:`(@id := @ val)` to
    instantiate the parameters of the corresponding type of ``term`` (see
    :ref:`bindings list <bindingslist>`).
 
-.. tacv:: eapply {+, @term with @bindings_list} in @ident.
+.. tacv:: eapply {+, @term with @bindings_list} in @ident
 
    This works as :tacn:`apply ... in` but turns unresolved bindings into
    existential variables, if any, instead of failing.
 
-.. tacv:: apply {+, @term with @bindings_list} in @ident as @intro_pattern.
+.. tacv:: apply {+, @term with @bindings_list} in @ident as @intro_pattern
    :name: apply ... in ... as
 
    This works as :tacn:`apply ... in` then applies the
@@ -492,7 +492,7 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 
    This works as :tacn:`apply ... in as`  but using ``eapply``.
 
-.. tacv:: simple apply @term in @ident.
+.. tacv:: simple apply @term in @ident
 
    This behaves like :tacn:`apply ... in` but it reasons modulo conversion only
    on subterms that contain no variables to instantiate. For instance, if
@@ -520,20 +520,20 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 .. exn:: Not an inductive product.
 .. exn:: Not enough constructors.
 
-.. tacv:: constructor.
+.. tacv:: constructor
 
    This tries :g:`constructor`:sub:`1` then :g:`constructor`:sub:`2`, ..., then
    :g:`constructor`:sub:`n` where `n` is the number of constructors of the head
    of the goal.
 
-.. tacv:: constructor @num with @bindings_list.
+.. tacv:: constructor @num with @bindings_list
 
    Let c be the i-th constructor of I, then :n:`constructor i with @bindings_list` is equivalent to :n:`intros; apply c with @bindings_list`.
 
  .. warn::
     The terms in the @bindings_list are checked in the context where constructor is executed and not in the context where @apply is executed (the introductions are not taken into account).
 
-.. tacv:: split.
+.. tacv:: split
 
    This applies only if :g:`I` has a single constructor. It is then
    equivalent to :n:`constructor 1.`. It is typically used in the case of a
@@ -541,7 +541,7 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 
 .. exn:: Not an inductive goal with 1 constructor.
 
-.. tacv:: exists @val.
+.. tacv:: exists @val
 
    This applies only if :g:`I` has a single constructor. It is then equivalent
    to :n:`intros; constructor 1 with @bindings_list.` It is typically used in
@@ -549,12 +549,12 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 
 .. exn:: Not an inductive goal with 1 constructor.
 
-.. tacv:: exists @bindings_list.
+.. tacv:: exists @bindings_list
 
    This iteratively applies :n:`exists @bindings_list`.
 
-.. tacv:: left.
-.. tacv:: right.
+.. tacv:: left
+.. tacv:: right
 
    These tactics apply only if :g:`I` has two constructors, for
    instance in the case of a disjunction :g:`A` :math:`\vee` :g:`B`.
@@ -563,19 +563,19 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 
 .. exn:: Not an inductive goal with 2 constructors.
 
-.. tacv:: left with @bindings_list.
-.. tacv:: right with @bindings_list.
-.. tacv:: split with @bindings_list.
+.. tacv:: left with @bindings_list
+.. tacv:: right with @bindings_list
+.. tacv:: split with @bindings_list
 
    As soon as the inductive type has the right number of constructors, these
    expressions are equivalent to calling :n:`constructor i with @bindings_list`
    for the appropriate ``i``.
 
-.. tacv:: econstructor.
-.. tacv:: eexists.
-.. tacv:: esplit.
-.. tacv:: eleft.
-.. tacv:: eright.
+.. tacv:: econstructor
+.. tacv:: eexists
+.. tacv:: esplit
+.. tacv:: eleft
+.. tacv:: eright
 
    These tactics and their variants behave like ``constructor``, ``exists``,
    ``split``, ``left``, ``right`` and their variants but they introduce
@@ -587,478 +587,383 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 Managing the local context
 ------------------------------
 
-8.3.1 intro
-~~~~~~~~~~~
+.. tacn:: intro
+   :name: intro
 
+This tactic applies to a goal that is either a product or starts with a let
+binder. If the goal is a product, the tactic implements the "Lam" rule given in
+:ref:`TODO-4.2-Typing-rules`. If the goal starts with a let binder, then the
+tactic implements a mix of the "Let" and "Conv".
 
+If the current goal is a dependent product :math:`\forall` :g:`x:T, U` (resp
+:g:`let x:=t in U`) then ``intro`` puts :g:`x:T` (resp :g:`x:=t`) in the local
+context. The new subgoal is :g:`U`.
 
-This tactic applies to a goal that is either a product or starts with
-a let binder. If the goal is a product, the tactic implements the
-“Lam” rule given in Section `4.2`_ 1 . If the goal starts with a let
-binder, then the tactic implements a mix of the “Let” and “Conv”.
-
-If the current goal is a dependent product ∀ x:T, U (resp let x:=t in
-U) then intro puts x:T (resp x:=t) in the local context. The new
-subgoal is U.
-
-If the goal is a non-dependent product T → U, then it puts in the
-local context either Hn:T (if T is of type Set or Prop) or Xn:T (if
-the type of T is Type). The optional index n is such that Hn or Xn is
-a fresh identifier. In both cases, the new subgoal is U.
+If the goal is a non-dependent product :g:`T`:math:`\rightarrow`:g:`U`, then it
+puts in the local context either :g:`Hn:T` (if :g:`T` is of type :g:`Set` or
+:g:`Prop`) or Xn:T (if the type of :g:`T` is :g:`Type`). The optional index
+``n`` is such that ``Hn`` or ``Xn`` is a fresh identifier. In both cases, the
+new subgoal is :g:`U`.
 
 If the goal is neither a product nor starting with a let definition,
-the tactic intro applies the tactic hnf until the tacticintro can be
-applied or the goal is not head-reducible.
+the tactic ``intro`` applies the tactic ``hnf`` until the tactic ``intro`` can
+be applied or the goal is not head-reducible.
 
+.. exn:: No product even after head-reduction.
+.. exn:: ident is already used.
 
-**Error messages:**
+.. tacv:: intros
 
-
-#. No product even after head-reduction
-#. ident is already used
-
-
-
-**Variants:**
-
-
-#. introsThis repeats intro until it meets the head-constant. It never
+   This repeats ``intro`` until it meets the head-constant. It never
    reduces head-constants and it never fails.
-#. intro identThis applies intro but forces ident to be the name of
-   the introduced hypothesis. Error message: name ident is already used
-   Remark: If a name used by intro hides the base name of a global
+
+.. tac:: intro @ident
+
+   This applies ``intro`` but forces :n:`@ident` to be the name of the
+   introduced hypothesis.
+
+.. exn:: name @ident is already used.
+
+.. note:: If a name used by intro hides the base name of a global
    constant then the latter can still be referred to by a qualified name
-   (see `2.6.2`_).
-#. intros ident 1 … ident n This is equivalent to the composed tactic
-   intro ident 1 ; … ; intro ident n .More generally, the intros tactic
+   (see :ref:`TODO-2.6.2-Qualified-names`).
+.. tacv:: intros {+ @ident}.
+
+   This is equivalent to the composed tactic
+   :n:`intro @ident; ... ; intro @ident`. More generally, the ``intros`` tactic
    takes a pattern as argument in order to introduce names for components
    of an inductive definition or to clear introduced hypotheses. This is
-   explained in 8.3.2.
-#. intros until ident This repeats intro until it meets a premise of
-   the goal having form( ident : term ) and discharges the variable named
-   ident of the current goal. Error message: No such hypothesis in
-   current goal
-#. intros until num This repeats intro until the num-th non-dependent
-   product. For instance, on the subgoal `forall x y:nat, x=y -> y=x` the
-   tactic intros until 1 is equivalent to intros x y H, as `x=y -> y=x`
-   is the first non-dependent product. And on the subgoal `forall x y
-   z:nat, x=y -> y=x` the tactic intros until 1 is equivalent to intros x
-   y z as the product on z can be rewritten as a non-dependent product:
-   `forall x y:nat, nat -> x=y -> y=x` Error message: No such hypothesis
-   in current goalThis happens when num is 0 or is greater than the
-   number of non-dependent products of the goal.
-#. intro after ident intro before ident intro at top intro at bottom
-   These tactics apply intro and move the freshly introduced hypothesis
-   respectively after the hypothesis ident, before the hypothesisident,
-   at the top of the local context, or at the bottom of the local
+   explained in :ref:`TODO-8.3.2`.
+
+.. tacv:: intros until @ident
+
+   This repeats intro until it meets a premise of the goal having form
+   `(@ident:term)` and discharges the variable named `ident` of the current
+   goal.
+
+.. exn:: No such hypothesis in current goal.
+
+.. tacv:: intros until @num
+
+   This repeats intro until the `num`-th non-dependent product. For instance,
+   on the subgoal :g:`forall x y:nat, x=y -> y=x` the tactic
+   :n:`intros until 1` is equivalent to :n:`intros x y H`, as :g:`x=y -> y=x`
+   is the first non-dependent product. And on the subgoal :g:`forall x y
+   z:nat, x=y -> y=x` the tactic :n:`intros until 1` is equivalent to
+   :n:`intros x y z` as the product on :g:`z` can be rewritten as a
+   non-dependent product: :g:`forall x y:nat, nat -> x=y -> y=x`
+
+.. exn:: No such hypothesis in current goal.
+
+   This happens when `num` is 0 or is greater than the number of non-dependent
+   products of the goal.
+
+.. tacv:: intro after @ident
+.. tacv:: intro before @ident
+.. tacv:: intro at top
+.. tacv:: intro at bottom
+
+   These tactics apply :n:`intro` and move the freshly introduced hypothesis
+   respectively after the hypothesis :n:`@ident`, before the hypothesis
+   :n:`@ident`, at the top of the local context, or at the bottom of the local
    context. All hypotheses on which the new hypothesis depends are moved
    too so as to respect the order of dependencies between hypotheses.
-   Note that intro at bottom is a synonym for intro with no argument.
-   Error message: No such hypothesis : ident
-#. intro ident 1 after ident 2 intro ident 1 before ident 2 intro
-   ident 1 at top intro ident 1 at bottomThese tactics behave as
-   previously but naming the introduced hypothesisident 1 . It is
-   equivalent to intro ident 1 followed by the appropriate call to move
-   (see Section 8.3.5).
-
-
-
-8.3.2 intros intro_pattern_list
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-This extension of the tactic intros allows to apply tactics on the fly
-on the variables or hypotheses which have been introduced. An
-*introduction pattern list* intro_pattern_list is a list of
-introduction patterns possibly containing the filling introduction
-patterns * and **. An *introduction pattern* is either:
-
-
-+ a *naming introduction pattern*, i.e. either one of:
-
-    + the pattern ?
-    + the pattern ?ident
-    + an identifier
-
-+ an *action introduction pattern* which itself classifies into:
-
-    + a *disjunctive/conjunctive introduction pattern*, i.e. either one
-      of:
-
-        + a disjunction of lists of patterns:[intro_pattern_list 1 | … |
-          intro_pattern_list n ]
-        + a conjunction of patterns: (p 1 , … , p n )
-        + a list of patterns (p 1 & … & p n ) for sequence of right-
-          associative binary constructs
-
-    + an *equality introduction pattern*, i.e. either one of:
-
-        + a pattern for decomposing an equality: [= p 1 … p n ]
-        + the rewriting orientations: -> or <-
-
-    + the on-the-fly application of lemmas: p%term 1 …%term n where p
-      itself is not a pattern for on-the-fly application of lemmas (note:
-      syntax is in experimental stage)
-
-+ the wildcard: _
-
-
-Assuming a goal of type Q → P (non-dependent product), or of type ∀
-x:T, P (dependent product), the behavior ofintros p is defined
-inductively over the structure of the introduction pattern p:
-
-
-+ introduction on ? performs the introduction, and lets Coq choose a
-  fresh name for the variable;
-+ introduction on ?ident performs the introduction, and lets Coq
-  choose a fresh name for the variable based on ident;
-+ introduction on ident behaves as described in Section 8.3.1;
-+ introduction over a disjunction of list of patterns
-  [intro_pattern_list 1 | … | intro_pattern_list n ] expects the product
-  to be over an inductive type whose number of constructors is n (or
-  more generally over a type of conclusion an inductive type built from
-  n constructors, e.g. C -> A\/B with n=2 since A\/B has 2
-  constructors): it destructs the introduced hypothesis as destruct (see
-  Section 8.5.1) would and applies on each generated subgoal the
-  corresponding tactic;intros intro_pattern_list i . The introduction
-  patterns inintro_pattern_list i are expected to consume no more than
-  the number of arguments of the i th constructor. If it consumes less,
-  then Coq completes the pattern so that all the arguments of the
-  constructors of the inductive type are introduced (for instance, the
-  list of patterns [ | ] H applied on goal forall x:nat, x=0 -> 0=x
-  behaves the same as the list of patterns [ | ? ] H);
-+ introduction over a conjunction of patterns (p 1 , …,p n ) expects
-  the goal to be a product over an inductive type I with a single
-  constructor that itself has at least n arguments: it performs a case
-  analysis over the hypothesis, as destruct would, and applies the
-  patterns p 1 … p n to the arguments of the constructor of I (observe
-  that (p 1 , …,p n ) is an alternative notation for [p 1 …p n ]);
-+ introduction via (p 1 & … & p n ) is a shortcut for introduction
-  via(p 1 ,(…,(…,p n )…)); it expects the hypothesis to be a sequence of
-  right-associative binary inductive constructors such as conj or
-  ex_intro; for instance, an hypothesis with type A `/\`(exists x, B
-  `/\`C `/\`D) can be introduced via pattern (a & x & b & c & d);
-+ if the product is over an equality type, then a pattern of the form
-  [= p 1 … p n ] applies either injection (see Section 8.5.7) or
-  discriminate (see Section 8.5.6) instead of destruct; if injection is
-  applicable, the patterns p 1 , …, p n are used on the hypotheses
-  generated by injection; if the number of patterns is smaller than the
-  number of hypotheses generated, the pattern ? is used to complete the
-  list;
-+ introduction over -> (respectively <-) expects the hypothesis to be
-  an equality and the right-hand-side (respectively the left-hand-side)
-  is replaced by the left-hand-side (respectively the right-hand-side)
-  in the conclusion of the goal; the hypothesis itself is erased; if the
-  term to substitute is a variable, it is substituted also in the
-  context of goal and the variable is removed too;
-+ introduction over a pattern p%term 1 …%term n first applies term 1
-  ,…, term n on the hypothesis to be introduced (as in apply term 1 ,
-  …,term n in) prior to the application of the introduction pattern p;
-+ introduction on the wildcard depends on whether the product is
-  dependent or not: in the non-dependent case, it erases the
-  corresponding hypothesis (i.e. it behaves as an intro followed by a
-  clear, cf Section 8.3.3) while in the dependent case, it succeeds and
-  erases the variable only if the wildcard is part of a more complex
-  list of introduction patterns that also erases the hypotheses
-  depending on this variable;
-+ introduction over * introduces all forthcoming quantified variables
-  appearing in a row; introduction over ** introduces all forthcoming
-  quantified variables or hypotheses until the goal is not any more a
-  quantification or an implication.
+   Note that :n:`intro at bottom` is a synonym for :n:`intro` with no argument.
 
+.. exn:: No such hypothesis : @ident.
 
+.. tacv:: intro @ident after @ident
+.. tacv:: intro @ident before @ident
+.. tacv:: intro @ident at top
+.. tacv:: intro @ident at bottom
 
-Example:
-Coq < Goal forall A B C:Prop, A \/ B /\ C -> (A -> C) -> C.
-1 subgoal
+   These tactics behave as previously but naming the introduced hypothesis
+   :n:`@ident`. It is equivalent to :n:`intro @ident` followed by the
+   appropriate call to move (see :tacn:`move ... after`).
 
-============================
-forall A B C : Prop, A \/ B /\ C -> (A -> C) -> C
+.. tacn:: intros @intro_pattern_list
+   :name: intros ...
 
-Coq < intros * [a | (_,c)] f.
-2 subgoals
+   This extension of the tactic :n:`intros` allows to apply tactics on the fly
+   on the variables or hypotheses which have been introduced. An
+   *introduction pattern list* :n:`@intro_pattern_list` is a list of
+   introduction patterns possibly containing the filling introduction
+   patterns `*` and `**`. An *introduction pattern* is either:
 
-A, B, C : Prop
-a : A
-f : A -> C
-============================
-C
-subgoal 2 is:
-C
+   + a *naming introduction pattern*, i.e. either one of:
 
+     + the pattern :n:`?`
 
-Remark: intros p 1 … p n is not equivalent to introsp 1 ;…; intros p n
-for the following reason: If one of thep i is a wildcard pattern, he
-might succeed in the first case because the further hypotheses it
-depends in are eventually erased too while it might fail in the second
-case because of dependencies in hypotheses which are not yet
-introduced (and a fortiori not yet erased).
+     + the pattern :n:`?ident`
 
+     + an identifier
 
-Remark: In intros intro_pattern_list, if the last introduction pattern
-is a disjunctive or conjunctive pattern [intro_pattern_list 1 | … |
-intro_pattern_list n ], the completion of intro_pattern_list i so that
-all the arguments of thei th constructors of the corresponding
-inductive type are introduced can be controlled with the following
-option:
-Set Bracketing Last Introduction Pattern
-Force completion, if needed, when the last introduction pattern is a
-disjunctive or conjunctive pattern (this is the default).
-Unset Bracketing Last Introduction Pattern
-Deactivate completion when the last introduction pattern is a
-disjunctive or conjunctive pattern.
+   + an *action introduction pattern* which itself classifies into:
 
+     + a *disjunctive/conjunctive introduction pattern*, i.e. either one of
 
-8.3.3 clear ident
-~~~~~~~~~~~~~~~~~
+       + a disjunction of lists of patterns
+         :n:`[@intro_pattern_list | ... | @intro_pattern_list]`
 
+       + a conjunction of patterns: :n:`({+, p})`
 
+       + a list of patterns
+         :n:`({+& p})`
+         for sequence of right-associative binary constructs
 
-This tactic erases the hypothesis named ident in the local context of
-the current goal. As a consequence, ident is no more displayed and no
-more usable in the proof development.
+     + an *equality introduction pattern*, i.e. either one of:
 
+       + a pattern for decomposing an equality: :n:`[= {+ p}]`
+       + the rewriting orientations: :n:`->` or :n:`<-`
 
-**Error messages:**
+     + the on-the-fly application of lemmas: :n:`p{+ %term}` where :n:`p`
+       itself is not a pattern for on-the-fly application of lemmas (note:
+       syntax is in experimental stage)
 
+   + the wildcard: :n:`_`
 
-#. No such hypothesis
-#. ident is used in the conclusion
-#. ident is used in the hypothesis ident’
 
+   Assuming a goal of type :g:`Q → P` (non-dependent product), or of type
+   :math:`\forall`:g:`x:T, P` (dependent product), the behavior of
+   :n:`intros p` is defined inductively over the structure of the introduction
+   pattern :n:`p`:
 
+Introduction on :n:`?` performs the introduction, and lets Coq choose a fresh
+name for the variable;
 
-**Variants:**
+Introduction on :n:`?ident` performs the introduction, and lets Coq choose a
+fresh name for the variable based on :n:`@ident`;
 
+Introduction on :n:`@ident` behaves as described in :tacn:`intro`
 
-#. clear ident 1 … ident n This is equivalent to clear ident 1 . …
-   clearident n .
-#. clearbody identThis tactic expects ident to be a local definition
-   then clears its body. Otherwise said, this tactic turns a definition
-   into an assumption. Error message: ident is not a local definition
-#. clear - ident 1 … ident n This tactic clears all the hypotheses
-   except the ones depending in the hypotheses named ident 1 … ident n
-   and in the goal.
-#. clearThis tactic clears all the hypotheses except the ones the goal
-   depends on.
-#. clear dependent identThis clears the hypothesis ident and all the
-   hypotheses that depend on it.
+Introduction over a disjunction of list of patterns
+:n:`[@intro_pattern_list | ... | @intro_pattern_list ]` expects the product
+to be over an inductive type whose number of constructors is `n` (or more
+generally over a type of conclusion an inductive type built from `n`
+constructors, e.g. :g:`C -> A\/B` with `n=2` since :g:`A\/B` has `2`
+constructors): it destructs the introduced hypothesis as :n:`destruct` (see
+:tacn:`destruct`) would and applies on each generated subgoal the
+corresponding tactic;
 
+.. tacv:: intros @intro_pattern_list
 
+   The introduction patterns in :n:`@intro_pattern_list` are expected to consume
+   no more than the number of arguments of the `i`-th constructor. If it
+   consumes less, then Coq completes the pattern so that all the arguments of
+   the constructors of the inductive type are introduced (for instance, the
+   list of patterns :n:`[ | ] H` applied on goal :g:`forall x:nat, x=0 -> 0=x`
+   behaves the same as the list of patterns :n:`[ | ? ] H`);
 
-8.3.4 revert ident 1 … ident n
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Introduction over a conjunction of patterns :n:`({+, p})` expects
+the goal to be a product over an inductive type :g:`I` with a single
+constructor that itself has at least `n` arguments: It performs a case
+analysis over the hypothesis, as :n:`destruct` would, and applies the
+patterns :n:`{+ p}` to the arguments of the constructor of :g:`I` (observe
+that :n:`({+ p})` is an alternative notation for :n:`[{+ p}]`);
 
+Introduction via :n:`({+& p})` is a shortcut for introduction via
+:n:`(p,( ... ,( ..., p ) ... ))`; it expects the hypothesis to be a sequence of
+right-associative binary inductive constructors such as :g:`conj` or
+:g:`ex_intro`; for instance, an hypothesis with type
+:g:`A /\(exists x, B /\ C /\ D)` can be introduced via pattern
+:n:`(a & x & b & c & d)`;
 
+If the product is over an equality type, then a pattern of the form
+:n:`[= {+ p}]` applies either :tacn:`injection` or :tacn:`discriminate`
+instead of :tacn:`destruct`; if :tacn:`injection` is applicable, the patterns
+:n:`{+, p}` are used on the hypotheses generated by :tacn:`injection`; if the
+number of patterns is smaller than the number of hypotheses generated, the
+pattern :n:`?` is used to complete the list;
 
-This applies to any goal with variables ident 1 … ident n . It moves
-the hypotheses (possibly defined) to the goal, if this respects
-dependencies. This tactic is the inverse of intro.
+.. tacv:: introduction over ->
+.. tacv:: introduction over <-
 
+   expects the hypothesis to be an equality and the right-hand-side
+   (respectively the left-hand-side) is replaced by the left-hand-side
+   (respectively the right-hand-side) in the conclusion of the goal;
+   the hypothesis itself is erased; if the term to substitute is a variable, it
+   is substituted also in the context of goal and the variable is removed too;
 
-**Error messages:**
+Introduction over a pattern :n:`p{+ %term}` first applies :n:`{+ term}`
+on the hypothesis to be introduced (as in :n:`apply {+, term}`) prior to the
+application of the introduction pattern :n:`p`;
 
+Introduction on the wildcard depends on whether the product is dependent or not:
+in the non-dependent case, it erases the corresponding hypothesis (i.e. it
+behaves as an :tacn:`intro` followed by a :tacn:`clear`) while in the
+dependent case, it succeeds and erases the variable only if the wildcard is part
+of a more complex list of introduction patterns that also erases the hypotheses
+depending on this variable;
 
-#. No such hypothesis
-#. ident is used in the hypothesis ident’
+Introduction over :n:`*` introduces all forthcoming quantified variables
+appearing in a row; introduction over :n:`**` introduces all forthcoming
+quantified variables or hypotheses until the goal is not any more a
+quantification or an implication.
 
+.. example::
+   .. coqtop:: all
 
+      Goal forall A B C:Prop, A \/ B /\ C -> (A -> C) -> C.
+      intros * [a | (_,c)] f.
 
-**Variants:**
+.. note::
+   :n:`intros {+ p}` is not equivalent to :n:`intros p; ... ; intros p`
+   for the following reason: If one of the :n:`p` is a wildcard pattern, it
+   might succeed in the first case because the further hypotheses it
+   depends in are eventually erased too while it might fail in the second
+   case because of dependencies in hypotheses which are not yet
+   introduced (and a fortiori not yet erased).
 
+.. note::
+   In :n:`intros @intro_pattern_list`, if the last introduction pattern
+   is a disjunctive or conjunctive pattern
+   :n:`[{+| @intro_pattern_list}]`, the completion of :n:`@intro_pattern_list`
+   so that all the arguments of the i-th constructors of the corresponding
+   inductive type are introduced can be controlled with the following option:
 
-#. revert dependent identThis moves to the goal the hypothesis ident
-   and all the hypotheses that depend on it.
+   .. cmd:: Set Bracketing Last Introduction Pattern.
 
+   Force completion, if needed, when the last introduction pattern is a
+   disjunctive or conjunctive pattern (this is the default).
 
+   .. cmd:: Unset Bracketing Last Introduction Pattern.
 
-8.3.5 move ident 1 after ident 2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Deactivate completion when the last introduction pattern is a disjunctive or
+   conjunctive pattern.
 
+.. tacn:: clear @ident
+   :name: clear
 
+   This tactic erases the hypothesis named :n:`@ident` in the local context of
+   the current goal. As a consequence, :n:`@ident` is no more displayed and no
+   more usable in the proof development.
 
-This moves the hypothesis named ident 1 in the local context after the
-hypothesis named ident 2 , where “after” is in reference to the
-direction of the move. The proof term is not changed.
+.. exn:: No such hypothesis.
 
-If ident 1 comes before ident 2 in the order of dependencies, then all
-the hypotheses between ident 1 andident 2 that (possibly indirectly)
-depend on ident 1 are moved too, and all of them are thus moved after
-ident 2 in the order of dependencies.
+.. exn:: @ident is used in the conclusion.
 
-If ident 1 comes after ident 2 in the order of dependencies, then all
-the hypotheses between ident 1 and ident 2 that (possibly indirectly)
-occur in the type of ident 1 are moved too, and all of them are thus
-moved before ident 2 in the order of dependencies.
+.. exn:: @ident is used in the hypothesis @ident.
 
+.. tacv:: clear {+ @ident}
 
-**Variants:**
+   This is equivalent to :n:`clear @ident. ... clear @ident.`
 
+.. tacv:: clearbody @ident
 
-#. move ident 1 before ident 2 This moves ident 1 towards and just
-   before the hypothesis namedident 2 . As for move ident 1 after ident 2
-   , dependencies over ident 1 (when ident 1 comes beforeident 2 in the
-   order of dependencies) or in the type ofident 1 (when ident 1 comes
-   after ident 2 in the order of dependencies) are moved too.
-#. move ident at topThis moves ident at the top of the local context
-   (at the beginning of the context).
-#. move ident at bottomThis moves ident at the bottom of the local
-   context (at the end of the context).
+   This tactic expects :n:`@ident` to be a local definition then clears its
+   body. Otherwise said, this tactic turns a definition into an assumption.
 
+.. exn:: @ident is not a local definition
 
+.. tacv:: clear - {+ @ident}
 
-**Error messages:**
+   This tactic clears all the hypotheses except the ones depending in the
+   hypotheses named :n:`{+ @ident}` and in the goal.
 
+.. tacv:: clear
 
-#. No such hypothesis
-#. Cannot move ident 1 after ident 2 : it occurs in the type of ident
-   2
-#. Cannot move ident 1 after ident 2 : it depends on ident 2
+   This tactic clears all the hypotheses except the ones the goal depends on.
 
+.. tacv:: clear dependent @ident
 
+   This clears the hypothesis :n:`@ident` and all the hypotheses that depend on
+   it.
 
-Example:
-Coq < Goal forall x :nat, x = 0 -> forall z y:nat, y=y-> 0=x.
-1 subgoal
+.. tacn:: revert {+ @ident}
+   :name: revert ...
 
-============================
-forall x : nat, x = 0 -> nat -> forall y : nat, y = y -> 0 = x
+This applies to any goal with variables :n:`{+ @ident}`. It moves the hypotheses
+(possibly defined) to the goal, if this respects dependencies. This tactic is
+the inverse of :tacn:`intro`.
 
-Coq < intros x H z y H0.
-1 subgoal
+.. exn:: No such hypothesis.
 
-x : nat
-H : x = 0
-z, y : nat
-H0 : y = y
-============================
-0 = x
+.. exn:: @ident is used in the hypothesis @ident.
 
-Coq < move x after H0.
-1 subgoal
+.. tac:: revert dependent @ident
 
-z, y : nat
-H0 : y = y
-x : nat
-H : x = 0
-============================
-0 = x
+   This moves to the goal the hypothesis :n:`@ident` and all the hypotheses that
+   depend on it.
 
-Coq < Undo.
-1 subgoal
+.. tacn:: move ident1 after ident2
+   :name: move .. after ...
 
-x : nat
-H : x = 0
-z, y : nat
-H0 : y = y
-============================
-0 = x
+   This moves the hypothesis named :n:`ident1` in the local context after the
+   hypothesis named :n:`ident2`, where “after” is in reference to the
+   direction of the move. The proof term is not changed.
 
-Coq < move x before H0.
-1 subgoal
+   If :n:`ident1` comes before :n:`ident2` in the order of dependencies, then
+   all the hypotheses between :n:`ident1` and :n:`ident2` that (possibly
+   indirectly) depend on :n:`ident1` are moved too, and all of them are thus
+   moved after :n:`ident2` in the order of dependencies.
 
-z, y, x : nat
-H : x = 0
-H0 : y = y
-============================
-0 = x
+   If :n:`ident1` comes after :n:`ident2` in the order of dependencies, then all
+   the hypotheses between :n:`ident1` and :n:`ident2` that (possibly indirectly)
+   occur in the type of :n:`ident1` are moved too, and all of them are thus
+   moved before :n:`ident2` in the order of dependencies.
 
-Coq < Undo.
-1 subgoal
+.. tacv:: move ident1 before ident2
 
-x : nat
-H : x = 0
-z, y : nat
-H0 : y = y
-============================
-0 = x
+   This moves :n:`ident1` towards and just before the hypothesis named
+   :n:`ident2`.  As for :tacn:`move ... after ...`, dependencies over
+   :n:`ident1` (when :n:`ident1` comes before :n:`ident2` in the order of
+   dependencies) or in the type of :n:`ident1` (when :n:`ident1` comes after
+   :n:`ident2` in the order of dependencies) are moved too.
 
-Coq < move H0 after H.
-1 subgoal
+.. tacv:: move @ident at top
 
-x, y : nat
-H0 : y = y
-H : x = 0
-z : nat
-============================
-0 = x
+   This moves :n:`@ident` at the top of the local context (at the beginning of
+   the context).
 
-Coq < Undo.
-1 subgoal
+.. tacv:: move @ident at bottom
 
-x : nat
-H : x = 0
-z, y : nat
-H0 : y = y
-============================
-0 = x
+   This moves ident at the bottom of the local context (at the end of the
+   context).
 
-Coq < move H0 before H.
-1 subgoal
+.. exn:: No such hypothesis
+.. exn:: Cannot move ident1 after ident2 : it occurs in the type of ident2
+.. exn:: Cannot move ident1 after ident2 : it depends on ident2
 
-x : nat
-H : x = 0
-y : nat
-H0 : y = y
-z : nat
-============================
-0 = x
+.. example::
+   .. coqtop:: all
 
+      Goal forall x :nat, x = 0 -> forall z y:nat, y=y-> 0=x.
+      intros x H z y H0.
+      move x after H0.
+      Undo.
+      move x before H0.
+      Undo.
+      move H0 after H.
+      Undo.
+      move H0 before H.
 
+.. tacn:: rename ident1 into ident2
+   :name: rename ... into ...
 
-8.3.6 rename ident 1 into ident 2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This renames hypothesis :n:`ident1` into :n:`ident2` in the current context.
+The name of the hypothesis in the proof-term, however, is left unchanged.
 
+.. tacv:: rename ident1 into ident2, ..., ident2k-1 into ident2k
 
+   This renames the variables ident1 ... ident 2k−1 into respectively ident2 ...
+   ident2k in parallel. In particular, the target identifiers may contain
+   identifiers that exist in the source context, as long as the latter are also
+   renamed by the same tactic.
 
-This renames hypothesis ident 1 into ident 2 in the current context.
-The name of the hypothesis in the proof-term, however, is left
-unchanged.
+.. exn:: No such hypothesis.
+.. exn:: ident2 is already used.
 
+.. tacn:: set (@ident := @term)
+   :name: set
 
-**Variants:**
+   This replaces :n:`@term` by :n:`@ident` in the conclusion of the current goal
+   and adds the new definition :g:`ident := term` to the local context.
 
+   If :n:`@term` has holes (i.e. subexpressions of the form “`_`”), the tactic
+   first checks that all subterms matching the pattern are compatible before
+   doing the replacement using the leftmost subterm matching the pattern.
 
-#. rename ident 1 into ident 2 , …,ident 2k−1 into ident 2k This
-   renames the variables ident 1 …ident 2 k−1 into respectivelyident 2
-   …ident 2 k in parallel. In particular, the target identifiers may
-   contain identifiers that exist in the source context, as long as the
-   latter are also renamed by the same tactic.
-
-
-
-**Error messages:**
-
-
-#. No such hypothesis
-#. ident 2 is already used
-
-
-
-8.3.7 set ( ident := term )
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-This replaces term by ident in the conclusion of the current goal and
-adds the new definition ident := term to the local context.
-
-If term has holes (i.e. subexpressions of the form “_”), the tactic
-first checks that all subterms matching the pattern are compatible
-before doing the replacement using the leftmost subterm matching the
-pattern.
-
-
-**Error messages:**
-
-
-#. The variable ident is already defined
-
-
-
-**Variants:**
-
+.. exn:: The variable @ident is already defined
 
 #. set ( ident := term ) in goal_occurrencesThis notation allows
    specifying which occurrences of term have to be substituted in the
@@ -1459,7 +1364,8 @@ There are special cases:
   parentheses, as in destruct (ident)).
 + If term is a num, then destruct num behaves asintros until num
   followed by destruct applied to the last introduced hypothesis.
-  Remark: For destruction of a numeral, use syntax destruct (num) (not
+  .. note::
+ For destruction of a numeral, use syntax destruct (num) (not
   very interesting anyway).
 + In case term is an hypothesis ident of the context, and ident is not
   anymore dependent in the goal after application of destruct, it is
@@ -1560,7 +1466,8 @@ There are particular cases:
   parentheses, as in induction (ident)).
 + If term is a num, then induction num behaves asintros until num
   followed by induction applied to the last introduced hypothesis.
-  Remark: For simple induction on a numeral, use syntax induction (num)
+  .. note::
+ For simple induction on a numeral, use syntax induction (num)
   (not very interesting anyway).
 + In case term is an hypothesis ident of the context, and ident is not
   anymore dependent in the goal after application of induction, it is
@@ -1854,16 +1761,19 @@ No more subgoals.
 Coq < Qed.
 
 
-Remark: (qualid term 1 … term n ) must be a correct full application
+.. note::
+ (qualid term 1 … term n ) must be a correct full application
 of qualid. In particular, the rules for implicit arguments are the
 same as usual. For example use @qualid if you want to write implicit
 arguments explicitly.
 
 
-Remark: Parentheses over qualid…term n are mandatory.
+.. note::
+ Parentheses over qualid…term n are mandatory.
 
 
-Remark: functional induction (f x1 x2 x3) is actually a wrapper for
+.. note::
+ functional induction (f x1 x2 x3) is actually a wrapper for
 induction x1, x2, x3, (f x1 x2 x3) using qualid followed by a cleaning
 phase, where qualid is the induction principle registered for f (by
 the Function (see Section `2.3`_) or Functional Scheme (see Section
@@ -1873,7 +1783,8 @@ defined. See also Section `2.3`_ for the function terms accepted by
 Function.
 
 
-Remark: There is a difference between obtaining an induction scheme
+.. note::
+ There is a difference between obtaining an induction scheme
 for a function by using Function (see Section `2.3`_) and by using
 Functional Scheme after a normal definition usingFixpoint or
 Definition. See `2.3`_ for details.
@@ -1902,9 +1813,8 @@ See also: `2.3`_,`13.2`_,`13.2`_,8.14.1
    recursive definition.
 
 
-
-8.5.6 discriminate term
-~~~~~~~~~~~~~~~~~~~~~~~
+.. tacn:: discriminate @term
+   :name: discriminate
 
 
 
@@ -1924,7 +1834,8 @@ then the proof of the current goal is completed, otherwise the tactic
 fails.
 
 
-Remark: The syntax discriminate ident can be used to refer to a
+.. note::
+ The syntax discriminate ident can be used to refer to a
 hypothesis quantified in the goal. In this case, the quantified
 hypothesis whose name is ident is first introduced in the local
 context using intros until ident.
@@ -1956,12 +1867,8 @@ context using intros until ident.
    current goal is of the form term 1 <> term 2 , this behaves as intro
    ident; discriminate ident. Error message: No discriminable equalities
 
-
-
-8.5.7 injection term
-~~~~~~~~~~~~~~~~~~~~
-
-
+.. tacn:: injection @term
+   :name: injection
 
 The injection tactic exploits the property that constructors of
 inductive types are injective, i.e. that if c is a constructor of an
@@ -2015,7 +1922,8 @@ equality has been declared using the command Scheme Equality (see
 `13.1`_), the use of a sigma type is avoided.
 
 
-Remark: If some quantified hypothesis of the goal is named ident,
+.. note::
+ If some quantified hypothesis of the goal is named ident,
 theninjection ident first introduces the hypothesis in the local
 context using intros until ident.
 
@@ -2086,17 +1994,20 @@ each possible constructor c i of (I t), all the necessary conditions
 that should hold for the instance (I t) to be proved by c i .
 
 
-Remark: If ident does not denote a hypothesis in the local context but
+.. note::
+ If ident does not denote a hypothesis in the local context but
 refers to a hypothesis quantified in the goal, then the latter is
 first introduced in the local context usingintros until ident.
 
 
-Remark: As inversion proofs may be large in size, we recommend the
+.. note::
+ As inversion proofs may be large in size, we recommend the
 user to stock the lemmas whenever the same instance needs to be
 inverted several times. See Section `13.3`_.
 
 
-Remark: Part of the behavior of the inversion tactic is to generate
+.. note::
+ Part of the behavior of the inversion tactic is to generate
 equalities between expressions that appeared in the hypothesis that is
 being processed. By default, no equalities are generated if they
 relate two proofs (i.e. equalities between terms whose type is in sort
@@ -2578,11 +2489,13 @@ If ident is a local definition of the form ident := t, it is also
 unfolded and cleared.
 
 
-Remark: When several hypotheses have the form ident = t or t = ident,
+.. note::
+ When several hypotheses have the form ident = t or t = ident,
 the first one is used.
 
 
-Remark: If H is itself dependent in the goal, it is replaced by the
+.. note::
+ If H is itself dependent in the goal, it is replaced by the
 proof of reflexivity of equality.
 
 
@@ -2594,7 +2507,8 @@ proof of reflexivity of equality.
 #. substThis applies subst repeatedly from top to bottom to all
    identifiers of the context for which an equality of the form ident = t
    or t = ident or ident := t exists, withident not occurring in
-   t.Remark: The behavior of subst can be controlled using option Set
+   t... note::
+ The behavior of subst can be controlled using option Set
    Regular Subst Tactic. When this option is activated, subst also deals
    with the following corner cases:
 
@@ -2829,7 +2743,8 @@ Example: The term `forall n:nat, (plus (S n) (S n))` is not reduced by
 hnf.
 
 
-Remark: The δ rule only applies to transparent constants (see Section
+.. note::
+ The δ rule only applies to transparent constants (see Section
 `6.10.1`_ on transparency and opacity).
 
 
@@ -3104,7 +3019,8 @@ hints of the database named core.
 
 
 
-Remark: auto either solves completely the goal or else leaves it
+.. note::
+ auto either solves completely the goal or else leaves it
 intact. auto and trivial never fail.
 
 
@@ -3405,7 +3321,8 @@ The hint_definition is one of the following expressions:
 
 
 
-Remark: One can use an Extern hint with no pattern to do pattern-
+.. note::
+ One can use an Extern hint with no pattern to do pattern-
 matching on hypotheses using match goal with inside the tactic.
 
 
@@ -3679,7 +3596,8 @@ Coq < tauto.
 No more subgoals.
 
 
-Remark: In contrast, tauto cannot solve the following goal
+.. note::
+ In contrast, tauto cannot solve the following goal
 Coq < Goal forall (A:Prop) (P:nat -> Prop),
 A \/ (forall x:nat, ~ A -> P x) -> forall x:nat, ~ ~ (A \/ P x).
 
@@ -4083,7 +4001,8 @@ for the tactic discriminate), then the tactic simplify_eq behaves as
 discriminate term, otherwise it behaves as injectionterm.
 
 
-Remark: If some quantified hypothesis of the goal is named ident,
+.. note::
+ If some quantified hypothesis of the goal is named ident,
 thensimplify_eq ident first introduces the hypothesis in the local
 context using intros until ident.
 
