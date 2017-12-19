@@ -12,6 +12,8 @@ Extensions of Gallina
 Gallina is the kernel language of Coq. We describe here extensions of
 Gallina’s syntax.
 
+.. _record-types:
+
 Record types
 ----------------
 
@@ -613,7 +615,8 @@ This example emphasizes what the printing options offer.
 
        Print snd.
 
-
+.. _advanced-recursive-functions:
+       
 Advanced recursive functions
 ----------------------------
 
