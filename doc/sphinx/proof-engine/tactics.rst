@@ -78,6 +78,12 @@ so as to instantiate some parameters of the term by name or position.
 The general form of a term equipped with a bindings list is ``term with
 bindings_list`` where ``bindings_list`` may be of two different forms:
 
+.. _bindings_list_grammar:
+
+  .. productionlist:: `bindings_list`
+     bindings_list : (ref := `term`) ... (ref := `term`)
+                   : `term` ... `term`
+
 + In a bindings list of the form :n:`{* (ref:= term)}`, :n:`ref` is either an
   ``ident`` or a ``num``. The references are determined according to the type of
   ``term``. If :n:`ref` is an identifier, this identifier has to be bound in the
@@ -86,7 +92,7 @@ bindings_list`` where ``bindings_list`` may be of two different forms:
   the ``n``-th non dependent premise of the ``term``, as determined by the type
   of ``term``.
 
-  .. exn:: No such binder.
+  .. exn:: No such binder
 
 + A bindings list can also be a simple list of terms :n:`{* term}`.
   In that case the references to which these terms correspond are
@@ -327,25 +333,27 @@ that contain no variables to instantiate. For instance, the following example
 does not succeed because it would require the conversion of ``id ?foo`` and
 ``O``.
 
-.. coqtop:: all
+.. example::
 
-   Definition id (x : nat) := x.
-   Hypothesis H : forall y, id y = y.
-   Goal O = O.
-   Fail simple apply H.
+   .. coqtop:: all
+
+      Definition id (x : nat) := x.
+      Hypothesis H : forall y, id y = y.
+      Goal O = O.
+      Fail simple apply H.
 
 Because it reasons modulo a limited amount of conversion, ``simple apply`` fails
 quicker than ``apply`` and it is then well-suited for uses in user-defined
 tactics that backtrack often. Moreover, it does not traverse tuples as ``apply``
 does.
 
-.. tacv:: [simple] apply @term [with bindings_list], ..., @term [with bindings_list]
-.. tacv:: [simple] eapply @term [with bindings_list], ..., @term [with bindings_list]
+.. tacv:: {? simple} apply {+, @term {? with @bindings_list}}
+.. tacv:: {? simple} eapply {+, @term {? with @bindings_list}}
 
 This summarizes the different syntaxes for ``apply`` and ``eapply``.
 
 .. tacv:: lapply @term
-   :name: lapply
+   :name: `lapply
 
 This tactic applies to any goal, say :g:`G`. The argument term has to be
 well-formed in the current context, its type being reducible to a non-dependent
@@ -532,7 +540,9 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 
 .. tacv:: constructor @num with @bindings_list
 
-   Let c be the i-th constructor of I, then :n:`constructor i with @bindings_list` is equivalent to :n:`intros; apply c with @bindings_list`.
+   Let ``c`` be the i-th constructor of :g:`I`, then
+   :n:`constructor i with @bindings_list` is equivalent to
+   :n:`intros; apply c with @bindings_list`.
 
  .. warn::
     The terms in the @bindings_list are checked in the context where constructor is executed and not in the context where @apply is executed (the introductions are not taken into account).
@@ -627,7 +637,7 @@ be applied or the goal is not head-reducible.
    This applies ``intro`` but forces :n:`@ident` to be the name of the
    introduced hypothesis.
 
-.. exn:: name @ident is already used.
+.. exn:: name @ident is already used
 
 .. note:: If a name used by intro hides the base name of a global
    constant then the latter can still be referred to by a qualified name
@@ -646,7 +656,7 @@ be applied or the goal is not head-reducible.
    `(@ident:term)` and discharges the variable named `ident` of the current
    goal.
 
-.. exn:: No such hypothesis in current goal.
+.. exn:: No such hypothesis in current goal
 
 .. tacv:: intros until @num
 
@@ -890,30 +900,30 @@ the inverse of :tacn:`intro`.
    This moves to the goal the hypothesis :n:`@ident` and all the hypotheses that
    depend on it.
 
-.. tacn:: move ident1 after ident2
+.. tacn:: move @ident after @ident
    :name: move .. after ...
 
-   This moves the hypothesis named :n:`ident1` in the local context after the
-   hypothesis named :n:`ident2`, where “after” is in reference to the
+   This moves the hypothesis named :n:`@ident` in the local context after the
+   hypothesis named :n:`@ident`, where “after” is in reference to the
    direction of the move. The proof term is not changed.
 
-   If :n:`ident1` comes before :n:`ident2` in the order of dependencies, then
-   all the hypotheses between :n:`ident1` and :n:`ident2` that (possibly
-   indirectly) depend on :n:`ident1` are moved too, and all of them are thus
-   moved after :n:`ident2` in the order of dependencies.
+   If :n:`@ident` comes before :n:`@ident` in the order of dependencies, then
+   all the hypotheses between :n:`@ident` and :n:`ident@` that (possibly
+   indirectly) depend on :n:`@ident` are moved too, and all of them are thus
+   moved after :n:`@ident` in the order of dependencies.
 
-   If :n:`ident1` comes after :n:`ident2` in the order of dependencies, then all
-   the hypotheses between :n:`ident1` and :n:`ident2` that (possibly indirectly)
-   occur in the type of :n:`ident1` are moved too, and all of them are thus
-   moved before :n:`ident2` in the order of dependencies.
+   If :n:`@ident` comes after :n:`@ident` in the order of dependencies, then all
+   the hypotheses between :n:`@ident` and :n:`@ident` that (possibly indirectly)
+   occur in the type of :n:`@ident` are moved too, and all of them are thus
+   moved before :n:`@ident` in the order of dependencies.
 
-.. tacv:: move ident1 before ident2
+.. tacv:: move @ident before @ident
 
-   This moves :n:`ident1` towards and just before the hypothesis named
-   :n:`ident2`.  As for :tacn:`move ... after ...`, dependencies over
-   :n:`ident1` (when :n:`ident1` comes before :n:`ident2` in the order of
-   dependencies) or in the type of :n:`ident1` (when :n:`ident1` comes after
-   :n:`ident2` in the order of dependencies) are moved too.
+   This moves :n:`@ident` towards and just before the hypothesis named
+   :n:`@ident`.  As for :tacn:`move ... after ...`, dependencies over
+   :n:`@ident` (when :n:`@ident` comes before :n:`@ident` in the order of
+   dependencies) or in the type of :n:`@ident` (when :n:`@ident` comes after
+   :n:`@ident` in the order of dependencies) are moved too.
 
 .. tacv:: move @ident at top
 
@@ -926,8 +936,8 @@ the inverse of :tacn:`intro`.
    context).
 
 .. exn:: No such hypothesis
-.. exn:: Cannot move ident1 after ident2 : it occurs in the type of ident2
-.. exn:: Cannot move ident1 after ident2 : it depends on ident2
+.. exn:: Cannot move @ident after @ident : it occurs in the type of @ident
+.. exn:: Cannot move @ident after @ident : it depends on @ident
 
 .. example::
    .. coqtop:: all
@@ -942,21 +952,20 @@ the inverse of :tacn:`intro`.
       Undo.
       move H0 before H.
 
-.. tacn:: rename ident1 into ident2
+.. tacn:: rename @ident into @ident
    :name: rename ... into ...
 
-This renames hypothesis :n:`ident1` into :n:`ident2` in the current context.
+This renames hypothesis :n:`@ident` into :n:`@ident` in the current context.
 The name of the hypothesis in the proof-term, however, is left unchanged.
 
-.. tacv:: rename ident1 into ident2, ..., ident2k-1 into ident2k
+.. tacv:: rename {+, @ident into  @ident}
 
-   This renames the variables ident1 ... ident 2k−1 into respectively ident2 ...
-   ident2k in parallel. In particular, the target identifiers may contain
-   identifiers that exist in the source context, as long as the latter are also
-   renamed by the same tactic.
+   This renames the variables :n:`@ident` into :n:`@ident` in parallel. In
+   particular, the target identifiers may contain identifiers that exist in the
+   source context, as long as the latter are also renamed by the same tactic.
 
-.. exn:: No such hypothesis.
-.. exn:: ident2 is already used.
+.. exn:: No such hypothesis
+.. exn:: @ident is already used
 
 .. tacn:: set (@ident := @term)
    :name: set
@@ -1082,7 +1091,7 @@ Controlling the proof flow
    :g:`U`. The subgoal :g:`U` comes first in the list of subgoals remaining to
    prove.
 
-.. exn:: Not a proposition or a type.
+.. exn:: Not a proposition or a type
 
    Arises when the argument form is neither of type :g:`Prop`, :g:`Set` nor
    :g:`Type`.
@@ -1097,7 +1106,7 @@ Controlling the proof flow
    This tactic behaves like :n:`assert` but applies tactic to solve the subgoals
    generated by assert.
 
-   .. exn:: Proof is not complete.
+   .. exn:: Proof is not complete
 
 .. tacv:: assert form as intro_pattern
 
@@ -1118,7 +1127,7 @@ Controlling the proof flow
    the type of :g:`term`. This is deprecated in favor of :n:`pose proof`. If the
    head of term is :n:`@ident`, the tactic behaves as :n:`specialize @term`.
 
-   .. exn:: Variable @ident is already declared.
+   .. exn:: Variable @ident is already declared
 
 .. tacv:: eassert form as intro_pattern by tactic
 
@@ -1327,7 +1336,7 @@ goals cannot be closed with :g:`Qed` but only with :g:`Admitted`.
    a singleton inductive type (e.g. :g:`True` or :g:`x=x`), or two contradictory
    hypotheses.
 
-.. exn:: No such assumption.
+.. exn:: No such assumption
 
 .. tacv:: contradiction @ident
 
@@ -1504,7 +1513,7 @@ analysis on inductive or co-inductive objects (see :ref:`TODO-4.5`).
      @ident; induction @ident`. If :n:`@ident` is not anymore dependent in the
      goal after application of :n:`induction`, it is erased (to avoid erasure,
      use parentheses, as in :n:`induction (@ident)`).
-   + If :n:`@term` is a :n:`@num`, then :n`induction @num` behaves as
+   + If :n:`@term` is a :n:`@num`, then :n:`induction @num` behaves as
      :n:`intros until @num` followed by :n:`induction` applied to the last
      introduced hypothesis.
 
@@ -1534,121 +1543,160 @@ analysis on inductive or co-inductive objects (see :ref:`TODO-4.5`).
 
    Use in this case the variant :tacn:`elim ... with` below.
 
-   ** MARKER **
+.. tacv:: induction @term as @disj_conj_intro_pattern
 
-**Variants:**
+   This behaves as :tacn:`induction` but uses the names in
+   :n:`@disj_conj_intro_pattern` to name the variables introduced in the
+   context. The :n:`@disj_conj_intro_pattern` must typically be of the form
+   :n:`[ p` :sub:`11` :n:`... p` :sub:`1n` :n:`| ... | p`:sub:`m1` :n:`... p`:sub:`mn` :n:`]`
+   with :n:`m` being the number of constructors of the type of :n:`@term`. Each
+   variable introduced by induction in the context of the i-th goal gets its
+   name from the list :n:`p`:sub:`i1` :n:`... p`:sub:`in` in order. If there are
+   not enough names, induction invents names for the remaining variables to
+   introduce. More generally, the :n:`p`:sub:`ij` can be any
+   disjunctive/conjunctive introduction pattern (see :tacn:`intros ...`). For
+   instance, for an inductive type with  one constructor, the pattern notation
+   :n:`(p`:sub:`1` :n:`, ... , p`:sub:`n` :n:`)` can be used instead of
+   :n:`[ p`:sub:`1` :n:`... p`:sub:`n` :n:`]`.
 
-#. induction term as disj_conj_intro_patternThis behaves as induction
-   term but uses the names indisj_conj_intro_pattern to name the
-   variables introduced in the context. The disj_conj_intro_pattern must
-   typically be of the form[ p 11 …p 1n 1 | … | p m1 … p mn m ] with m
-   being the number of constructors of the type ofterm. Each variable
-   introduced by induction in the context of the i th goal gets its name
-   from the list p i1 …p in i in order. If there are not enough names,
-   induction invents names for the remaining variables to introduce. More
-   generally, the p ij can be any disjunctive/conjunctive introduction
-   pattern (see Section 8.3.2). For instance, for an inductive type with
-   one constructor, the pattern notation(p 1 , … , p n ) can be used
-   instead of[ p 1 … p n ].
-#. induction term with bindings_listThis behaves like induction term
-   providing explicit instances for the premises of the type of term (see
-   the syntax of bindings in Section 8.1.3).
-#. einduction termThis tactic behaves like induction term excepts that
-   it does not fail if some dependent premise of the type of term is not
-   inferable. Instead, the unresolved premises are posed as existential
-   variables to be inferred later, in the same way as eapply does (see
-   Section 8.2.4).
-#. induction term 1 using term 2 This behaves as induction term 1 but
-   using term 2 as induction scheme. It does not expect the conclusion of
-   the type ofterm 1 to be inductive.
-#. induction term 1 using term 2 with bindings_listThis behaves as
-   induction term 1 using term 2 but also providing instances for the
-   premises of the type of term 2 .
-#. induction term 1 , …, term n using qualidThis syntax is used for
-   the case qualid denotes an induction principle with complex predicates
-   as the induction principles generated byFunction or Functional Scheme
-   may be.
+.. tacv:: induction @term with @bindings_list
 
-#. induction term in goal_occurrencesThis syntax is used for selecting
-   which occurrences of term the induction has to be carried on. The in
-   goal_occurrences clause is an occurrence clause whose syntax and
-   behavior is described in Section 8.1.4. If variables or hypotheses not
-   mentioning term in their type are listed in goal_occurrences, those
-   are generalized as well in the statement to prove. Example: Coq <
-   Lemma comm x y : x + y = y + x. 1 subgoal x, y : nat
-   ============================ x + y = y + x Coq < induction y in x |-
-   *. 2 subgoals x : nat ============================ x + 0 = 0 + x
-   subgoal 2 is: x + S y = S y + x Coq < Show 2. subgoal 2 is: x, y : nat
-   IHy : forall x : nat, x + y = y + x ============================ x + S
-   y = S y + x
-#. induction term 1 with bindings_list 1 as disj_conj_intro_pattern
-   using term 2 with bindings_list 2 in goal_occurrences einduction term
-   1 with bindings_list 1 as disj_conj_intro_pattern using term 2 with
-   bindings_list 2 in goal_occurrencesThese are the most general forms of
-   induction and einduction. It combines the effects of the with, as,
-   using, and in clauses.
-#. elim termThis is a more basic induction tactic. Again, the type of
-   the argument term must be an inductive type. Then, according to the
-   type of the goal, the tactic elim chooses the appropriate destructor
-   and applies it as the tactic apply would do. For instance, if the
-   proof context contains n:nat and the current goal is T of type Prop,
-   then elim n is equivalent to apply nat_ind with (n:=n). The tactic
-   elim does not modify the context of the goal, neither introduces the
-   induction loading into the context of hypotheses.More generally, elim
-   term also works when the type of term is a statement with premises and
-   whose conclusion is inductive. In that case the tactic performs
-   induction on the conclusion of the type of term and leaves the non-
-   dependent premises of the type as subgoals. In the case of dependent
-   products, the tactic tries to find an instance for which the
-   elimination lemma applies and fails otherwise.
+   This behaves like :tacn:`induction` providing explicit instances for the
+   premises of the type of :n:`term` (see :ref:`bindings list <bindingslist>`).
+
+.. tacv:: einduction @term
+
+   This tactic behaves like :tacn:`induction` except that it does not fail if
+   some dependent premise of the type of :n:`@term` is not inferable. Instead,
+   the unresolved premises are posed as existential variables to be inferred
+   later, in the same way as :tacn:`eapply` does.
+
+.. tacv:: induction @term using @term
+   :name: induction ... using ...
+
+   This behaves as :tacn:`induction`  but using :n:`@term` as induction scheme.
+   It does not expect the conclusion of the type of the first :n:`@term` to be
+   inductive.
+
+.. tacv:: induction @term using @term with @bindings_list
+
+   This behaves as :tacn:`induction ... using ...` but also providing instances
+   for the premises of the type of the second :n:`@term`.
+
+.. tacv:: induction {+, @term} using @qualid
+
+   This syntax is used for the case :n:`@qualid` denotes an induction principle
+   with complex predicates as the induction principles generated by
+   ``Function`` or ``Functional Scheme`` may be.
+
+.. tacv:: induction @term in @goal_occurrences
+
+   This syntax is used for selecting which occurrences of :n:`@term` the
+   induction has to be carried on. The :n:`in @goal_occurrences` clause is an
+   occurrence clause whose syntax and behavior is described in
+   :ref:`occurences sets <occurencessets>`. If variables or hypotheses not
+   mentioning :n:`@term` in their type are listed in :n:`@goal_occurrences`,
+   those are generalized as well in the statement to prove.
+
+   .. example::
+      .. coqtop:: reset all
+
+         Lemma comm x y : x + y = y + x.
+         induction y in x |-   *.
+         Show 2.
+
+.. tacv:: induction @term with @bindings_list as @disj_conj_intro_pattern using @term with @bindings_list in @goal_occurrences
+
+.. tacv:: einduction @term with @bindings_list as @disj_conj_intro_pattern using @term with @bindings_list in @goal_occurrences
+
+   These are the most general forms of ``induction`` and ``einduction``. It combines the
+   effects of the with, as, using, and in clauses.
+
+.. tacv:: elim @term
+   :name: elim
+
+   This is a more basic induction tactic. Again, the type of the argument
+   :n:`@term` must be an inductive type. Then, according to the type of the
+   goal, the tactic ``elim`` chooses the appropriate destructor and applies it
+   as the tactic :tacn:`apply` would do. For instance, if the proof context
+   contains :g:`n:nat` and the current goal is :g:`T` of type :g:`Prop`, then
+   :n:`elim n` is equivalent to :n:`apply nat_ind with (n:=n)`. The tactic
+   ``elim`` does not modify the context of the goal, neither introduces the
+   induction loading into the context of hypotheses. More generally,
+   :n:`elim @term` also works when the type of :n:`@term` is a statement
+   with premises and whose conclusion is inductive. In that case the tactic
+   performs induction on the conclusion of the type of :n:`@term` and leaves the
+   non-dependent premises of the type as subgoals. In the case of dependent
+   products, the tactic tries to find an instance for which the elimination
+   lemma applies and fails otherwise.
 
 .. tacv:: elim @term with @bindings_list
    :name: elim ... with
-   Allows to give explicit instances to
-   the premises of the type of term (see Section 8.1.3).
-#. eelim termIn case the type of term has dependent premises, this
-   turns them into existential variables to be resolved later on.
-#. elim term 1 using term 2 elim term 1 using term 2 with
-   bindings_listAllows the user to give explicitly an elimination
-   predicateterm 2 that is not the standard one for the underlying
-   inductive type of term 1 . The bindings_list clause allows
-   instantiating premises of the type of term 2 .
-#. elim term 1 with bindings_list 1 using term 2 with bindings_list 2
-   eelim term 1 with bindings_list 1 using term 2 with bindings_list 2
-   These are the most general forms of elim and eelim. It combines the
-   effects of the using clause and of the two uses of the with clause.
-#. elimtype formThe argument form must be inductively defined.
-   elimtype I is equivalent to cut I. intro Hn; elim Hn; clear Hn.
-   Therefore the hypothesis Hn will not appear in the context(s) of the
-   subgoal(s). Conversely, if t is a term of (inductive) type I that does
-   not occur in the goal, then elim t is equivalent to elimtype I; 2:
-   exact t.
-#. simple induction identThis tactic behaves as intros untilident;
-   elim ident when ident is a quantified variable of the goal.
-#. simple induction numThis tactic behaves as intros untilnum; elim
-   ident where ident is the name given byintros until num to the num-th
-   non-dependent premise of the goal.
 
-.. tacn:: double induction ident 1 ident 2
+   Allows to give explicit instances to the premises of the type of :n:`@term`
+   (see :ref:`bindings list <bindingslist>`).
+
+.. tacv:: eelim @term
+
+   In case the type of :n:`@term` has dependent premises, this turns them into
+   existential variables to be resolved later on.
+
+.. tacv:: elim @term using @term
+.. tacv:: elim @term using @term with @bindings_list
+
+   Allows the user to give explicitly an elimination predicate :n:`@term` that
+   is not the standard one for the underlying inductive type of :n:`@term`. The
+   :n:`@bindings_list` clause allows instantiating premises of the type of
+   :n:`@term`.
+
+.. tacv:: elim @term with @bindings_list using @term with @bindings_list
+.. tacv:: eelim @term with @bindings_list using @term with @bindings_list
+
+   These are the most general forms of ``elim`` and ``eelim``. It combines the
+   effects of the ``using`` clause and of the two uses of the ``with`` clause.
+
+.. tacv:: elimtype form
+
+   The argument :n:`form` must be inductively defined. :n:`elimtype I` is
+   equivalent to :n:`cut I. intro Hn; elim Hn; clear Hn.` Therefore the
+   hypothesis :g:`Hn` will not appear in the context(s) of the subgoal(s).
+   Conversely, if :g:`t` is a :n:`@term` of (inductive) type :g:`I` that does
+   not occur in the goal, then :n:`elim t` is equivalent to
+   :n:`elimtype I; 2:exact t.`
+
+.. tacv:: simple induction @ident
+
+   This tactic behaves as :n:`intros until @ident; elim @ident` when
+   :n:`@ident` is a quantified variable of the goal.
+
+.. tacv:: simple induction @num
+
+   This tactic behaves as :n:`intros until @num; elim @ident` where :n:`@ident`
+   is the name given by :n:`intros until @num` to the :n:`@num`-th non-dependent
+   premise of the goal.
+
+.. tacn:: double induction @ident @ident
    :name: double induction
 
-This tactic is deprecated and should be replaced by induction ident 1
-; induction ident 2 (or induction ident 1 ; destruct ident 2 depending
-on the exact needs).
+   This tactic is deprecated and should be replaced by
+   :n:`induction @ident; induction @ident` (or
+   :n:`induction @ident ; destruct @ident` depending on the exact needs).
 
-.. tacv:: double induction num 1 num 2
+.. tacv:: double induction @num @num
 
-   This tactic is deprecated and should be replaced by inductionnum 1 ;
-   induction num 3 where num 3 is the result ofnum 2 -num 1 .
+   This tactic is deprecated and should be replaced by
+   :n:`induction @num; induction @num` where the latter :n:`@num` is the result
+   of :n:`@num - @num` (:ref:`TODO-FIXME` was num2 - num1 resp difference of two num args).
 
-.. tacn:: dependent induction ident
+.. tacn:: dependent induction @ident
    :name: dependent induction
 
    The *experimental* tactic dependent induction performs induction-
    inversion on an instantiated inductive predicate. One needs to first
    require the Coq.Program.Equality module to use this tactic. The tactic
-   is based on the BasicElim tactic by Conor McBride [`107`_] and the
-   work of Cristina Cornes around inversion [`36`_]. From an instantiated
+   is based on the BasicElim tactic by Conor McBride
+   :cite:`DBLP:conf/types/McBride00` and the work of Cristina Cornes around
+   inversion :cite:`DBLP:conf/types/CornesT95`. From an instantiated
    inductive predicate and a goal, it generates an equivalent goal where
    the hypothesis has been generalized over its indexes which are then
    constrained by equalities to be the right instances. This permits to
@@ -1661,13 +1709,12 @@ on the exact needs).
       Lemma le_minus : forall n:nat, n < 1 -> n = 0.
       intros n H ; induction H.
 
-Here we did not get any information on the indexes to help fulfill
-this proof. The problem is that, when we use the induction tactic, we
-lose information on the hypothesis instance, notably that the second
-argument is 1 here. Dependent induction solves this problem by adding
-the corresponding equality to the context.
+   Here we did not get any information on the indexes to help fulfill
+   this proof. The problem is that, when we use the ``induction`` tactic, we
+   lose information on the hypothesis instance, notably that the second
+   argument is 1 here. Dependent induction solves this problem by adding
+   the corresponding equality to the context.
 
-.. example::
    .. coqtop:: reset all
 
       Require Import Coq.Program.Equality.
@@ -1688,35 +1735,37 @@ the corresponding equality to the context.
 
       inversion H.
 
-This technique works with any inductive predicate. In fact, the
-dependent induction tactic is just a wrapper around the induction
-tactic. One can make its own variant by just writing a new tactic
-based on the definition found inCoq.Program.Equality.
+   This technique works with any inductive predicate. In fact, the
+   ``dependent induction`` tactic is just a wrapper around the ``induction``
+   tactic. One can make its own variant by just writing a new tactic
+   based on the definition found in ``Coq.Program.Equality``.
 
-**Variants:**
+.. tacv:: dependent induction @ident generalizing {+ @ident}
 
-#. dependent induction ident generalizing ident 1 …ident n This
-   performs dependent induction on the hypothesis :n:`@ident` but first
-   generalizes the goal by the given variables so that they are
-   universally quantified in the goal. This is generally what one wants
-   to do with the variables that are inside some constructors in the
-   induction hypothesis. The other ones need not be further generalized.
-#. dependent destruction identThis performs the generalization of the
-   instance ident but uses destruct instead of induction on the
-   generalized hypothesis. This gives results equivalent to inversion or
-   dependent inversion if the hypothesis is dependent.
+   This performs dependent induction on the hypothesis :n:`@ident` but first
+   generalizes the goal by the given variables so that they are universally
+   quantified in the goal. This is generally what one wants to do with the
+   variables that are inside some constructors in the induction hypothesis. The
+   other ones need not be further generalized.
 
-See also: `10.1`_ for a larger example of dependent induction and an
-explanation of the underlying technique.
+.. tacv:: dependent destruction @ident
 
+   This performs the generalization of the instance :n:`@ident` but uses
+   ``destruct`` instead of induction on the generalized hypothesis. This gives
+   results equivalent to ``inversion`` or ``dependent inversion`` if the
+   hypothesis is dependent.
 
-.. tacn:: function induction (qualid term 1 … term n )
+See also :ref:`TODO-10.1-dependentinduction` for a larger example of ``dependent induction``
+and an explanation of the underlying technique.
+
+.. tacn:: function induction (@qualid {+ @term})
    :name: function induction
 
-The tactic functional induction performs case analysis and induction
-following the definition of a function. It makes use of a principle
-generated by Function (see Section `2.3`_) or Functional Scheme (see
-Section `13.2`_). Note that this tactic is only available after a
+   The tactic functional induction performs case analysis and induction
+   following the definition of a function. It makes use of a principle
+   generated by ``Function`` (see :ref:`TODO-2.3-Advancedrecursivefunctions`) or
+   ``Functional Scheme`` (see :ref:`TODO-13.2-Generationofinductionschemeswithfunctionalscheme`).
+   Note that this tactic is only available after a
 
 .. example::
    .. coqtop:: reset all
@@ -1729,106 +1778,119 @@ Section `13.2`_). Note that this tactic is only available after a
       Qed.
 
 .. note::
-   (qualid term 1 … term n ) must be a correct full application
-   of qualid. In particular, the rules for implicit arguments are the
-   same as usual. For example use @qualid if you want to write implicit
+   :n:`(@qualid {+ @term})` must be a correct full application
+   of :n:`@qualid`. In particular, the rules for implicit arguments are the
+   same as usual. For example use :n:`@qualid` if you want to write implicit
    arguments explicitly.
 
 .. note::
-   Parentheses over qualid…term n are mandatory.
+   Parentheses over :n:`@qualid {+ @term}` are mandatory.
 
 .. note::
-   functional induction (f x1 x2 x3) is actually a wrapper for
-   induction x1, x2, x3, (f x1 x2 x3) using qualid followed by a cleaning
-   phase, where qualid is the induction principle registered for f (by
-   the Function (see Section `2.3`_) or Functional Scheme (see Section
-   `13.2`_) command) corresponding to the sort of the goal. Therefore
-   functional induction may fail if the induction scheme qualid is not
-   defined. See also Section `2.3`_ for the function terms accepted by
-   Function.
+   :n:`functional induction (f x1 x2 x3)` is actually a wrapper for
+   :n:`induction x1, x2, x3, (f x1 x2 x3) using @qualid` followed by a cleaning
+   phase, where :n:`@qualid` is the induction principle registered for :g:`f`
+   (by the ``Function`` (see :ref:`TODO-2.3-Advancedrecursivefunctions`) or
+   ``Functional Scheme`` (see :ref:`TODO-13.2-Generationofinductionschemeswithfunctionalscheme`)
+   command) corresponding to the sort of the goal. Therefore
+   ``functional induction`` may fail if the induction scheme :n:`@qualid` is not
+   defined. See also :ref:`TODO-2.3-Advancedrecursivefunctions` for the function
+   terms accepted by ``Function``.
 
 .. note::
    There is a difference between obtaining an induction scheme
-   for a function by using Function (see Section `2.3`_) and by using
-   Functional Scheme after a normal definition usingFixpoint or
-   Definition. See `2.3`_ for details.
+   for a function by using :g:`Function` (see :ref:`TODO-2.3-Advancedrecursivefunctions`)
+   and by using :g:`Functional Scheme` after a normal definition using
+   :g:`Fixpoint` or :g:`Definition`. See :ref:`TODO-2.3-Advancedrecursivefunctions`
+   for details.
 
-See also: `2.3`_,`13.2`_,`13.2`_,8.14.1
+See also: :ref:`TODO-2.3-Advancedrecursivefunctions`
+  :ref:`TODO-13.2-Generationofinductionschemeswithfunctionalscheme`
+  :tacn:`inversion`
 
-.. exn:: Cannot find induction information on qualid
+.. exn:: Cannot find induction information on @qualid
 .. exn:: Not the right number of induction arguments
 
-.. tacv:: functional induction (qualid term 1 … term n ) as disj_conj_intro_pattern using term m+1 with bindings_list
+.. tacv:: functional induction (@qualid {+ @term}) as @disj_conj_intro_pattern using @term with @bindings_list
 
-   Similarly to Induction and elim (see Section 8.5.2), this allows giving
+   Similarly to :tacn:`induction` and :tacn:`elim`, this allows giving
    explicitly the name of the introduced variables, the induction principle, and
    the values of dependent premises of the elimination scheme, including
-   *predicates* for mutual induction when qualid is part of a mutually recursive
-   definition.
+   *predicates* for mutual induction when :n:`@qualid` is part of a mutually
+   recursive definition.
 
 .. tacn:: discriminate @term
    :name: discriminate
 
-This tactic proves any goal from an assumption stating that two
-structurally different terms of an inductive set are equal. For
-example, from (S (S O))=(S O) we can derive by absurdity any
-proposition.
+   This tactic proves any goal from an assumption stating that two
+   structurally different :n:`@terms` of an inductive set are equal. For
+   example, from :g:`(S (S O))=(S O)` we can derive by absurdity any
+   proposition.
 
-The argument term is assumed to be a proof of a statement of
-conclusion term 1 = term 2 with term 1 andterm 2 being elements of an
-inductive set. To build the proof, the tactic traverses the normal
-forms 3 ofterm 1 and term 2 looking for a couple of subterms u and w
-(u subterm of the normal form of term 1 andw subterm of the normal
-form of term 2 ), placed at the same positions and whose head symbols
-are two different constructors. If such a couple of subterms exists,
-then the proof of the current goal is completed, otherwise the tactic
-fails.
+   The argument :n:`@term` is assumed to be a proof of a statement of
+   conclusion :n:`@term = @term` with the two terms being elements of an
+   inductive set. To build the proof, the tactic traverses the normal
+   forms of the terms looking for a couple of subterms :g:`u` and :g:`w`
+   (:g:`u` subterm of the normal form of :n:`@term` and :g:`w` subterm of the
+   normal form of :n:`@term`), placed at the same positions and whose head
+   symbols are two different constructors. If such a couple of subterms exists,
+   then the proof of the current goal is completed, otherwise the tactic
+   fails.
 
 .. note::
-   The syntax discriminate ident can be used to refer to a
-   hypothesis quantified in the goal. In this case, the quantified
-   hypothesis whose name is ident is first introduced in the local
-   context using intros until ident.
+   The syntax :n:`discriminate @ident` can be used to refer to a hypothesis
+   quantified in the goal. In this case, the quantified hypothesis whose name is
+   :n:`@ident` is first introduced in the local context using
+   :n:`intros until @ident`.
 
 .. exn:: No primitive equality found
 .. exn:: Not a discriminable equality
 
-**Variants:**
+.. tacv:: discriminate @num
 
-#. discriminate numThis does the same thing as intros until num
-   followed bydiscriminate ident where ident is the identifier for the
-   last introduced hypothesis.
-#. discriminate term with bindings_listThis does the same thing as
-   discriminate term but using the given bindings to instantiate
-   parameters or hypotheses of term.
-#. ediscriminate num ediscriminate term [with bindings_list]This works
-   the same as discriminate but if the type of term, or the type of the
-   hypothesis referred to by num, has uninstantiated parameters, these
-   parameters are left as existential variables.
-#. discriminateThis behaves like discriminate ident if ident is the
-   name of an hypothesis to which discriminate is applicable; if the
-   current goal is of the form term 1 <> term 2 , this behaves as intro
-   ident; discriminate ident. Error message: No discriminable equalities
+   This does the same thing as :n:`intros until @num` followed by
+   :n:`discriminate @ident` where :n:`@ident` is the identifier for the last
+   introduced hypothesis.
+
+.. tacv:: discriminate @term with @bindings_list
+
+   This does the same thing as :n:`discriminate @term` but using the given
+   bindings to instantiate parameters or hypotheses of :n:`@term`.
+
+.. tacv:: ediscriminate @num
+.. tacv:: ediscriminate @term {? with @bindings_list}
+
+   This works the same as ``discriminate`` but if the type of :n:`@term`, or the
+   type of the hypothesis referred to by :n:`@num`, has uninstantiated
+   parameters, these parameters are left as existential variables.
+
+.. tacv:: discriminate
+
+   This behaves like :n:`discriminate @ident` if ident is the name of an
+   hypothesis to which ``discriminate`` is applicable; if the current goal is of
+   the form :n:`@term <> @term`, this behaves as
+   :n:`intro @ident; discriminate @ident`.
+
+   .. exn:: No discriminable equalities
 
 .. tacn:: injection @term
    :name: injection
 
-The injection tactic exploits the property that constructors of
-inductive types are injective, i.e. that if c is a constructor of an
-inductive type and c t 1 and c t 2 are equal then t 1 and t 2 are
-equal too.
+   The injection tactic exploits the property that constructors of
+   inductive types are injective, i.e. that if :g:`c` is a constructor of an
+   inductive type and :g:`c t`:sub:`1` and :g:`c t`:sub:`2` are equal then
+   :g:`t`:sub:`1` and :g:`t`:sub:`2` are equal too.
 
-If term is a proof of a statement of conclusionterm 1 = term 2 , then
-injection applies the injectivity of constructors as deep as possible
-to derive the equality of all the subterms of term 1 and term 2 at
-positions where term 1 and term 2 start to differ. For example, from
-(S p, S n) = (q, S (S m) we may derive S p = q and n = S m. For this
-tactic to work, term 1 andterm 2 should be typed with an inductive
-type and they should be neither convertible, nor having a different
-head constructor. If these conditions are satisfied, the tactic
-derives the equality of all the subterms of term 1 andterm 2 at
-positions where they differ and adds them as antecedents to the
-conclusion of the current goal.
+   If :n:`@term` is a proof of a statement of conclusion :n:`@term = @term`,
+   then ``injection`` applies the injectivity of constructors as deep as
+   possible to derive the equality of all the subterms of :n:`@term` and
+   :n:`@term` at positions where the terms start to differ. For example, from
+   :g:`(S p, S n) = (q, S (S m))` we may derive :g:`S p = q` and
+   :g:`n = S m`. For this tactic to work, the terms should be typed with an
+   inductive type and they should be neither convertible, nor having a different
+   head constructor. If these conditions are satisfied, the tactic derives the
+   equality of all the subterms at positions where they differ and adds them as
+   antecedents to the conclusion of the current goal.
 
 .. example::
 
@@ -1844,48 +1906,58 @@ conclusion of the current goal.
       intros.
       injection H0.
 
+
 Beware that injection yields an equality in a sigma type whenever the
-injected object has a dependent type P with its two instances in
-different types (P t 1 ... t n ) and (P u 1 ... u n ). If t 1 and u 1
-are the same and have for type an inductive type for which a decidable
-equality has been declared using the command Scheme Equality (see
-`13.1`_), the use of a sigma type is avoided.
+injected object has a dependent type :g:`P` with its two instances in
+different types :g:`(P t1 ... tn )` and :g:`(P u1 ... un )`. If :g:`t1` and
+:g:`u1` are the same and have for type an inductive type for which a decidable
+equality has been declared using the command ``Scheme Equality`` (see :ref:`TODO-13.1-GenerationofinductionprincipleswithScheme`),
+the use of a sigma type is avoided. (FIXME: DISPLAY of Galina terms in paragraph??)
 
 .. note::
    If some quantified hypothesis of the goal is named :n:`@ident`,
-   theninjection ident first introduces the hypothesis in the local
-   context using intros until ident.
+   then :n:`injection @ident` first introduces the hypothesis in the local
+   context using :n:`intros until @ident`.
 
-**Error messages:**
+.. exn:: Not a projectable equality but a discriminable one
+.. exn:: Nothing to do, it is an equality between convertible @terms
+.. exn:: Not a primitive equality
+.. exn:: Nothing to inject
 
-#. Not a projectable equality but a discriminable one
-#. Nothing to do, it is an equality between convertible terms
-#. Not a primitive equality
-#. Nothing to inject
+.. tacv:: injection @num
 
-
-**Variants:**
-
-
-#. injection numThis does the same thing as intros until num followed
-   byinjection ident where ident is the identifier for the last
+   This does the same thing as :n:`intros until @num` followed by
+   :n:`injection @ident` where :n:`@ident` is the identifier for the last
    introduced hypothesis.
-#. injection term with bindings_listThis does the same as injection
-   term but using the given bindings to instantiate parameters or
-   hypotheses of term.
-#. einjection num einjection term [with bindings_list]This works the
-   same as injection but if the type of term, or the type of the
+   ** MARKER **
+
+.. tacv:: injection @term with @bindings_list
+
+   This does the same as injection @term but using the given bindings to
+   instantiate parameters or hypotheses of @term.
+
+.. tacv:: einjection num
+.. tacv:: einjection @term {? with @bindings_list}
+
+   This works the same as injection but if the type of @term, or the type of the
    hypothesis referred to by num, has uninstantiated parameters, these
    parameters are left as existential variables.
-#. injectionIf the current goal is of the form term 1 <> term 2 , this
-   behaves as intro ident; injection ident. Error message: goal does not
-   satisfy the expected preconditions
-#. injection term [with bindings_list] as intro_pattern …
-   intro_pattern injection num as intro_pattern … intro_pattern injection
-   as intro_pattern … intro_pattern einjection term [with bindings_list]
-   as intro_pattern … intro_pattern einjection num as intro_pattern …
-   intro_pattern einjection as intro_pattern … intro_patternThese
-   variants apply intros intro_pattern … intro_pattern after the call to
+
+.. tacv:: injection
+
+   If the current goal is of the form @term <> @term , this behaves as
+   intro ident; injection ident.
+
+   .. exn:: goal does not satisfy the expected preconditions
+
+.. tacv:: injection @term [with @bindings_list] as intro_pattern …
+   intro_pattern
+.. tacv:: injection num as intro_pattern … intro_pattern injection
+   as intro_pattern … intro_pattern einjection @term [with @bindings_list]
+   as intro_pattern … intro_pattern
+.. tacv:: einjection num as intro_pattern … intro_pattern einjection as intro_pattern … intro_pattern
+
+   These variants apply intros intro_pattern … intro_pattern after the call to
    injection or einjection so that all equalities generated are moved in
    the context of hypotheses. The number of intro_pattern must not exceed
    the number of equalities newly generated. If it is smaller, fresh
@@ -1893,14 +1965,14 @@ equality has been declared using the command Scheme Equality (see
    to the number of new equalities. The original equality is erased if it
    corresponds to an hypothesis.
 
-It is possible to ensure that injection term erases the original
+It is possible to ensure that injection @term erases the original
 hypothesis and leaves the generated equalities in the context rather
 than putting them as antecedents of the current goal, as if giving
-injection term as (with an empty list of names). To obtain this
+injection @term as (with an empty list of names). To obtain this
 behavior, the option Set Structural Injection must be activated. This
 option is off by default.
 
-By default, injection only creates new equalities between terms whose
+By default, injection only creates new equalities between @terms whose
 type is in sort Type or Set, thus implementing a special behavior for
 objects that are proofs of a statement in Prop. This behavior can be
 turned off by setting the option Set Keep Proof Equalities.
@@ -1927,7 +1999,7 @@ that should hold for the instance (I t) to be proved by c i .
    Part of the behavior of the inversion tactic is to generate
    equalities between expressions that appeared in the hypothesis that is
    being processed. By default, no equalities are generated if they
-   relate two proofs (i.e. equalities between terms whose type is in sort
+   relate two proofs (i.e. equalities between @terms whose type is in sort
    Prop). This behavior can be turned off by using the optionSet Keep
    Proof Equalities.
 
@@ -1991,7 +2063,7 @@ that should hold for the instance (I t) to be proved by c i .
    byinversion_clear ident in ident 1 … ident n .
 #. dependent inversion identThat must be used when ident appears in
    the current goal. It acts like inversion and then substitutes ident
-   for the corresponding term in the goal.
+   for the corresponding @term in the goal.
 #. dependent inversion ident as intro_patternThis allows naming the
    hypotheses introduced in the context bydependent inversion ident.
 #. dependent inversion_clear identLike dependent inversion, except
@@ -1999,19 +2071,19 @@ that should hold for the instance (I t) to be proved by c i .
 #. dependent inversion_clear ident as intro_patternThis allows naming
    the hypotheses introduced in the context bydependent inversion_clear
    ident.
-#. dependent inversion ident with termThis variant allows you to
+#. dependent inversion ident with @termThis variant allows you to
    specify the generalization of the goal. It is useful when the system
    fails to generalize the goal automatically. Ifident has type (I t) and
-   I has type ∀ (x:T), s, then term must be of typeI:∀ (x:T), I x→ s′
+   I has type ∀ (x:T), s, then @term must be of typeI:∀ (x:T), I x→ s′
    where s′ is the type of the goal.
-#. dependent inversion ident as intro_pattern with termThis allows
+#. dependent inversion ident as intro_pattern with @termThis allows
    naming the hypotheses introduced in the context bydependent inversion
-   ident with term.
-#. dependent inversion_clear ident with termLike dependent inversion …
+   ident with @term.
+#. dependent inversion_clear ident with @termLike dependent inversion …
    with but clears ident from the local context.
-#. dependent inversion_clear ident asintro_pattern with termThis
+#. dependent inversion_clear ident asintro_pattern with @termThis
    allows naming the hypotheses introduced in the context bydependent
-   inversion_clear ident with term.
+   inversion_clear ident with @term.
 #. simple inversion identIt is a very primitive inversion tactic that
    derives all the necessary equalities but it does not simplify the
    constraints asinversion does.
@@ -2102,7 +2174,7 @@ that should hold for the instance (I t) to be proved by c i .
 
    As H occurs in the goal, we may want to reason by cases on its
    structure and so, we would like inversion tactics to substitute H by
-   the corresponding term in constructor form. Neither Inversion nor
+   the corresponding @term in constructor form. Neither Inversion nor
    Inversion_clear make such a substitution. To have such a behavior we
    use the dependent inversion tactics:
 
@@ -2232,32 +2304,32 @@ file Logic.v (see Section `3.1.2`_). The notation for eq T t u is
 simply t=u dropping the implicit type of t and u.
 
 
-8.6.1 rewrite term
+8.6.1 rewrite @term
 ~~~~~~~~~~~~~~~~~~
 
-This tactic applies to any goal. The type of term must have the form
+This tactic applies to any goal. The type of @term must have the form
 
-forall (x 1 :A 1 ) … (x n :A n )eq term 1 term 2 .
+forall (x 1 :A 1 ) … (x n :A n )eq @term @term .
 
 where eq is the Leibniz equality or a registered setoid equality.
 
-Then rewrite term finds the first subterm matchingterm 1 in the goal,
-resulting in instances term 1 ′ and term 2 ′ and then replaces every
-occurrence of term 1 ′ by term 2 ′. Hence, some of the variables x i
+Then rewrite @term finds the first sub@term matching@term in the goal,
+resulting in instances @term ′ and @term ′ and then replaces every
+occurrence of @term ′ by @term ′. Hence, some of the variables x i
 are solved by unification, and some of the types A 1 , …,A n become
 new subgoals.
 
 **Error messages:**
 
-#. The term provided does not end with an equation
+#. The @term provided does not end with an equation
 #. Tactic generated a subgoal identical to the original goalThis
-   happens if term 1 does not occur in the goal.
+   happens if @term does not occur in the goal.
 
 **Variants:**
 
-#. rewrite -> termIs equivalent to rewrite term
-#. rewrite <- termUses the equality term 1 =term 2 from right to left
-#. rewrite term in clauseAnalogous to rewrite term but rewriting is
+#. rewrite -> @termIs equivalent to rewrite @term
+#. rewrite <- @termUses the equality @term =@term from right to left
+#. rewrite @term in clauseAnalogous to rewrite @term but rewriting is
    done followingclause (similarly to 8.7). For instance:
 
     + rewrite H in H1 will rewrite H in the hypothesisH1 instead of the
@@ -2270,79 +2342,79 @@ new subgoals.
       tactics succeeds.
     + rewrite H in * is a combination of rewrite H and rewrite H in * |-
       that succeeds if at least one of these two tactics succeeds.
-   Orientation -> or <- can be inserted before the term to rewrite.
-#. rewrite term at occurrencesRewrite only the given occurrences of
-   term 1 ′. Occurrences are specified from left to right as for pattern
+   Orientation -> or <- can be inserted before the @term to rewrite.
+#. rewrite @term at occurrencesRewrite only the given occurrences of
+   @term ′. Occurrences are specified from left to right as for pattern
    (§8.7.7). The rewrite is always performed using setoid rewriting, even
    for Leibniz’s equality, so one has toImport Setoid to use this
    variant.
-#. rewrite term by tacticUse tactic to completely solve the side-
+#. rewrite @term by tacticUse tactic to completely solve the side-
    conditions arising from the rewrite.
-#. rewrite term 1 , … , term n Is equivalent to the n successive
-   tactics rewrite term 1 up to rewrite term n , each one working on the
+#. rewrite @term , … , @term n Is equivalent to the n successive
+   tactics rewrite @term up to rewrite @term n , each one working on the
    first subgoal generated by the previous one. Orientation -> or <- can
-   be inserted before each term to rewrite. One unique clause can be
+   be inserted before each @term to rewrite. One unique clause can be
    added at the end after the keyword in; it will then affect all rewrite
    operations.
-#. In all forms of rewrite described above, a term to rewrite can be
+#. In all forms of rewrite described above, a @term to rewrite can be
    immediately prefixed by one of the following modifiers:
 
-    + ? : the tactic rewrite ?term performs the rewrite of term as many
+    + ? : the tactic rewrite ?@term performs the rewrite of @term as many
       times as possible (perhaps zero time). This form never fails.
     + n? : works similarly, except that it will do at mostn rewrites.
     + ! : works as ?, except that at least one rewrite should succeed,
       otherwise the tactic fails.
-    + n! (or simply n) : precisely n rewrites of term will be done,
+    + n! (or simply n) : precisely n rewrites of @term will be done,
       leading to failure if these n rewrites are not possible.
 
-#. erewrite termThis tactic works as rewrite term but turning
+#. erewrite @termThis tactic works as rewrite @term but turning
    unresolved bindings into existential variables, if any, instead of
    failing. It has the same variants as rewrite has.
 
 
 
-8.6.2 replace term 1 with term 2
+8.6.2 replace @term with @term
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
 This tactic applies to any goal. It replaces all free occurrences
-ofterm 1 in the current goal with term 2 and generates the equality
-term 2 =term 1 as a subgoal. This equality is automatically solved if
+of@term in the current goal with @term and generates the equality
+@term =@term as a subgoal. This equality is automatically solved if
 it occurs among the assumption, or if its symmetric form occurs. It is
-equivalent to cutterm 2 =term 1 ; [intro Hn; rewrite <- Hn; clear Hn|
+equivalent to cut@term =@term ; [intro Hn; rewrite <- Hn; clear Hn|
 assumption || symmetry; try assumption].
 
 
 **Error messages:**
 
 
-#. terms do not have convertible types
+#. @terms do not have convertible types
 
 
 
 **Variants:**
 
 
-#. replace term 1 with term 2 by tacticThis acts as replace term 1
-   with term 2 but applies tactic to solve the generated subgoal term 2
-   =term 1 .
-#. replace termReplaces term with term’ using the first assumption
-   whose type has the form term=term’ or term’=term.
-#. replace -> termReplaces term with term’ using the first assumption
-   whose type has the form term=term’
-#. replace <- termReplaces term with term’ using the first assumption
-   whose type has the form term’=term
-#. replace term 1 with term 2 in clause replace term 1 with term 2 in
-   clause by tactic replace term in clause replace -> term in clause
-   replace <- term in clauseActs as before but the replacements take
+#. replace @term with @term by tacticThis acts as replace @term
+   with @term but applies tactic to solve the generated subgoal @term
+   =@term .
+#. replace @termReplaces @term with @term’ using the first assumption
+   whose type has the form @term=@term’ or @term’=@term.
+#. replace -> @termReplaces @term with @term’ using the first assumption
+   whose type has the form @term=@term’
+#. replace <- @termReplaces @term with @term’ using the first assumption
+   whose type has the form @term’=@term
+#. replace @term with @term in clause replace @term with @term in
+   clause by tactic replace @term in clause replace -> @term in clause
+   replace <- @term in clauseActs as before but the replacements take
    place inclause (see Section 8.7) and not only in the conclusion of the
    goal. The clause argument must not contain any type of nor value of.
-#. cutrewrite <- (term 1 = term 2 )This tactic is deprecated. It acts
-   like replace term 2 withterm 1 , or, equivalently as enough (term 1
-   =term 2 ) as <-.
-#. cutrewrite -> (term 1 = term 2 )This tactic is deprecated. It can
-   be replaced by enough (term 1 = term 2 ) as ->.
+#. cutrewrite <- (@term = @term )This tactic is deprecated. It acts
+   like replace @term with@term , or, equivalently as enough (@term
+   =@term ) as <-.
+#. cutrewrite -> (@term = @term )This tactic is deprecated. It can
+   be replaced by enough (@term = @term ) as ->.
 
 
 
@@ -2402,20 +2474,20 @@ proof of reflexivity of equality.
 
 
 
-8.6.4 stepl term
+8.6.4 stepl @term
 ~~~~~~~~~~~~~~~~
 
 
 
 This tactic is for chaining rewriting steps. It assumes a goal of the
-form “R term 1 term 2 ” where R is a binary relation and relies on a
+form “R @term @term ” where R is a binary relation and relies on a
 database of lemmas of the form forall x yz, R x y -> eq x z -> R z y
-where eq is typically a setoid equality. The application of stepl term
-then replaces the goal by “R term term 2 ” and adds a new goal stating
-“eq term term 1 ”.
+where eq is typically a setoid equality. The application of stepl @term
+then replaces the goal by “R @term @term ” and adds a new goal stating
+“eq @term @term ”.
 
 Lemmas are added to the database using the command
-Declare Left Step term.
+Declare Left Step @term.
 The tactic is especially useful for parametric setoids which are not
 accepted as regular setoids for rewrite and setoid_replace (see
 Chapter `27`_).
@@ -2424,17 +2496,17 @@ Chapter `27`_).
 **Variants:**
 
 
-#. stepl term by tacticThis applies stepl term then applies tactic to
+#. stepl @term by tacticThis applies stepl @term then applies tactic to
    the second goal.
-#. stepr term stepr term by tacticThis behaves as stepl but on the
+#. stepr @term stepr @term by tacticThis behaves as stepl but on the
    right-hand-side of the binary relation. Lemmas are expected to be of
    the form “forall x yz, R x y -> eq y z -> R x z” and are registered
-   using the command Declare Right Step term.
+   using the command Declare Right Step @term.
 
 
-.. _change_term:
+.. _change_@term:
 
-.. cmd:: change @term
+.. cmd:: change @@term
 ~~~~~~~~~~~~~~~~~
 
 
@@ -2454,16 +2526,16 @@ providing thatU is well-formed and that T and U are convertible.
 **Variants:**
 
 
-#. change term 1 with term 2 This replaces the occurrences of term 1
-   by term 2 in the current goal. The terms term 1 and term 2 must be
+#. change @term with @term This replaces the occurrences of @term
+   by @term in the current goal. The @terms @term and @term must be
    convertible.
-#. change term 1 at num 1 … num i with term 2 This replaces the
-   occurrences numbered num 1 … num i ofterm 1 by term 2 in the current
-   goal. The terms term 1 and term 2 must be convertible. Error message:
+#. change @term at num 1 … num i with @term This replaces the
+   occurrences numbered num 1 … num i of@term by @term in the current
+   goal. The @terms @term and @term must be convertible. Error message:
    Too few occurrences
-#. change term in ident
-#. change term 1 with term 2 in ident
-#. change term 1 at num 1 … num i with term 2 inidentThis applies the
+#. change @term in ident
+#. change @term with @term in ident
+#. change @term at num 1 … num i with @term inidentThis applies the
    change tactic not to the goal but to the hypothesis ident.
 
 
@@ -2516,7 +2588,7 @@ the normalization of the goal according to the specified flags. In
 correspondence with the kinds of reduction considered in Coq namely β
 (reduction of functional application), δ (unfolding of transparent
 constants, see `6.10.2`_), ι (reduction of pattern-matching over a
-constructed term, and unfolding of fix and cofix expressions) and ζ
+constructed @term, and unfolding of fix and cofix expressions) and ζ
 (contraction of local definitions), the flags are either beta,
 delta,match, fix, cofix, iota or zeta. The iota flag is a shorthand
 for match, fix and cofix. The delta flag itself can be refined into
@@ -2524,7 +2596,7 @@ delta [qualid 1 …qualid k ] or delta -[qualid 1 …qualid k ],
 restricting in the first case the constants to unfold to the constants
 listed, and restricting in the second case the constant to unfold to
 all but the ones explicitly mentioned. Notice that the delta flag does
-not apply to variables bound by a let-in construction inside the term
+not apply to variables bound by a let-in construction inside the @term
 itself (use here the zeta flag). In any cases, opaque constants are
 not unfolded (see Section `6.10.1`_).
 
@@ -2535,7 +2607,7 @@ axiom), as e.g. in x u 1 ... u n , or match x with ... end, or (fix f
 x {struct x} := ...) x, or is a constructed form (a λ-expression, a
 constructor, a cofixpoint, an inductive type, a product type, a sort),
 or is a redex that the flags prevent to reduce. Once a weak-head
-normal form is obtained, subterms are recursively reduced using the
+normal form is obtained, sub@terms are recursively reduced using the
 same strategy.
 
 Reduction to weak-head normal form can be done using two strategies:
@@ -2608,10 +2680,10 @@ reduces (t t1 … tn) according to βιζ-reduction rules.
 This tactic applies to any goal. It replaces the current goal with its
 head normal form according to the βδιζ-reduction rules, i.e. it
 reduces the head of the goal until it becomes a product or an
-irreducible term. All inner βι-redexes are also reduced.
+irreducible @term. All inner βι-redexes are also reduced.
 
 
-Example: The term `forall n:nat, (plus (S n) (S n))` is not reduced by
+Example: The @term `forall n:nat, (plus (S n) (S n))` is not reduced by
 hnf.
 
 
@@ -2625,7 +2697,7 @@ hnf.
 
 
 
-These tactics apply to any goal. They try to reduce a term to
+These tactics apply to any goal. They try to reduce a @term to
 something still readable instead of fully normalizing it. They perform
 a sort of strong normalization with two key differences:
 
@@ -2663,7 +2735,7 @@ as follows:
   such arguments. Coq < Arguments minus !n !m. After that command, the
   expression (minus (S x) y) is left untouched bysimpl, while (minus (S
   x) (S y)) is reduced to (minus x y).
-+ A special heuristic to determine if a constant has to be unfolded
++ A special heuristic to de@termine if a constant has to be unfolded
   can be activated with the following command: Coq < Arguments minus n m
   : simpl nomatch. The heuristic avoids to perform a simplification step
   that would expose a match construct in head position. For example the
@@ -2692,17 +2764,17 @@ is reduced to S t.
 #. cbn [qualid 1 …qualid k ] cbn -[qualid 1 …qualid k ]These are
    respectively synonyms of cbn beta delta [qualid 1 …qualid k ] iota
    zeta and cbn beta delta -[qualid 1 …qualid k ] iota zeta (see 8.7.1).
-#. simpl patternThis applies simpl only to the subterms matching
+#. simpl patternThis applies simpl only to the sub@terms matching
    pattern in the current goal.
 #. simpl pattern at num 1 … num i This applies simpl only to the num 1
-   , …, num i occurrences of the subterms matching pattern in the current
+   , …, num i occurrences of the sub@terms matching pattern in the current
    goal. Error message: Too few occurrences
 #. simpl qualid simpl stringThis applies simpl only to the applicative
-   subterms whose head occurrence is the unfoldable constant qualid (the
+   sub@terms whose head occurrence is the unfoldable constant qualid (the
    constant can be referred to by its notation using string if such a
    notation exists).
 #. simpl qualid at num 1 … num i simpl string at num 1 … num i This
-   applies simpl only to the num 1 , …, num i applicative subterms whose
+   applies simpl only to the num 1 , …, num i applicative sub@terms whose
    head occurrence is qualid (orstring).
 
 Refolding Reduction
@@ -2758,34 +2830,34 @@ and then replaces it with its βι-normal form.
 
 
 
-8.7.6 fold term
+8.7.6 fold @term
 ~~~~~~~~~~~~~~~
 
 
 
-This tactic applies to any goal. The term term is reduced using the
-red tactic. Every occurrence of the resulting term in the goal is then
-replaced by term.
+This tactic applies to any goal. The @term @term is reduced using the
+red tactic. Every occurrence of the resulting @term in the goal is then
+replaced by @term.
 
 
 **Variants:**
 
 
-#. fold term 1 … term n Equivalent to fold term 1 ;…; fold term n .
+#. fold @term … @term n Equivalent to fold @term ;…; fold @term n .
 
 
-.. _pattern_term:
-.. cmd:: pattern @term
+.. _pattern_@term:
+.. cmd:: pattern @@term
 
 
-This command applies to any goal. The argument term must be a free
-subterm of the current goal. The command pattern performs β-expansion
+This command applies to any goal. The argument @term must be a free
+sub@term of the current goal. The command pattern performs β-expansion
 (the inverse of β-reduction) of the current goal (say T) by
 
 
-#. replacing all occurrences of term in T with a fresh variable
+#. replacing all occurrences of @term in T with a fresh variable
 #. abstracting this variable
-#. applying the abstracted goal to term
+#. applying the abstracted goal to @term
 
 
 For instance, if the current goal T is expressible has φ(t) where the
@@ -2797,22 +2869,22 @@ instance, when the tacticapply fails on matching.
 **Variants:**
 
 
-#. pattern term at num 1 … num n Only the occurrences num 1 … num n of
-   term are considered for β-expansion. Occurrences are located from left
+#. pattern @term at num 1 … num n Only the occurrences num 1 … num n of
+   @term are considered for β-expansion. Occurrences are located from left
    to right.
-#. pattern term at - num 1 … num n All occurrences except the
-   occurrences of indexes num 1 … num n of term are considered for
+#. pattern @term at - num 1 … num n All occurrences except the
+   occurrences of indexes num 1 … num n of @term are considered for
    β-expansion. Occurrences are located from left to right.
-#. pattern term 1 , …, term m Starting from a goal φ(t 1 … t m ), the
+#. pattern @term , …, @term m Starting from a goal φ(t 1 … t m ), the
    tacticpattern t 1 , …, t m generates the equivalent goal (fun (x 1 :A
    1 ) … (x m :A m ) => φ(x 1 … x m )) t 1 … t m . If t i occurs in one
    of the generated types A j these occurrences will also be considered
    and possibly abstracted.
-#. pattern term 1 at num 1 1 … num n 1 1 , …,term m at num 1 m … num n
+#. pattern @term at num 1 1 … num n 1 1 , …,@term m at num 1 m … num n
    m m This behaves as above but processing only the occurrences num 1 1
-   , …, num i 1 of term 1 , …, num 1 m , …, num j m of term m starting
-   from term m .
-#. pattern term 1 [at [-] num 1 1 … num n 1 1 ] , …,term m [at [-] num
+   , …, num i 1 of @term , …, num 1 m , …, num j m of @term m starting
+   from @term m .
+#. pattern @term [at [-] num 1 1 … num n 1 1 ] , …,@term m [at [-] num
    1 m … num n m m ]This is the most general syntax that combines the
    different variants.
 
@@ -2955,7 +3027,7 @@ rewriting rules.
 The rewriting rule bases are built with the Hint Rewrite vernacular
 command.
 
-Warning: This tactic may loop if you build non terminating rewriting
+Warning: This tactic may loop if you build non @terminating rewriting
 systems.
 
 Variant:
@@ -3032,15 +3104,15 @@ Hint hint_definition : ident 1 … ident n
 
 The hint_definition is one of the following expressions:
 
-+ Resolve term[| [num] [pattern]]This command adds simple apply term
-  to the hint list with the head symbol of the type of term. The cost of
-  that hint is the number of subgoals generated by simple apply term or
++ Resolve @term[| [num] [pattern]]This command adds simple apply @term
+  to the hint list with the head symbol of the type of @term. The cost of
+  that hint is the number of subgoals generated by simple apply @term or
   numif specified. The associated pattern is inferred from the
-  conclusion of the type of termor the given patternif specified.In case
-  the inferred type of term does not start with a product the tactic
-  added in the hint list is exact term. In case this type can however be
+  conclusion of the type of @termor the given patternif specified.In case
+  the inferred type of @term does not start with a product the tactic
+  added in the hint list is exact @term. In case this type can however be
   reduced to a type starting with a product, the tactic simple apply
-  term is also stored in the hints list.If the inferred type of term
+  @term is also stored in the hints list.If the inferred type of @term
   contains a dependent quantification on a variable which occurs only in
   the premisses of the type and not in its conclusion, no instance could
   be inferred for the variable by unification with the goal. In this
@@ -3049,34 +3121,34 @@ The hint_definition is one of the following expressions:
   of a hint that is used only by eauto is a transitivity lemma. Error
   messages:
 
-    #. term cannot be used as a hintThe head symbol of the type of term is
+    #. @term cannot be used as a hintThe head symbol of the type of @term is
        a bound variable such that this tactic cannot be associated to a
        constant.
 
   **Variants:**
 
-    #. Resolve term 1 … term m Adds each Resolve term i .
-    #. Resolve -> termAdds the left-to-right implication of an equivalence
-       as a hint (informally the hint will be used as apply <- term, although
+    #. Resolve @term … @term m Adds each Resolve @term i .
+    #. Resolve -> @termAdds the left-to-right implication of an equivalence
+       as a hint (informally the hint will be used as apply <- @term, although
        as mentionned before, the tactic actually used is a restricted version
        of apply).
-    #. Resolve <- termAdds the right-to-left implication of an equivalence
+    #. Resolve <- @termAdds the right-to-left implication of an equivalence
        as a hint.
 
-+ Immediate termThis command adds simple apply term; trivial to the
++ Immediate @termThis command adds simple apply @term; trivial to the
   hint list associated with the head symbol of the type of ident in the
   given database. This tactic will fail if all the subgoals generated
-  bysimple apply term are not solved immediately by the trivial tactic
+  bysimple apply @term are not solved immediately by the trivial tactic
   (which only tries tactics with cost 0).This command is useful for
   theorems such as the symmetry of equality or n+1=m+1 → n=m that we may
   like to introduce with a limited use in order to avoid useless proof-
   search.The cost of this tactic (which never generates subgoals) is
   always 1, so that it is not used by trivial itself. **Error messages:**
 
-    #. term cannot be used as a hint
+    #. @term cannot be used as a hint
   **Variants:**
 
-    #. Immediate term 1 … term m Adds each Immediate term i .
+    #. Immediate @term … @term m Adds each Immediate @term i .
 
 + Constructors identIf ident is an inductive type, this command adds
   all its constructors as hints of type Resolve. Then, when the
@@ -3141,16 +3213,16 @@ The hint_definition is one of the following expressions:
   initial cut expression being emp.
 + Mode qualid (+ | ! | -) * This sets an optional mode of use of the
   identifier qualid. When proof-search faces a goal that ends in an
-  application of qualid to arguments term 1 … term n , the mode tells if
+  application of qualid to arguments @term … @term n , the mode tells if
   the hints associated to qualid can be applied or not. A mode
   specification is a list of n +, ! or - items that specify if an
   argument of the identifier is to be treated as an input (+), if its
   head only is an input (!) or an output (-) of the identifier. For a
-  mode to match a list of arguments, input terms and input heads *must
+  mode to match a list of arguments, input @terms and input heads *must
   not* contain existential variables or be existential variables
-  respectively, while outputs can be any term. Multiple modes can be
+  respectively, while outputs can be any @term. Multiple modes can be
   declared for a single identifier, in that case only one mode needs to
-  match the arguments for the hints to be applied.The head of a term is
+  match the arguments for the hints to be applied.The head of a @term is
   understood here as the applicative head, or the match or projection
   scrutinee’s head, recursively, casts being ignored.Hint Mode is
   especially useful for typeclasses, when one does not want to support
@@ -3201,12 +3273,12 @@ You are advised not to put your own hints in the core database, but
 use one or several databases specific to your development.
 
 
-8.9.3 Remove Hints term 1 … term n : ident 1 … ident m
+8.9.3 Remove Hints @term … @term n : ident 1 … ident m
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
-This command removes the hints associated to terms term 1 …term n in
+This command removes the hints associated to @terms @term …@term n in
 databases ident 1 … ident m .
 
 
@@ -3232,12 +3304,12 @@ at every moment.
 
 
 
-8.9.5 Hint Rewrite term 1 … term n : ident 1 … ident m
+8.9.5 Hint Rewrite @term … @term n : ident 1 … ident m
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
-This vernacular command adds the terms term 1 … term n (their types
+This vernacular command adds the @terms @term … @term n (their types
 must be equalities) in the rewriting bases ident 1 , …, ident m with
 the default orientation (left to right). Notice that the rewriting
 bases are distinct from the auto hint bases and thatauto does not take
@@ -3252,14 +3324,14 @@ declarations at the global level of that module are loaded.
 **Variants:**
 
 
-#. Hint Rewrite -> term 1 … term n : ident 1 … ident m This is
+#. Hint Rewrite -> @term … @term n : ident 1 … ident m This is
    strictly equivalent to the command above (we only make explicit the
    orientation which otherwise defaults to ->).
-#. Hint Rewrite <- term 1 … term n : ident 1 … ident m Adds the
-   rewriting rules term 1 … term n with a right-to-left orientation in
+#. Hint Rewrite <- @term … @term n : ident 1 … ident m Adds the
+   rewriting rules @term … @term n with a right-to-left orientation in
    the bases ident 1 , …, ident m .
-#. Hint Rewrite term 1 … term n using tactic : ident 1 … ident m When
-   the rewriting rules term 1 … term n in ident 1 , …, ident m will be
+#. Hint Rewrite @term … @term n using tactic : ident 1 … ident m When
+   the rewriting rules @term … @term n in ident 1 , …, ident m will be
    used, the tactic tactic will be applied to the generated subgoals, the
    main subgoal excluded.
 #. Print Rewrite HintDb identThis command displays all rewrite hints
@@ -3347,7 +3419,7 @@ Declare Implicit Tactic tactic
 
 This command declares a tactic to be used to solve implicit arguments
 that Coq does not know how to solve by unification. It is used every
-time the term argument of a tactic has one of its holes not fully
+time the @term argument of a tactic has one of its holes not fully
 resolved.
 
 Here is an example:
@@ -3509,7 +3581,7 @@ Set Intuition Iff Unfolding
 
 
 The rtauto tactic solves propositional tautologies similarly to what
-tauto does. The main difference is that the proof term is built using
+tauto does. The main difference is that the proof @term is built using
 a reflection scheme applied to a sequent calculus proof of the goal.
 The search procedure is also implemented using a different technique.
 
@@ -3619,8 +3691,8 @@ No more subgoals.
    value of n does not make success slower, only failure. You might
    consider adding some lemmas as hypotheses using assert in order for
    congruence to use them.
-#. congruence with term 1 … term n Adds term 1 … term n to the pool of
-   terms used bycongruence. This helps in case you have partially applied
+#. congruence with @term … @term n Adds @term … @term n to the pool of
+   @terms used bycongruence. This helps in case you have partially applied
    constructors in your goal.
 
 
@@ -3633,24 +3705,24 @@ No more subgoals.
    this proof could not be built in Coq because of dependently-typed
    functions.
 #. Goal is solvable by congruence but some arguments are missing. Try
-   "congruence with …", replacing metavariables by arbitrary terms.The
+   "congruence with …", replacing metavariables by arbitrary @terms.The
    decision procedure could solve the goal with the provision that
    additional arguments are supplied for some partially applied
-   constructors. Any term of an appropriate type will allow the tactic to
+   constructors. Any @term of an appropriate type will allow the tactic to
    successfully solve the goal. Those additional arguments can be given
-   to congruence by filling in the holes in the terms given in the error
+   to congruence by filling in the holes in the @terms given in the error
    message, using the with variant described above.
 
 
 
-8.11 Checking properties of terms
+8.11 Checking properties of @terms
 ---------------------------------
 
 Each of the following tactics acts as the identity if the check
 succeeds, and results in an error otherwise.
 
 
-8.11.1 constr_eq term 1 term 2
+8.11.1 constr_eq @term @term
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -3662,7 +3734,7 @@ conversion and casts.
 Error message: Not equal
 
 
-8.11.2 unify term 1 term 2
+8.11.2 unify @term @term
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -3677,13 +3749,13 @@ Error message: Not unifiable
 **Variants:**
 
 
-#. unify term 1 term 2 with identUnification takes the transparency
+#. unify @term @term with identUnification takes the transparency
    information defined in the hint database ident into account (see
    Section 8.9.1).
 
 
 
-8.11.3 is_evar term
+8.11.3 is_evar @term
 ~~~~~~~~~~~~~~~~~~~
 
 
@@ -3696,20 +3768,20 @@ by eapply (see Section 8.2.4) and some other tactics.
 Error message: Not an evar
 
 
-8.11.4 has_evar term
+8.11.4 has_evar @term
 ~~~~~~~~~~~~~~~~~~~~
 
 
 
 This tactic checks whether its argument has an existential variable as
-a subterm. Unlike context patterns combined with is_evar, this tactic
-scans all subterms, including those under binders.
+a sub@term. Unlike context patterns combined with is_evar, this tactic
+scans all sub@terms, including those under binders.
 
 
 Error message: No evars
 
 
-8.11.5 is_var term
+8.11.5 is_var @term
 ~~~~~~~~~~~~~~~~~~
 
 
@@ -3772,13 +3844,13 @@ into u=t.
 
 
 
-8.12.4 transitivity term
+8.12.4 transitivity @term
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
 This tactic applies to a goal that has the form t=u and transforms it
-into the two subgoalst=term and term=u.
+into the two subgoalst=@term and @term=u.
 
 
 8.13 Equality and inductive sets
@@ -3801,27 +3873,27 @@ proofs or functions as arguments, nor objects in dependent types. It
 solves goals of the form {x=y}+{ `~`x=y} as well.
 
 
-8.13.2 compare term 1 term 2
+8.13.2 compare @term @term
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
-This tactic compares two given objects term 1 and term 2 of an
+This tactic compares two given objects @term and @term of an
 inductive datatype. If G is the current goal, it leaves the sub-
-goalsterm 1 =term 2 -> G and `~`term 1 =term 2 -> G. The type of term
-1 and term 2 must satisfy the same restrictions as in the tacticdecide
+goals@term =@term -> G and `~`@term =@term -> G. The type of @term
+1 and @term must satisfy the same restrictions as in the tacticdecide
 equality.
 
 
-8.13.3 simplify_eq term
+8.13.3 simplify_eq @term
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 
 
-Let term be the proof of a statement of conclusion term 1 =term 2 . If
-term 1 andterm 2 are structurally different (in the sense described
+Let @term be the proof of a statement of conclusion @term =@term . If
+@term and@term are structurally different (in the sense described
 for the tactic discriminate), then the tactic simplify_eq behaves as
-discriminate term, otherwise it behaves as injectionterm.
+discriminate @term, otherwise it behaves as injection@term.
 
 
 .. note::
@@ -3836,11 +3908,11 @@ context using intros until ident.
 #. simplify_eq numThis does the same thing as intros until num
    thensimplify_eq ident where ident is the identifier for the last
    introduced hypothesis.
-#. simplify_eq term with bindings_listThis does the same as
-   simplify_eq term but using the given bindings to instantiate
-   parameters or hypotheses of term.
-#. esimplify_eq num esimplify_eq term [with bindings_list]This works
-   the same as simplify_eq but if the type of term, or the type of the
+#. simplify_eq @term with @bindings_listThis does the same as
+   simplify_eq @term but using the given bindings to instantiate
+   parameters or hypotheses of @term.
+#. esimplify_eq num esimplify_eq @term [with @bindings_list]This works
+   the same as simplify_eq but if the type of @term, or the type of the
    hypothesis referred to by num, has uninstantiated parameters, these
    parameters are left as existential variables.
 #. simplify_eqIf the current goal has form t 1 `<>`t 2 , it behaves
@@ -3854,7 +3926,7 @@ context using intros until ident.
 
 
 This tactic applies to any goal. If ident has type `(existT B a
-b)=(existT B a' b')` in the local context (i.e. each term of the
+b)=(existT B a' b')` in the local context (i.e. each @term of the
 equality has a sigma type { a:A & (B a)}) this tactic rewrites `a`
 into `a'` and `b` into `b'` in the current goal. This tactic works
 even if B is also a sigma type. This kind of equalities between
@@ -3879,8 +3951,8 @@ dependent pairs may be derived by the injection and inversion tactics.
 
 
 functional inversion is a tactic that performs inversion on hypothesis
-ident of the formqualid term 1 …term n = term or term =qualid term 1
-…term n where qualid must have been defined using Function (see
+ident of the formqualid @term …@term n = @term or @term =qualid @term
+…@term n where qualid must have been defined using Function (see
 Section `2.3`_). Note that this tactic is only available after a
 Require Import FunInd.
 
@@ -3902,8 +3974,8 @@ Require Import FunInd.
    num thenfunctional inversion ident where ident is the identifier for
    the last introduced hypothesis.
 #. functional inversion ident qualid functional inversion num qualidIf
-   the hypothesis ident (or num) has a type of the formqualid 1 term 1
-   …term n = qualid 2 term n+1 …term n+m where qualid 1 and qualid 2 are
+   the hypothesis ident (or num) has a type of the formqualid 1 @term
+   …@term n = qualid 2 @term n+1 …@term n+m where qualid 1 and qualid 2 are
    valid candidates to functional inversion, this variant allows choosing
    which qualid is inverted.
 
@@ -3915,7 +3987,7 @@ Require Import FunInd.
 
 
 This kind of inversion has nothing to do with the tacticinversion
-above. This tactic does change (ident t), where t is a term built in
+above. This tactic does change (ident t), where t is a @term built in
 order to ensure the convertibility. In other words, it does inversion
 of the functionident. This function must be a fixpoint on a simple
 recursive datatype: see `10.3`_ for the full details.
@@ -3932,7 +4004,7 @@ recursive datatype: see `10.3`_ for the full details.
 **Variants:**
 
 
-#. quote ident [ ident 1 …ident n ]All terms that are built only with
+#. quote ident [ ident 1 …ident n ]All @terms that are built only with
    ident 1 …ident n will be considered by quote as constants rather than
    variables.
 
@@ -3996,7 +4068,7 @@ Require Import Omega. See the additional documentation about omega
 (see Chapter `21`_).
 
 
-8.16.3 ring and ring_simplify term 1 … term n
+8.16.3 ring and ring_simplify @term … @term n
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -4008,8 +4080,8 @@ distributivity, constant propagation) and comparing syntactically the
 results.
 
 ring_simplify applies the normalization procedure described above to
-the terms given. The tactic then replaces all occurrences of the terms
-given in the conclusion of the goal by their normal forms. If no term
+the @terms given. The tactic then replaces all occurrences of the @terms
+given in the conclusion of the goal by their normal forms. If no @term
 is given, then the conclusion should be an equation and both hand
 sides are normalized.
 
@@ -4018,7 +4090,7 @@ declare new ring structures. All declared field structures can be
 printed with the Print Rings command.
 
 
-8.16.4 field, field_simplify term 1 …term n , and field_simplify_eq
+8.16.4 field, field_simplify @term …@term n , and field_simplify_eq
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
@@ -4029,8 +4101,8 @@ structure. The main idea is to reduce a field expression (which is an
 extension of ring expressions with the inverse and division
 operations) to a fraction made of two polynomial expressions.
 
-Tactic field is used to solve subgoals, whereas field_simplify term 1
-…term n replaces the provided terms by their reduced fraction.
+Tactic field is used to solve subgoals, whereas field_simplify @term
+…@term n replaces the provided @terms by their reduced fraction.
 field_simplify_eq applies when the conclusion is an equation: it
 simplifies both hand sides and multiplies so as to cancel
 denominators. So it produces an equation without division nor inverse.
