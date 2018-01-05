@@ -1,7 +1,9 @@
+.. include:: ../replaces.rst
+
 .. _thecoqlibrary:
 
 -----------------
- The Coq library
+The |Coq| library
 -----------------
 
 :Source: https://coq.inria.fr/distrib/current/refman/stdlib.html

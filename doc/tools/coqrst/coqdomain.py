@@ -799,6 +799,7 @@ def setup(app):
 
     # Add extra styles
     app.add_stylesheet("hint.min.css")
+    app.add_stylesheet("fonts.css")
     app.add_stylesheet("ansi.css")
     app.add_stylesheet("coqdoc.css")
     app.add_javascript("notations.js")

@@ -1,17 +1,19 @@
+.. include:: ../replaces.rst
+
 .. _thecoqcommands:
 
 -------------------
- The Coq commands
+ The |Coq| commands
 -------------------
 
 :Source: https://coq.inria.fr/distrib/current/refman/commands.html
 :Converted by: Paul Steckler
 
-There are three Coq commands:
+There are three |Coq| commands:
 
-+ `coqtop`: the Coq toplevel (interactive mode);
-+ `coqc`: the Coq compiler (batch compilation);
-+ `coqchk`: the Coq checker (validation of compiled libraries).
++ `coqtop`: the |Coq| toplevel (interactive mode);
++ `coqc`: the |Coq| compiler (batch compilation);
++ `coqchk`: the |Coq| checker (validation of compiled libraries).
 
 
 The options are (basically) the same for the first two commands, and
@@ -21,11 +23,11 @@ roughly described below. You can also look at the `man` pages of
 Interactive use (coqtop)
 ------------------------
 
-In the interactive mode, also known as the Coq toplevel, the user can
-develop his theories and proofs step by step. The Coq toplevel is run
+In the interactive mode, also known as the |Coq| toplevel, the user can
+develop his theories and proofs step by step. The |Coq| toplevel is run
 by the command `coqtop`.
 
-They are two different binary images of Coq: the byte-code one and the
+They are two different binary images of |Coq|: the byte-code one and the
 native-code one (if OCaml provides a native-code compiler for
 your platform, which is supposed in the following). By default,
 `coqtop` executes the native-code version; run `coqtop.byte` to get
@@ -33,7 +35,7 @@ the byte-code version.
 
 The byte-code toplevel is based on an OCaml toplevel (to
 allow dynamic linking of tactics). You can switch to the OCaml toplevel
-with the command `Drop.`, and come back to theCoq
+with the command `Drop.`, and come back to the |Coq|
 toplevel with the command `Coqloop.loop();;`.
 
 Batch compilation (coqc)
@@ -42,7 +44,7 @@ Batch compilation (coqc)
 The `coqc` command takes a name *file* as argument. Then it looks for a
 vernacular file named *file*.v, and tries to compile it into a
 *file*.vo file (See :ref:`TODO-6.5`). Warning: The name *file* should be a
-regular Coq identifier, as defined in Section :ref:'TODO-1.1'. It should contain
+regular |Coq| identifier, as defined in Section :ref:'TODO-1.1'. It should contain
 only letters, digits or underscores (_). For instance, `/bar/foo/toto.v` is valid, but
 `/bar/foo/to-to.v` is invalid.
 
@@ -53,7 +55,7 @@ Customization at launch time
 By resource file
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-When Coq is launched, with either `coqtop` or `coqc`, the resource file
+When |Coq| is launched, with either `coqtop` or `coqc`, the resource file
 `$XDG_CONFIG_HOME/coq/coqrc.xxx` is loaded, where `$XDG_CONFIG_HOME`
 is the configuration directory of the user (by default its home
 directory `/.config` and `xxx` is the version number (e.g. 8.8). If
@@ -62,19 +64,19 @@ searched. You can also specify an arbitrary name for the resource file
 (see option `-init-file` below).
 
 This file may contain, for instance, `Add LoadPath` commands to add
-directories to the load path of Coq. It is possible to skip the
+directories to the load path of |Coq|. It is possible to skip the
 loading of the resource file with the option `-q`.
 
 
 14.3.2 By environment variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Load path can be specified to the Coq system by setting up `$COQPATH`
+Load path can be specified to the |Coq| system by setting up `$COQPATH`
 environment variable. It is a list of directories separated by
-`:` (`;` on Windows). Coq will also honor `$XDG_DATA_HOME` and
+`:` (`;` on Windows). |Coq| will also honor `$XDG_DATA_HOME` and
 `$XDG_DATA_DIRS` (see Section :ref:`TODO-2.6.3`).
 
-Some Coq commands call other Coq commands. In this case, they look for
+Some |Coq| commands call other |Coq| commands. In this case, they look for
 the commands in directory specified by `$COQBIN`. If this variable is
 not set, they look for the commands in the executable path.
 
@@ -96,21 +98,21 @@ and `coqtop`, unless stated otherwise:
   to the OCaml loadpath. See also: :ref:`TODO-2.6.1` and the
   command Declare ML Module Section :ref:`TODO-6.5`.
 :-Q *directory* dirpath: Add physical path *directory* to the list of
-  directories whereCoq looks for a file and bind it to the the logical
+  directories where |Coq| looks for a file and bind it to the the logical
   directory *dirpath*. The subdirectory structure of *directory* is
-  recursively available from Coq using absolute names (extending the
+  recursively available from |Coq| using absolute names (extending the
   dirpath prefix) (see Section :ref:`TODO-2.6.2`).Note that only those
   subdirectories and files which obey the lexical conventions of what is
   an ident (see Section :ref:`TODO-1.1`) are taken into account. Conversely, the
   underlying file systems or operating systems may be more restrictive
-  than Coq. While Linux’s ext4 file system supports any Coq recursive
+  than |Coq|. While Linux’s ext4 file system supports any |Coq| recursive
   layout (within the limit of 255 bytes per file name), the default on
   NTFS (Windows) or HFS+ (MacOS X) file systems is on the contrary to
   disallow two files differing only in the case in the same directory.
   See also: Section :ref:`TODO-2.6.1`.
 :-R *directory* dirpath: Do as -Q *directory* dirpath but make the
   subdirectory structure of *directory* recursively visible so that the
-  recursive contents of physical *directory* is available from Coq using
+  recursive contents of physical *directory* is available from |Coq| using
   short or partially qualified names. See also: Section :ref:`TODO-2.6.1`.
 :-top dirpath: Set the toplevel module name to dirpath instead of Top.
   Not valid for `coqc` as the toplevel module name is inferred from the
@@ -127,14 +129,14 @@ and `coqtop`, unless stated otherwise:
 :-q: Do not to load the default resource file.
 :-load-ml-source *file*: Load the OCaml source file *file*.
 :-load-ml-object *file*: Load the OCaml object file *file*.
-:-l *file*, -load-vernac-source *file*: Load and execute the Coq
+:-l *file*, -load-vernac-source *file*: Load and execute the |Coq|
   script from *file.v*.
 :-lv *file*, -load-vernac-source-verbose *file*: Load and execute the
-  Coq script from *file.v*. Output its content on the standard input as
+  |Coq| script from *file.v*. Output its content on the standard input as
   it is executed.
-:-load-vernac-object dirpath: Load Coq compiled library dirpath. This
+:-load-vernac-object dirpath: Load |Coq| compiled library dirpath. This
   is equivalent to runningRequire dirpath.
-:-require dirpath: Load Coq compiled library dirpath and import it.
+:-require dirpath: Load |Coq| compiled library dirpath and import it.
   This is equivalent to running Require Import dirpath.
 :-batch: Exit just after argument parsing. Available for `coqtop` only.
 :-compile *file.v*: Compile file *file.v* into *file.vo*. This options
@@ -149,7 +151,7 @@ and `coqtop`, unless stated otherwise:
   option expects all, none or a comma-separated list of warning names or
   categories (see Section :ref:`TODO-6.9.3`).
 :-with-geoproof (yes|no): Enable or not special functions for Geoproof
-  within CoqIDE (default is yes).
+  within |CoqIDE| (default is yes).
 :-color (on|off|auto): Enable or not the coloring of output of `coqtop`.
   Default is auto, meaning that `coqtop` dynamically decides, depending on
   whether the output channel supports ANSI escape sequences.
@@ -158,11 +160,11 @@ and `coqtop`, unless stated otherwise:
   syntax/definitions/notations.
 :-emacs, -ide-slave: Start a special toplevel to communicate with a
   specific IDE.
-:-impredicative-set: Change the logical theory of Coq by declaring the
+:-impredicative-set: Change the logical theory of |Coq| by declaring the
    sort Set impredicative. Warning: This is known to be inconsistent with some
    standard axioms of classical mathematics such as the functional
    axiom of choice or the principle of description.
-:-type-in-type: Collapse the universe hierarchy of Coq. Warning: This makes the logic
+:-type-in-type: Collapse the universe hierarchy of |Coq|. Warning: This makes the logic
    inconsistent.
 :-compat *version*: Attempt to maintain some backward-compatibility
   with a previous version.
@@ -172,16 +174,16 @@ and `coqtop`, unless stated otherwise:
 :-no-glob: Disable the dumping of references for global names.
 :-image *file*: Set the binary image to be used by `coqc` to be *file*
   instead of the standard one. Not of general use.
-:-bindir *directory*: Set the directory containing Coq binaries to be
+:-bindir *directory*: Set the directory containing |Coq| binaries to be
   used by `coqc`. It is equivalent to doing export COQBIN= *directory*
   before launching `coqc`.
-:-where: Print the location of Coq’s standard library and exit.
-:-config: Print the locations of Coq’s binaries, dependencies, and
+:-where: Print the location of |Coq|’s standard library and exit.
+:-config: Print the locations of |Coq|’s binaries, dependencies, and
   libraries, then exit.
 :-filteropts: Print the list of command line arguments that `coqtop` has
   recognized as options and exit.
-:-v: Print Coq’s version and exit.
-:-list-tags: Print the highlight tags known by Coq as well as their
+:-v: Print |Coq|’s version and exit.
+:-list-tags: Print the highlight tags known by |Coq| as well as their
   currently associated color and exit.
 :-h, --help: Print a short usage and exit.
 

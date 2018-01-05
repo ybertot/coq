@@ -1,16 +1,13 @@
-.. include:: ../preamble.rst
 .. include:: ../replaces.rst
 
-.. Gallina should be in small-caps, maybe create a role for that
-
-Extensions of Gallina
-=====================
+Extensions of |Gallina|
+=======================
 
 :Source: https://coq.inria.fr/distrib/current/refman/gallina-ext.html
 :Converted by: Paul Steckler
 
-Gallina is the kernel language of Coq. We describe here extensions of
-Gallina’s syntax.
+|Gallina| is the kernel language of |Coq|. We describe here extensions of
+|Gallina|’s syntax.
 
 Record types
 ----------------
@@ -467,17 +464,17 @@ Printing nested patterns
 The Calculus of Inductive Constructions knows pattern-matching only
 over simple patterns. It is however convenient to re-factorize nested
 pattern-matching into a single pattern-matching over a nested
-pattern. Coq’s printer tries to do such limited re-factorization.
+pattern. |Coq|’s printer tries to do such limited re-factorization.
 
 .. cmd:: Set Printing Matching.
 
-This tells Coq to try to use nested patterns. This is the default
+This tells |Coq| to try to use nested patterns. This is the default
 behavior.
 
 .. cmd:: Unset Printing Matching.
 
-This tells Coq to print only simple pattern-matching problems in the
-same way as the Coq kernel handles them.
+This tells |Coq| to print only simple pattern-matching problems in the
+same way as the |Coq| kernel handles them.
 
 .. cmd:: Test Printing Matching.
 
@@ -518,7 +515,7 @@ depend of the matched term.
 
 .. cmd:: Set Printing Synth.
 
-The result type is not printed when Coq knows that it can re-
+The result type is not printed when |Coq| knows that it can re-
 synthesize it.
 
 .. cmd:: Unset Printing Synth.
@@ -1244,17 +1241,17 @@ Libraries and qualified names
 Names of libraries
 ~~~~~~~~~~~~~~~~~~
 
-The theories developed in Coq are stored in *library files* which are
+The theories developed in |Coq| are stored in *library files* which are
 hierarchically classified into *libraries* and *sublibraries*. To
 express this hierarchy, library names are represented by qualified
 identifiers qualid, i.e. as list of identifiers separated by dots (see
 :ref:`TODO-1.2.3-identifiers`). For instance, the library file ``Mult`` of the standard
-Coq library ``Arith`` is named ``Coq.Arith.Mult``. The identifier that starts
+|Coq| library ``Arith`` is named ``Coq.Arith.Mult``. The identifier that starts
 the name of a library is called a *library root*. All library files of
-the standard library of Coq have the reserved root Coq but library
-file names based on other roots can be obtained by usingCoq commands
+the standard library of |Coq| have the reserved root |Coq| but library
+file names based on other roots can be obtained by using |Coq| commands
 (coqc, coqtop, coqdep, …) options ``-Q`` or ``-R`` (see :ref:`TODO-14.3.3-command-line-options`).
-Also, when an interactive Coq session starts, a library of root ``Top`` is
+Also, when an interactive |Coq| session starts, a library of root ``Top`` is
 started, unless option ``-top`` or ``-notop`` is set (see :ref:`TODO-14.3.3-command-line-options`).
 
 
@@ -1270,7 +1267,7 @@ followed by the sequence of submodules names encapsulating the
 construction and ended by the proper name of the construction.
 Typically, the absolute name ``Coq.Init.Logic.eq`` denotes Leibniz’
 equality defined in the module Logic in the sublibrary ``Init`` of the
-standard library of Coq.
+standard library of |Coq|.
 
 The proper name that ends the name of a construction is the short name
 (or sometimes base name) of the construction (for instance, the short
@@ -1279,7 +1276,7 @@ name is a *partially qualified name* (e.g. ``Logic.eq`` is a partially
 qualified name for ``Coq.Init.Logic.eq``). Especially, the short name of a
 construction is its shortest partially qualified name.
 
-Coq does not accept two constructions (definition, theorem, …) with
+|Coq| does not accept two constructions (definition, theorem, …) with
 the same absolute name but different constructions can have the same
 short name (or even same partially qualified names as soon as the full
 names are different).
@@ -1289,14 +1286,14 @@ names also applies to library file names.
 
 **Visibility**
 
-Coq maintains a table called the name table which maps partially qualified
+|Coq| maintains a table called the name table which maps partially qualified
 names of constructions to absolute names. This table is updated by the
 commands ``Require`` (see :ref:`TODO-6.5.1-Require`), Import and Export (see :ref:`import_qualid`) and
 also each time a new declaration is added to the context. An absolute
 name is called visible from a given short or partially qualified name
 when this latter name is enough to denote it. This means that the
 short or partially qualified name is mapped to the absolute name in
-Coq name table. Definitions flagged as Local are only accessible with
+|Coq| name table. Definitions flagged as Local are only accessible with
 their fully qualified name (see :ref:`TODO-1.3.2-definitions`).
 
 It may happen that a visible name is hidden by the short name or a
@@ -1327,13 +1324,13 @@ Libraries and filesystem
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 Please note that the questions described here have been subject to
-redesign in Coq v8.5. Former versions of Coq use the same terminology
+redesign in |Coq| v8.5. Former versions of |Coq| use the same terminology
 to describe slightly different things.
 
 Compiled files (``.vo`` and ``.vio``) store sub-libraries. In order to refer
-to them inside Coq, a translation from file-system names to Coq names
+to them inside |Coq|, a translation from file-system names to |Coq| names
 is needed. In this translation, names in the file system are called
-*physical* paths while Coq names are contrastingly called *logical*
+*physical* paths while |Coq| names are contrastingly called *logical*
 names.
 
 A logical prefix Lib can be associated to a physical pathpath using
@@ -1341,7 +1338,7 @@ the command line option ``-Q`` `path` ``Lib``. All subfolders of path are
 recursively associated to the logical path ``Lib`` extended with the
 corresponding suffix coming from the physical path. For instance, the
 folder ``path/fOO/Bar`` maps to ``Lib.fOO.Bar``. Subdirectories corresponding
-to invalid Coq identifiers are skipped, and, by convention,
+to invalid |Coq| identifiers are skipped, and, by convention,
 subdirectories named ``CVS`` or ``_darcs`` are skipped too.
 
 Thanks to this mechanism, .vo files are made available through the
@@ -1353,7 +1350,7 @@ its logical name, so that an error is issued if it is loaded with the
 wrong loadpath afterwards.
 
 Some folders have a special status and are automatically put in the
-path.Coq commands associate automatically a logical path to files in
+path. |Coq| commands associate automatically a logical path to files in
 the repository trees rooted at the directory from where the command is
 launched, coqlib/user-contrib/, the directories listed in the
 `$COQPATH`, `${XDG_DATA_HOME}/coq/` and `${XDG_DATA_DIRS}/coq/`
@@ -1375,14 +1372,14 @@ of the ``Require`` command can be used to bypass the implicit shortening
 by providing an absolute root to the required file (see :ref:`TODO-6.5.1-require-qualid`).
 
 There also exists another independent loadpath mechanism attached to
-OCaml object files (``.cmo`` or ``.cmxs``) rather than Coq object
+OCaml object files (``.cmo`` or ``.cmxs``) rather than |Coq| object
 files as described above. The OCaml loadpath is managed using
 the option ``-I`` `path` (in the OCaml world, there is neither a
 notion of logical name prefix nor a way to access files in
 subdirectories of path). See the command ``Declare`` ``ML`` ``Module`` in
 :ref:`TODO-6.5-compiled-files` to understand the need of the OCaml loadpath.
 
-See :ref:`TODO-14.3.3-command-line-options` for a more general view over the Coq command
+See :ref:`TODO-14.3.3-command-line-options` for a more general view over the |Coq| command
 line options.
 
 
@@ -1516,7 +1513,7 @@ possible, the correct argument will be automatically generated.
 
 .. exn:: Cannot infer a term for this placeholder.
 
-   Coq was not able to deduce an instantiation of a “_”.
+   |Coq| was not able to deduce an instantiation of a “_”.
 
 .. _declare-implicit-args:
 
@@ -1525,7 +1522,7 @@ Declaration of implicit arguments
 
 In case one wants that some arguments of a given object (constant,
 inductive types, constructors, assumptions, local or not) are always
-inferred by Coq, one may declare once and for all which are the
+inferred by |Coq|, one may declare once and for all which are the
 expected implicit arguments of this object. There are two ways to do
 this, *a priori* and *a posteriori*.
 
@@ -1654,7 +1651,7 @@ command ``Print Implicit`` (see :ref:`displaying-implicit-args`).
 Automatic declaration of implicit arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Coq can also automatically detect what are the implicit arguments of a
+|Coq| can also automatically detect what are the implicit arguments of a
 defined object. The command is just
 
 .. cmd:: Arguments @qualid : default implicits.
@@ -1768,7 +1765,7 @@ command
 Conversely, use the command ``Unset Strongly Strict Implicit`` to let the
 option “Strict Implicit” decide what to do.
 
-Remark: In versions of Coq prior to version 8.0, the default was to
+Remark: In versions of |Coq| prior to version 8.0, the default was to
 declare the strict implicit arguments as implicit.
 
 .. _controlling-contextual-implicit-args:
@@ -1776,8 +1773,8 @@ declare the strict implicit arguments as implicit.
 Controlling contextual implicit arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, Coq does not automatically set implicit the contextual
-implicit arguments. To tell Coq to infer also contextual implicit
+By default, |Coq| does not automatically set implicit the contextual
+implicit arguments. To tell |Coq| to infer also contextual implicit
 argument, use command
 
 .. cmd:: Set Contextual Implicit.
@@ -1790,8 +1787,8 @@ contextual implicit mode.
 Controlling reversible-pattern implicit arguments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, Coq does not automatically set implicit the reversible-pattern
-implicit arguments. To tell Coq to infer also reversible-
+By default, |Coq| does not automatically set implicit the reversible-pattern
+implicit arguments. To tell |Coq| to infer also reversible-
 pattern implicit argument, use command
 
 .. cmd:: Set Reversible Pattern Implicit.
@@ -2206,7 +2203,7 @@ unspecified if `string` doesn’t end in ``.dot`` or ``.gv``.
 Existential variables
 ---------------------
 
-Coq terms can include existential variables which represents unknown
+|Coq| terms can include existential variables which represents unknown
 subterms to eventually be replaced by actual subterms.
 
 Existential variables are generated in place of unsolvable implicit

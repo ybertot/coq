@@ -148,7 +148,9 @@ placeholder .rst files for each chapter.
 
     .. include:: replaces.rst
 
-  to gain access to those definitions in your file (you might need a path prefix).
+  to gain access to those definitions in your file (you might need a path prefix). Three especially-important
+  replacements are |Coq|, |CoqIDE|, and |Gallina|, which display those names in small-caps. Please use them,
+  so that they're rendered consistently.
 
   Similarly, there are some LaTeX macros in preamble.rst that can be useful.
 

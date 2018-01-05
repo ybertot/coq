@@ -1,3 +1,5 @@
+.. include:: ../replaces.rst
+
 .. _polymorphicuniverses:
 
 ==================================
@@ -18,7 +20,7 @@ General Presentation
 
    The status of Universe Polymorphism is experimental.
 
-This section describes the universe polymorphic extension of Coq.
+This section describes the universe polymorphic extension of |Coq|.
 Universe polymorphism makes it possible to write generic definitions
 making use of universes and reuse them at different and sometimes
 incompatible universe levels.
