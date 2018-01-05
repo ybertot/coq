@@ -1929,109 +1929,113 @@ the use of a sigma type is avoided. (FIXME: DISPLAY of Galina terms in paragraph
    This does the same thing as :n:`intros until @num` followed by
    :n:`injection @ident` where :n:`@ident` is the identifier for the last
    introduced hypothesis.
-   ** MARKER **
 
 .. tacv:: injection @term with @bindings_list
 
-   This does the same as injection @term but using the given bindings to
-   instantiate parameters or hypotheses of @term.
+   This does the same as :n:`injection @term` but using the given bindings to
+   instantiate parameters or hypotheses of :n:`@term`.
 
-.. tacv:: einjection num
+.. tacv:: einjection @num
 .. tacv:: einjection @term {? with @bindings_list}
 
-   This works the same as injection but if the type of @term, or the type of the
-   hypothesis referred to by num, has uninstantiated parameters, these
-   parameters are left as existential variables.
+   This works the same as :n:`injection` but if the type of :n:`@term`, or the
+   type of the hypothesis referred to by :n:`@num`, has uninstantiated
+   parameters, these parameters are left as existential variables.
 
 .. tacv:: injection
 
-   If the current goal is of the form @term <> @term , this behaves as
-   intro ident; injection ident.
+   If the current goal is of the form :n:`@term <> @term` , this behaves as
+   :n:`intro @ident; injection @ident`.
 
    .. exn:: goal does not satisfy the expected preconditions
 
-.. tacv:: injection @term [with @bindings_list] as intro_pattern …
-   intro_pattern
-.. tacv:: injection num as intro_pattern … intro_pattern injection
-   as intro_pattern … intro_pattern einjection @term [with @bindings_list]
-   as intro_pattern … intro_pattern
-.. tacv:: einjection num as intro_pattern … intro_pattern einjection as intro_pattern … intro_pattern
+.. tacv:: injection @term {? with @bindings_list} as {+ @intro_pattern}
+.. tacv:: injection @num as {+ intro_pattern}
+.. tacv:: injection as {+ intro_pattern}
+.. tacv:: einjection @term {? with @bindings_list} as {+ intro_pattern}
+.. tacv:: einjection @num as {+ intro_pattern}
+.. tacv:: einjection as {+ intro_pattern}
 
-   These variants apply intros intro_pattern … intro_pattern after the call to
-   injection or einjection so that all equalities generated are moved in
-   the context of hypotheses. The number of intro_pattern must not exceed
+   These variants apply :n:`intros {+ @intro_pattern}` after the call to
+   ``injection`` or ``einjection`` so that all equalities generated are moved in
+   the context of hypotheses. The number of :n:`@intro_pattern` must not exceed
    the number of equalities newly generated. If it is smaller, fresh
-   names are automatically generated to adjust the list of intro_pattern
+   names are automatically generated to adjust the list of :n:`@intro_pattern`
    to the number of new equalities. The original equality is erased if it
    corresponds to an hypothesis.
 
-It is possible to ensure that injection @term erases the original
+It is possible to ensure that :n:`injection @term` erases the original
 hypothesis and leaves the generated equalities in the context rather
 than putting them as antecedents of the current goal, as if giving
-injection @term as (with an empty list of names). To obtain this
-behavior, the option Set Structural Injection must be activated. This
+:n:`injection @term as` (with an empty list of names). To obtain this
+behavior, the option ``Set Structural Injection`` must be activated. This
 option is off by default.
 
-By default, injection only creates new equalities between @terms whose
-type is in sort Type or Set, thus implementing a special behavior for
-objects that are proofs of a statement in Prop. This behavior can be
-turned off by setting the option Set Keep Proof Equalities.
+By default, ``injection`` only creates new equalities between :n:`@terms` whose
+type is in sort :g:`Type` or :g:`Set`, thus implementing a special behavior for
+objects that are proofs of a statement in :g:`Prop`. This behavior can be
+turned off by setting the option ``Set Keep Proof Equalities``.
 
 .. tacn:: inversion @ident
    :name: inversion
 
-Let the type of :n:`@ident` in the local context be (I t), where I is a
-(co)inductive predicate. Then,inversion applied to ident derives for
-each possible constructor c i of (I t), all the necessary conditions
-that should hold for the instance (I t) to be proved by c i .
+   Let the type of :n:`@ident` in the local context be :g:`(I t)`, where :g:`I`
+   is a (co)inductive predicate. Then, ``inversion`` applied to :n:`@ident`
+   derives for each possible constructor :g:`c i` of :g:`(I t)`, all the
+   necessary conditions that should hold for the instance :g:`(I t)` to be
+   proved by :g:`c i`.
 
 .. note::
-   If ident does not denote a hypothesis in the local context but
+   If :n:`@ident` does not denote a hypothesis in the local context but
    refers to a hypothesis quantified in the goal, then the latter is
-   first introduced in the local context usingintros until ident.
+   first introduced in the local context using :n:`intros until @ident`.
 
 .. note::
-   As inversion proofs may be large in size, we recommend the
+   As ``inversion`` proofs may be large in size, we recommend the
    user to stock the lemmas whenever the same instance needs to be
-   inverted several times. See Section `13.3`_.
+   inverted several times. See :ref:`TODO-13.3-Generationofinversionprincipleswithderiveinversion`.
 
 .. note::
-   Part of the behavior of the inversion tactic is to generate
+   Part of the behavior of the ``inversion`` tactic is to generate
    equalities between expressions that appeared in the hypothesis that is
    being processed. By default, no equalities are generated if they
-   relate two proofs (i.e. equalities between @terms whose type is in sort
-   Prop). This behavior can be turned off by using the optionSet Keep
-   Proof Equalities.
+   relate two proofs (i.e. equalities between :n:`@terms` whose type is in sort
+   :g:`Prop`). This behavior can be turned off by using the option ``Set Keep
+   Proof Equalities``.
 
-**Variants:**
+.. tacv:: inversion @num
 
-#. inversion numThis does the same thing as intros until num
-   theninversion ident where ident is the identifier for the last
-   introduced hypothesis.
-#. inversion_clear identThis behaves as inversion and then erases
-   ident from the context.
-#. inversion ident as intro_patternThis generally behaves as inversion
-   but using names inintro_pattern for naming hypotheses. The
-   intro_pattern must have the form [ p 11 … p 1n 1 | … |p m1 … p mn m ]
-   with m being the number of constructors of the type of ident. Be
-   careful that the list must be of length m even if inversion discards
+   This does the same thing as :n:`intros until @num` then :n:`inversion @ident`
+   where :n:`@ident` is the identifier for the last introduced hypothesis.
+
+.. tacv:: inversion_clear @ident
+
+   This behaves as :n:`inversion` and then erases :n:`@ident` from the context.
+
+.. tacv:: inversion @ident as @intro_pattern
+
+   This generally behaves as inversion but using names in :n:`@intro_pattern`
+   for naming hypotheses. The :n:`@intro_pattern` must have the form
+   :n:`[p`:sub:`11` :n:`... p`:sub:`1n` :n:`| ... | p`:sub:`m1` :n:`... p`:sub:`mn` :n:`]`
+   with `m` being the number of constructors of the type of :n:`@ident`. Be
+   careful that the list must be of length `m` even if ``inversion`` discards
    some cases (which is precisely one of its roles): for the discarded
-   cases, just use an empty list (i.e. n i =0).The arguments of the i th
-   constructor and the equalities that inversion introduces in the
-   context of the goal corresponding to the i th constructor, if it
-   exists, get their names from the list p i1 …p in i in order. If there
-   are not enough names, inversion invents names for the remaining
-   variables to introduce. In case an equation splits into several
-   equations (because inversion applies injection on the equalities it
-   generates), the corresponding name p ij in the list must be replaced
-   by a sublist of the form [p ij1 … p ijq ] (or, equivalently, (p ij1 ,
-   …, p ijq )) where q is the number of subequalities obtained from
-   splitting the original equation. Here is an example.The inversion … as
-   variant of inversion generally behaves in a slightly more expectable
-   way thaninversion (no artificial duplication of some hypotheses
-   referring to other hypotheses) To take benefit of these improvements,
-   it is enough to use inversion … as [], letting the names being finally
-   chosen by Coq.
+   cases, just use an empty list (i.e. `n = 0`).The arguments of the i-th
+   constructor and the equalities that ``inversion`` introduces in the
+   context of the goal corresponding to the i-th constructor, if it
+   exists, get their names from the list :n:`p`:sub:`i1` :n:`... p`:sub:`in` in
+   order. If there are not enough names, ``inversion`` invents names for the
+   remaining variables to introduce. In case an equation splits into several
+   equations (because ``inversion`` applies ``injection`` on the equalities it
+   generates), the corresponding name :n:`p`:sub:`ij` in the list must be
+   replaced by a sublist of the form :n:`[p`:sub:`ij1` :n:`... p`:sub:`ijq` :n:`]`
+   (or, equivalently, :n:`(p`:sub:`ij1` :n:`, ..., p`:sub:`ijq` :n:`)`) where
+   `q` is the number of subequalities obtained from splitting the original
+   equation. Here is an example. The ``inversion ... as`` variant of
+   ``inversion`` generally behaves in a slightly more expectable way than
+   ``inversion`` (no artificial duplication of some hypotheses referring to
+   other hypotheses). To take benefit of these improvements, it is enough to use
+   ``inversion ... as []``, letting the names being finally chosen by Coq.
 
    .. example::
 
@@ -2043,73 +2047,123 @@ that should hold for the instance (I t) to be proved by c i .
          Goal forall l:list nat, contains0 (1 :: l) -> contains0 l.
          intros l H; inversion H as [ | l' p Hl' [Heqp Heql'] ].
 
-#. inversion num as intro_patternThis allows naming the hypotheses
-   introduced byinversion num in the context.
-#. inversion_clearident as intro_patternThis allows naming the
-   hypotheses introduced byinversion_clear in the context. Notice that
-   hypothesis names can be provided as if inversion were called, even
-   though the inversion_clear will eventually erase the hypotheses.
-#. inversion ident in ident 1 … ident n Let ident 1 … ident n , be
-   identifiers in the local context. This tactic behaves as generalizing
-   ident 1 … ident n , and then performing inversion.
-#. inversionident as intro_pattern in ident 1 … ident n This allows
-   naming the hypotheses introduced in the context byinversion ident in
-   ident 1 … ident n .
-#. inversion_clearident in ident 1 … ident n Let ident 1 … ident n ,
-   be identifiers in the local context. This tactic behaves as
-   generalizing ident 1 … ident n , and then performing inversion_clear.
-#. inversion_clear ident as intro_pattern in ident 1 … ident n This
-   allows naming the hypotheses introduced in the context
-   byinversion_clear ident in ident 1 … ident n .
-#. dependent inversion identThat must be used when ident appears in
-   the current goal. It acts like inversion and then substitutes ident
-   for the corresponding @term in the goal.
-#. dependent inversion ident as intro_patternThis allows naming the
-   hypotheses introduced in the context bydependent inversion ident.
-#. dependent inversion_clear identLike dependent inversion, except
-   that ident is cleared from the local context.
-#. dependent inversion_clear ident as intro_patternThis allows naming
-   the hypotheses introduced in the context bydependent inversion_clear
-   ident.
-#. dependent inversion ident with @termThis variant allows you to
-   specify the generalization of the goal. It is useful when the system
-   fails to generalize the goal automatically. Ifident has type (I t) and
-   I has type ∀ (x:T), s, then @term must be of typeI:∀ (x:T), I x→ s′
-   where s′ is the type of the goal.
-#. dependent inversion ident as intro_pattern with @termThis allows
-   naming the hypotheses introduced in the context bydependent inversion
-   ident with @term.
-#. dependent inversion_clear ident with @termLike dependent inversion …
-   with but clears ident from the local context.
-#. dependent inversion_clear ident asintro_pattern with @termThis
-   allows naming the hypotheses introduced in the context bydependent
-   inversion_clear ident with @term.
-#. simple inversion identIt is a very primitive inversion tactic that
-   derives all the necessary equalities but it does not simplify the
-   constraints asinversion does.
-#. simple inversionident as intro_patternThis allows naming the
-   hypotheses introduced in the context bysimple inversion.
-#. inversion ident using ident′Let ident have type (I t) (I an
-   inductive predicate) in the local context, and ident′ be a (dependent)
-   inversion lemma. Then, this tactic refines the current goal with the
-   specified lemma.
-#. inversionident using ident′ in ident 1 … ident n This tactic
-   behaves as generalizing ident 1 … ident n , then doing inversion ident
-   using ident′.
-#. inversion_sigmaThis tactic turns equalities of dependent pairs
-   (e.g.,existT P x p = existT P y q, frequently left over byinversion on
+.. tacv:: inversion @num as @intro_pattern
+
+   This allows naming the hypotheses introduced by :n:`inversion @num` in the
+   context.
+
+.. tacv:: inversion_clear @ident as @intro_pattern
+
+   This allows naming the hypotheses introduced by ``inversion_clear`` in the
+   context. Notice that hypothesis names can be provided as if ``inversion``
+   were called, even though the ``inversion_clear`` will eventually erase the
+   hypotheses.
+
+.. tacv:: inversion @ident in {+ @ident}
+
+   Let :n:`{+ @ident}` be identifiers in the local context. This tactic behaves as
+   generalizing :n:`{+ @ident}`, and then performing ``inversion``.
+
+.. tacv:: inversion @ident as @intro_pattern in {+ @ident}
+
+   This allows naming the hypotheses introduced in the context by
+   :n:`inversion @ident in {+ @ident}`.
+
+.. tacv:: inversion_clear @ident in {+ @ident}
+
+   Let :n:`{+ @ident}` be identifiers in the local context. This tactic behaves
+   as generalizing :n:`{+ @ident}`, and then performing ``inversion_clear``.
+
+.. tacv:: inversion_clear @ident as @intro_pattern in {+ @ident}
+
+   This allows naming the hypotheses introduced in the context by
+   :n:`inversion_clear @ident in {+ @ident}`.
+
+.. tacv:: dependent inversion @ident
+   :name: dependent inversion
+
+   That must be used when :n:`@ident` appears in the current goal. It acts like
+   ``inversion`` and then substitutes :n:`@ident` for the corresponding
+   :n:`@@term` in the goal.
+
+.. tacv:: dependent inversion @ident as @intro_pattern
+
+   This allows naming the hypotheses introduced in the context by
+   :n:`dependent inversion @ident`.
+
+.. tacv:: dependent inversion_clear @ident
+
+   Like ``dependent inversion``, except that :n:`@ident` is cleared from the
+   local context.
+
+.. tacv:: dependent inversion_clear @ident as @intro_pattern
+
+   This allows naming the hypotheses introduced in the context by
+   :n:`dependent inversion_clear @ident`.
+
+.. tacv:: dependent inversion @ident with @term
+   :name: dependent inversion ...
+
+   This variant allows you to specify the generalization of the goal. It is
+   useful when the system fails to generalize the goal automatically. If
+   :n:`@ident` has type :g:`(I t)` and :g:`I` has type :math:`\forall`
+   :g:`(x:T), s`, then :n:`@term` must be of type :g:`I:`:math:`\forall`
+   :g:`(x:T), I x -> s'` where :g:`s'` is the type of the goal.
+
+.. tacv:: dependent inversion @ident as @intro_pattern with @term
+
+   This allows naming the hypotheses introduced in the context by
+   :n:`dependent inversion @ident with @term`.
+
+.. tacv:: dependent inversion_clear @ident with @term
+
+   Like :tacn:`dependent inversion ...` with but clears :n:`@ident` from the
+   local context.
+
+.. tacv:: dependent inversion_clear @ident as @intro_pattern with @term
+
+   This allows naming the hypotheses introduced in the context by
+   :n:`dependent inversion_clear @ident with @term`.
+
+.. tacv:: simple inversion @ident
+
+   It is a very primitive inversion tactic that derives all the necessary
+   equalities but it does not simplify the constraints as ``inversion`` does.
+
+.. tacv:: simple inversion @ident as @intro_pattern
+
+   This allows naming the hypotheses introduced in the context by
+   ``simple inversion``.
+
+.. tacv:: inversion @ident using @ident
+
+   Let :n:`@ident` have type :g:`(I t)` (:g:`I` an inductive predicate) in the
+   local context, and :n:`@ident` be a (dependent) inversion lemma. Then, this
+   tactic refines the current goal with the specified lemma.
+
+.. tacv:: inversion @ident using @ident in {+ @ident}
+
+   This tactic behaves as generalizing :n:`{+ @ident}`, then doing
+   :n:`inversion @ident using @ident`.
+
+.. tacv:: inversion_sigma
+
+   This tactic turns equalities of dependent pairs (e.g.,
+   :g:`existT P x p = existT P y q`, frequently left over by inversion on
    a dependent type family) into pairs of equalities (e.g., a hypothesis
-   H : x = y and a hypothesis of type rew H in p = q); these hypotheses
-   can subsequently be simplified using subst, without ever invoking any
-   kind of axiom asserting uniqueness of identity proofs. If you want to
-   explicitly specify the hypothesis to be inverted, or name the
-   generated hypotheses, you can invoke induction H as [H1 H2] using
-   eq_sigT_rect. This tactic also works for sig,sigT2, and sig2, and
-   there are similareq_sig ***_rect induction lemmas.
+   :g:`H : x = y` and a hypothesis of type :g:`rew H in p = q`); these
+   hypotheses can subsequently be simplified using :tacn:`subst`, without ever
+   invoking any kind of axiom asserting uniqueness of identity proofs. If you
+   want to explicitly specify the hypothesis to be inverted, or name the
+   generated hypotheses, you can invoke
+   :n:`induction H as [H1 H2] using eq_sigT_rect.` This tactic also works for
+   :g:`sig`, :g:`sigT2`, and :g:`sig2`, and there are similar :g:`eq_sig`
+   :g:`***_rect` induction lemmas.
 
 .. example::
 
-   Non-dependent inversion.
+   *Non-dependent inversion*.
+
    Let us consider the relation Le over natural numbers and the following
    variables:
 
@@ -2156,7 +2210,9 @@ that should hold for the instance (I t) to be proved by c i .
 
 .. example::
 
-   Dependent inversion. Let us consider the following goal:
+   *Dependent inversion.*
+
+   Let us consider the following goal:
 
    .. coqtop:: reset none
 
@@ -2186,7 +2242,9 @@ that should hold for the instance (I t) to be proved by c i .
 
 .. example::
 
-   Using inversion_sigma. Let us consider the following inductive type of
+   *Using inversion_sigma.*
+
+   Let us consider the following inductive type of
    length-indexed lists, and a lemma about inverting equality of cons:
 
    .. coqtop:: reset all
@@ -2225,76 +2283,60 @@ that should hold for the instance (I t) to be proved by c i .
       pose proof (Eqdep_dec.UIP_refl_nat _ H); subst H.
       simpl in *.
 
-1 subgoal
+   Finally, we can finish the proof:
 
-A : Type n : nat x : A xs : vec A n y : A ys : vec A n
-H : cons A x xs = cons A y ys
-H1 : x = y
-H3 : xs = ys
-============================
-xs = ys
+   .. coqtop:: all
 
-Finally, we can finish the proof:
-Coq < assumption.
-No more subgoals.
-
-Coq < Qed.
-invert_cons is defined
-
+      assumption.
+      Qed.
 
 .. tacn:: fix ident num
    :name: fix
 
-This tactic is a primitive tactic to start a proof by induction. In
-general, it is easier to rely on higher-level induction tactics such
-as the ones described in Section 8.5.2.
+   This tactic is a primitive tactic to start a proof by induction. In
+   general, it is easier to rely on higher-level induction tactics such
+   as the ones described in :tacn:`induction`.
 
-In the syntax of the tactic, the identifier ident is the name given to
-the induction hypothesis. The natural number num tells on which
-premise of the current goal the induction acts, starting from 1,
-counting both dependent and non dependent products, but skipping local
-definitions. Especially, the current lemma must be composed of at
-least num products.
+   In the syntax of the tactic, the identifier :n:`@ident` is the name given to
+   the induction hypothesis. The natural number :n:`@num` tells on which
+   premise of the current goal the induction acts, starting from 1,
+   counting both dependent and non dependent products, but skipping local
+   definitions. Especially, the current lemma must be composed of at
+   least :n:`@num` products.
 
-Like in a fix expression, the induction hypotheses have to be used on
-structurally smaller arguments. The verification that inductive proof
-arguments are correct is done only at the time of registering the
-lemma in the environment. To know if the use of induction hypotheses
-is correct at some time of the interactive development of a proof, use
-the command Guarded (see Section `7.3.2`_).
+   Like in a fix expression, the induction hypotheses have to be used on
+   structurally smaller arguments. The verification that inductive proof
+   arguments are correct is done only at the time of registering the
+   lemma in the environment. To know if the use of induction hypotheses
+   is correct at some time of the interactive development of a proof, use
+   the command ``Guarded`` (see :ref:`TODO-7.3.2-Guarded`).
 
-**Variants:**
+.. tacv:: fix @ident @num with {+ (ident {+ @binder} [{struct @ident}] : @type)}
 
-#. fix ident 1 num with ( ident 2 binder 2 … binder 2 [{ struct ident′
-   2 }] : type 2 ) … ( ident n binder n … binder n [{ struct ident′ n }]
-   : type n )This starts a proof by mutual induction. The statements to
-   be simultaneously proved are respectively forallbinder 2 … binder 2 ,
-   type 2 , …, forallbinder n … binder n , type n . The identifiersident
-   1 … ident n are the names of the induction hypotheses. The identifiers
-   ident′ 2 … ident′ n are the respective names of the premises on which
-   the induction is performed in the statements to be simultaneously
-   proved (if not given, the system tries to guess itself what they are).
+   This starts a proof by mutual induction. The statements to be simultaneously
+   proved are respectively :g:`forall binder ... binder, type`. TODO Explanation correct?
+   The identifiers :n:`@ident` are the names of the induction hypotheses. The identifiers
+   :n:`@ident` are the respective names of the premises on which the induction
+   is performed in the statements to be simultaneously proved (if not given, the
+   system tries to guess itself what they are).
 
-8.5.10 cofix ident
-~~~~~~~~~~~~~~~~~~
+.. tacn:: cofix @ident
+   :name: cofix
 
-This tactic starts a proof by coinduction. The identifier ident is the
-name given to the coinduction hypothesis. Like in a cofix expression,
-the use of induction hypotheses have to guarded by a constructor. The
-verification that the use of co-inductive hypotheses is correct is
-done only at the time of registering the lemma in the environment. To
-know if the use of coinduction hypotheses is correct at some time of
-the interactive development of a proof, use the command Guarded (see
-Section `7.3.2`_).
+   This tactic starts a proof by coinduction. The identifier :n:`@ident` is the
+   name given to the coinduction hypothesis. Like in a cofix expression,
+   the use of induction hypotheses have to guarded by a constructor. The
+   verification that the use of co-inductive hypotheses is correct is
+   done only at the time of registering the lemma in the environment. To
+   know if the use of coinduction hypotheses is correct at some time of
+   the interactive development of a proof, use the command ``Guarded``
+   (see :ref:`TODO-7.3.2-Guarded`).
 
-**Variants:**
+.. tacv:: cofix @ident with {+ (@ident {+ @binder} : @type)}
 
-#. cofix ident 1 with ( ident 2 binder 2 … binder 2 : type 2 ) …
-   (ident n binder n … binder n : type n )This starts a proof by mutual
-   coinduction. The statements to be simultaneously proved are
-   respectively forallbinder 2 … binder 2 , type 2 , …, forallbinder n …
-   binder n , type n . The identifiersident 1 … ident n are the names of
-   the coinduction hypotheses.
+   This starts a proof by mutual coinduction. The statements to be
+   simultaneously proved are respectively :g:`forall binder ... binder, type`
+   The identifiers :n:`@ident` are the names of the coinduction hypotheses.
 
 8.6 Rewriting expressions
 -------------------------
@@ -3052,7 +3094,8 @@ See also: Section `10.2`_ for examples showing the use of this tactic.
 8.9 Controlling automation
 --------------------------
 
-8.9.1 The hints databases for auto and eauto
+.. _thehintsdatabasesforautoandeauto:
+The hints databases for auto and eauto
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The hints for auto and eauto are stored in databases. Each database
@@ -3715,83 +3758,58 @@ No more subgoals.
 
 
 
-8.11 Checking properties of @terms
----------------------------------
+Checking properties of terms
+----------------------------
 
 Each of the following tactics acts as the identity if the check
 succeeds, and results in an error otherwise.
 
+.. tacn:: constr_eq @term @term
+   :name: constr_eq
 
-8.11.1 constr_eq @term @term
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   This tactic checks whether its arguments are equal modulo alpha
+   conversion and casts.
 
+.. exn:: Not equal
 
+.. tacn:: unify @term @term
+   :name: unify
 
-This tactic checks whether its arguments are equal modulo alpha
-conversion and casts.
+   This tactic checks whether its arguments are unifiable, potentially
+   instantiating existential variables.
 
+.. exn:: Not unifiable
 
-Error message: Not equal
+.. tacv:: unify @term @term with @ident
 
+   Unification takes the transparency information defined in the hint database
+   :n:`@ident` into account (see :ref:`the hints databases for auto and eauto <the-hints-databases-for-auto-and-eauto>`).
 
-8.11.2 unify @term @term
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. tacn:: is_evar @term
+   :name: is_evar
 
+   This tactic checks whether its argument is a current existential
+   variable. Existential variables are uninstantiated variables generated
+   by :tacn:`eapply` and some other tactics.
 
+.. exn:: Not an evar
 
-This tactic checks whether its arguments are unifiable, potentially
-instantiating existential variables.
+.. tacn:: has_evar @term
+   :name: has_evar
 
+   This tactic checks whether its argument has an existential variable as
+   a subterm. Unlike context patterns combined with ``is_evar``, this tactic
+   scans all subterms, including those under binders.
 
-Error message: Not unifiable
+.. exn:: No evars
 
+.. tacn:: is_var @term
+   :name: is_var
 
-**Variants:**
+   This tactic checks whether its argument is a variable or hypothesis in
+   the current goal context or in the opened sections.
 
-
-#. unify @term @term with identUnification takes the transparency
-   information defined in the hint database ident into account (see
-   Section 8.9.1).
-
-
-
-8.11.3 is_evar @term
-~~~~~~~~~~~~~~~~~~~
-
-
-
-This tactic checks whether its argument is a current existential
-variable. Existential variables are uninstantiated variables generated
-by eapply (see Section 8.2.4) and some other tactics.
-
-
-Error message: Not an evar
-
-
-8.11.4 has_evar @term
-~~~~~~~~~~~~~~~~~~~~
-
-
-
-This tactic checks whether its argument has an existential variable as
-a sub@term. Unlike context patterns combined with is_evar, this tactic
-scans all sub@terms, including those under binders.
-
-
-Error message: No evars
-
-
-8.11.5 is_var @term
-~~~~~~~~~~~~~~~~~~
-
-
-
-This tactic checks whether its argument is a variable or hypothesis in
-the current goal context or in the opened sections.
-
-
-Error message: Not a variable or hypothesis
-
+.. exn:: Not a variable or hypothesis
 
 8.12 Equality
 -------------
@@ -3853,93 +3871,83 @@ This tactic applies to a goal that has the form t=u and transforms it
 into the two subgoalst=@term and @term=u.
 
 
-8.13 Equality and inductive sets
---------------------------------
+Equality and inductive sets
+---------------------------
 
 We describe in this section some special purpose tactics dealing with
 equality and inductive sets or types. These tactics use the
-equalityeq:forall (A:Type), A->A->Prop, simply written with the infix
-symbol =.
+equality :g:`eq:forall (A:Type), A->A->Prop`, simply written with the infix
+symbol :g:`=`.
 
+.. tacn:: decide equality
+   :name: decide equality
 
-8.13.1 decide equality
-~~~~~~~~~~~~~~~~~~~~~~
+   This tactic solves a goal of the form :g:`forall x y:R, {x=y}+{ ~x=y}`,
+   where :g:`R` is an inductive type such that its constructors do not take
+   proofs or functions as arguments, nor objects in dependent types. It
+   solves goals of the form :g:`{x=y}+{ ~x=y}` as well.
 
+.. tacn:: compare @term @term
+   :name: compare
 
+   This tactic compares two given objects :n:`@term` and :n:`@term` of an
+   inductive datatype. If :g:`G` is the current goal, it leaves the sub-
+   goals :n:`@term =@term -> G` and :n:`~ @term = @term -> G`. The type of
+   :n:`@term` and :n:`@term` must satisfy the same restrictions as in the
+   tactic ``decide equality``.
 
-This tactic solves a goal of the formforall x y:R, {x=y}+{ `~`x=y},
-where R is an inductive type such that its constructors do not take
-proofs or functions as arguments, nor objects in dependent types. It
-solves goals of the form {x=y}+{ `~`x=y} as well.
+.. tacn:: simplify_eq @term
+   :name: simplify_eq
 
-
-8.13.2 compare @term @term
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-This tactic compares two given objects @term and @term of an
-inductive datatype. If G is the current goal, it leaves the sub-
-goals@term =@term -> G and `~`@term =@term -> G. The type of @term
-1 and @term must satisfy the same restrictions as in the tacticdecide
-equality.
-
-
-8.13.3 simplify_eq @term
-~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-Let @term be the proof of a statement of conclusion @term =@term . If
-@term and@term are structurally different (in the sense described
-for the tactic discriminate), then the tactic simplify_eq behaves as
-discriminate @term, otherwise it behaves as injection@term.
-
+   Let :n:`@term` be the proof of a statement of conclusion :n:`@term = @term`.
+   If :n:`@term` and :n:`@term` are structurally different (in the sense
+   described for the tactic :tacn:`discriminate`), then the tactic
+   ``simplify_eq`` behaves as :n:`discriminate @term`, otherwise it behaves as
+   :n:`injection @term`.
 
 .. note::
- If some quantified hypothesis of the goal is named ident,
-thensimplify_eq ident first introduces the hypothesis in the local
-context using intros until ident.
+   If some quantified hypothesis of the goal is named :n:`@ident`,
+   then :n:`simplify_eq @ident` first introduces the hypothesis in the local
+   context using :n:`intros until @ident`.
 
+.. tacv:: simplify_eq @num
 
-**Variants:**
-
-
-#. simplify_eq numThis does the same thing as intros until num
-   thensimplify_eq ident where ident is the identifier for the last
+   This does the same thing as :n:`intros until @num` then
+   :n:`simplify_eq @ident` where :n:`@ident` is the identifier for the last
    introduced hypothesis.
-#. simplify_eq @term with @bindings_listThis does the same as
-   simplify_eq @term but using the given bindings to instantiate
-   parameters or hypotheses of @term.
-#. esimplify_eq num esimplify_eq @term [with @bindings_list]This works
-   the same as simplify_eq but if the type of @term, or the type of the
-   hypothesis referred to by num, has uninstantiated parameters, these
-   parameters are left as existential variables.
-#. simplify_eqIf the current goal has form t 1 `<>`t 2 , it behaves
-   asintro ident; simplify_eq ident.
 
+.. tacv:: simplify_eq @term with @bindings_list
 
+   This does the same as :n:`simplify_eq @term` but using the given bindings to
+   instantiate parameters or hypotheses of :n:`@term`.
 
-8.13.4 dependent rewrite -> ident
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. tacv:: esimplify_eq @num
+.. tacv:: esimplify_eq @term {? with @bindings_list}
 
+   This works the same as ``simplify_eq`` but if the type of :n:`@term`, or the
+   type of the hypothesis referred to by :n:`@num`, has uninstantiated
+   parameters, these parameters are left as existential variables.
 
+.. tacv:: simplify_eq
 
-This tactic applies to any goal. If ident has type `(existT B a
-b)=(existT B a' b')` in the local context (i.e. each @term of the
-equality has a sigma type { a:A & (B a)}) this tactic rewrites `a`
-into `a'` and `b` into `b'` in the current goal. This tactic works
-even if B is also a sigma type. This kind of equalities between
-dependent pairs may be derived by the injection and inversion tactics.
+   If the current goal has form :g:`t1 <> t2`, it behaves as
+   :n:`intro @ident; simplify_eq @ident`.
 
+.. tacn:: dependent rewrite -> @ident
+   :name: dependent rewrite ->
 
-**Variants:**
+   This tactic applies to any goal. If :n:`@ident` has type
+   :g:`(existT B a b)=(existT B a' b')` in the local context (i.e. each
+   :n:`@term` of the equality has a sigma type :g:`{ a:A & (B a)}`) this tactic
+   rewrites :g:`a` into :g:`a'` and :g:`b` into :g:`b'` in the current goal.
+   This tactic works even if :g:`B` is also a sigma type. This kind of
+   equalities between dependent pairs may be derived by the
+   :tacn:`injection` and :tacn:`inversion` tactics.
 
+.. tacv:: dependent rewrite <- @ident
 
-#. dependent rewrite <- identAnalogous to dependent rewrite -> but
-   uses the equality from right to left.
-
-
+   Analogous to :tacn:`dependent rewrite ->` but uses the equality from right to
+   left.
 
 8.14 Inversion
 --------------
@@ -4010,28 +4018,24 @@ recursive datatype: see `10.3`_ for the full details.
 
 
 
-8.15 Classical tactics
-----------------------
-
-
+Classical tactics
+-----------------
 
 In order to ease the proving process, when the Classical module is
 loaded. A few more tactics are available. Make sure to load the module
-using the Require Import command.
+using the ``Require Import`` command.
 
+.. tacn:: classical_left
+   :name: classical_left
+.. tacv:: classical_right
+   :name: classical_right
 
-8.15.1 classical_left and classical_right
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-
-The tactics classical_left and classical_right are the analog of the
-left and right but using classical logic. They can only be used for
-disjunctions. Use classical_left to prove the left part of the
-disjunction with the assumption that the negation of right part holds.
-Use classical_right to prove the right part of the disjunction with
-the assumption that the negation of left part holds.
-
+   The tactics ``classical_left`` and ``classical_right`` are the analog of the
+   left and right but using classical logic. They can only be used for
+   disjunctions. Use ``classical_left`` to prove the left part of the
+   disjunction with the assumption that the negation of right part holds.
+   Use ``classical_right`` to prove the right part of the disjunction with
+   the assumption that the negation of left part holds.
 
 8.16 Automatizing
 -----------------
@@ -4157,201 +4161,97 @@ No more subgoals.
 
 
 
-8.17 Non-logical tactics
+Non-logical tactics
 ------------------------
 
 
-8.17.1 cycle num
-~~~~~~~~~~~~~~~~
+.. tacn:: cycle @num
+   :name: cycle
 
-This tactic puts the num first goals at the end of the list of goals.
-If num is negative, it will put the last |num| goals at the beginning
-of the list.
+   This tactic puts the :n:`@num` first goals at the end of the list of goals.
+   If :n:`@num` is negative, it will put the last :math:`|num|` goals at the
+   beginning of the list.
 
+.. example::
 
-Example:
-Coq < Parameter P : nat -> Prop.
+   .. coqtop:: all reset
 
-Coq < Goal P 1 /\ P 2 /\ P 3 /\ P 4 /\ P 5.
+      Parameter P : nat -> Prop.
+      Goal P 1 /\ P 2 /\ P 3 /\ P 4 /\ P 5.
+      repeat split.
+      all: cycle 2.
+      all: cycle -3.
 
-Coq < repeat split.
-5 subgoals
+.. tacn:: swap @num @num
+   :name: swap
 
-============================
-P 1
-subgoal 2 is:
-P 2
-subgoal 3 is:
-P 3
-subgoal 4 is:
-P 4
-subgoal 5 is:
-P 5
+   This tactic switches the position of the goals of indices :n:`@num` and
+   :n:`@num`. If either :n:`@num` or :n:`@num` is negative then goals are
+   counted from the end of the focused goal list. Goals are indexed from 1,
+   there is no goal with position 0.
 
-Coq < all: cycle 2.
-5 subgoals
+.. example::
 
-============================
-P 3
-subgoal 2 is:
-P 4
-subgoal 3 is:
-P 5
-subgoal 4 is:
-P 1
-subgoal 5 is:
-P 2
+   .. coqtop:: reset all
 
-Coq < all: cycle -3.
-5 subgoals
+      Parameter P : nat -> Prop.
+      Goal P 1 /\ P 2 /\ P 3 /\ P 4 /\ P 5.
+      repeat split.
+      all: swap 1 3.
+      all: swap 1 -1.
 
-============================
-P 5
-subgoal 2 is:
-P 1
-subgoal 3 is:
-P 2
-subgoal 4 is:
-P 3
-subgoal 5 is:
-P 4
-
-
-
-8.17.2 swap num 1 num 2
-~~~~~~~~~~~~~~~~~~~~~~~
-
-This tactic switches the position of the goals of indices num 1 and
-num 2 . If either num 1 or num 2 is negative then goals are counted
-from the end of the focused goal list. Goals are indexed from 1, there
-is no goal with position 0.
-
-
-Example:
-Coq < Parameter P : nat -> Prop.
-
-Coq < Goal P 1 /\ P 2 /\ P 3 /\ P 4 /\ P 5.
-
-Coq < repeat split.
-5 subgoals
-
-============================
-P 1
-subgoal 2 is:
-P 2
-subgoal 3 is:
-P 3
-subgoal 4 is:
-P 4
-subgoal 5 is:
-P 5
-
-Coq < all: swap 1 3.
-5 subgoals
-
-============================
-P 3
-subgoal 2 is:
-P 2
-subgoal 3 is:
-P 1
-subgoal 4 is:
-P 4
-subgoal 5 is:
-P 5
-
-Coq < all: swap 1 -1.
-5 subgoals
-
-============================
-P 5
-subgoal 2 is:
-P 2
-subgoal 3 is:
-P 1
-subgoal 4 is:
-P 4
-subgoal 5 is:
-P 3
-
-
-
-8.17.3 revgoals
-~~~~~~~~~~~~~~~
+.. tacn:: revgoals
+   :name: revgoals
 
 This tactics reverses the list of the focused goals.
 
+.. example::
 
-Example:
-Coq < Parameter P : nat -> Prop.
+   .. coqtop:: all reset
 
-Coq < Goal P 1 /\ P 2 /\ P 3 /\ P 4 /\ P 5.
+      Parameter P : nat -> Prop.
+      Goal P 1 /\ P 2 /\ P 3 /\ P 4 /\ P 5.
+      repeat split.
+      all: revgoals.
 
-Coq < repeat split.
-5 subgoals
+.. tacn:: shelve
+   :name: shelve
 
-============================
-P 1
-subgoal 2 is:
-P 2
-subgoal 3 is:
-P 3
-subgoal 4 is:
-P 4
-subgoal 5 is:
-P 5
+   This tactic moves all goals under focus to a shelf. While on the
+   shelf, goals will not be focused on. They can be solved by
+   unification, or they can be called back into focus with the command
+   :tacn:`Unshelve`.
 
-Coq < all: revgoals.
-5 subgoals
+.. tacv:: shelve_unifiable
 
-============================
-P 5
-subgoal 2 is:
-P 4
-subgoal 3 is:
-P 3
-subgoal 4 is:
-P 2
-subgoal 5 is:
-P 1
+   Shelves only the goals under focus that are mentioned in other goals.
+   Goals that appear in the type of other goals can be solved by unification.
 
+.. example::
 
+   .. coqtop:: all reset
 
-8.17.4 shelve
-~~~~~~~~~~~~~
+      Goal exists n, n=0.
+      refine (ex_intro _ _ _).
+      all:shelve_unifiable.
+      reflexivity.
 
-This tactic moves all goals under focus to a shelf. While on the
-shelf, goals will not be focused on. They can be solved by
-unification, or they can be called back into focus with the command
-Unshelve (Section 8.17.5).
+.. tacn:: Unshelve
+   :name: Unshelve
 
-**Variants:**
+   This command moves all the goals on the shelf (see :tacn:`shelve`)
+   from the shelf into focus, by appending them to the end of the current
+   list of focused goals.
 
-#. shelve_unifiableShelves only the goals under focus that are
-   mentioned in other goals. Goals that appear in the type of other goals
-   can be solved by unification. Example: Coq < Goal exists n, n=0. 1
-   subgoal ============================ exists n : nat, n = 0 Coq <
-   refine (ex_intro _ _ _). 1 focused subgoal (shelved: 1)
-   ============================ ?Goal = 0 Coq < all:shelve_unifiable. 1
-   focused subgoal (shelved: 1) ============================ ?Goal = 0
-   Coq < reflexivity. No more subgoals.
+.. tacn:: give_up
+   :name: give_up
 
-8.17.5 Unshelve
-~~~~~~~~~~~~~~~
+   This tactic removes the focused goals from the proof. They are not
+   solved, and cannot be solved later in the proof. As the goals are not
+   solved, the proof cannot be closed.
 
-This command moves all the goals on the shelf (see Section 8.17.4)
-from the shelf into focus, by appending them to the end of the current
-list of focused goals.
-
-8.17.6 give_up
-~~~~~~~~~~~~~~
-
-This tactic removes the focused goals from the proof. They are not
-solved, and cannot be solved later in the proof. As the goals are not
-solved, the proof cannot be closed.
-
-The give_up tactic can be used while editing a proof, to choose to
-write the proof script in a non-sequential order.
+   The ``give_up`` tactic can be used while editing a proof, to choose to
+   write the proof script in a non-sequential order.
 
 8.18 Simple tactic macros
 -------------------------
