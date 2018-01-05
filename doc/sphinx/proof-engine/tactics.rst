@@ -2546,9 +2546,9 @@ Chapter `27`_).
    using the command Declare Right Step @term.
 
 
-.. _change_@term:
+.. _change_term:
 
-.. cmd:: change @@term
+.. cmd:: change @term
 ~~~~~~~~~~~~~~~~~
 
 
@@ -2584,117 +2584,131 @@ providing thatU is well-formed and that T and U are convertible.
 
 See also: 8.7
 
-
-8.7 Performing computations
+.. _performingcomputations:
+Performing computations
 ---------------------------
 
 This set of tactics implements different specialized usages of the
-tactic change.
+tactic :tacn:`change`.
 
-All conversion tactics (including change) can be parameterized by the
+All conversion tactics (including :tacn:`change`) can be parameterized by the
 parts of the goal where the conversion can occur. This is done using
 *goal clauses* which consists in a list of hypotheses and, optionally,
 of a reference to the conclusion of the goal. For defined hypothesis
 it is possible to specify if the conversion should occur on the type
 part, the body part or both (default).
 
-Goal clauses are written after a conversion tactic (tacticsset 8.3.7,
-rewrite 8.6.1,replace 8.6.2 andautorewrite 8.8.4 also use goal
-clauses) and are introduced by the keyword in. If no goal clause is
+Goal clauses are written after a conversion tactic (tactics :tacn:`set`,
+:tacn:`rewrite`, :tacn:`replace` and :tacn:`autorewrite` also use goal
+clauses) and are introduced by the keyword `in`. If no goal clause is
 provided, the default is to perform the conversion only in the
 conclusion.
 
 The syntax and description of the various goal clauses is the
 following:
 
-:: in ident 1 … ident n |- only in hypotheses ident 1 …ident n
-:: in ident 1 … ident n |- * in hypotheses ident 1 …ident n and in the
++ :n:`in {+ @ident} |-`  only in hypotheses :n:`{+ @ident}`
++ :n:`in {+ @ident} |- *` in hypotheses :n:`{+ @ident}` and in the
   conclusion
-:: in * |- in every hypothesis
-:: in * (equivalent to in * |- *) everywhere
-:: in (type of ident 1 ) (value of ident 2 ) … |- in type part of
-  ident 1 , in the value part of ident 2 , etc.
++ :n:`in * |-` in every hypothesis
++ :n:`in *` (equivalent to in :n:`* |- *`) everywhere
++ :n:`in (type of @ident) (value of @ident) ... |-` in type part of
+  :n:`@ident`, in the value part of :n:`@ident`, etc.
 
+For backward compatibility, the notation :n:`in {+ @ident}` performs
+the conversion in hypotheses :n:`{+ @ident}`.
 
-For backward compatibility, the notation in ident 1 …ident n performs
-the conversion in hypotheses ident 1 …ident n .
+.. tacn:: cbv {* flag}
+   :name: cbv
+.. tacn:: lazy {* flag}
+   :name: lazy
+.. tacn:: compute
+   :name: compute
 
+   These parameterized reduction tactics apply to any goal and perform
+   the normalization of the goal according to the specified flags. In
+   correspondence with the kinds of reduction considered in Coq namely :math:`\beta`
+   (reduction of functional application), :math:`\delta` (unfolding of
+   transparent constants, see :ref:`TODO-6.10.2-Transparent`), ι (reduction of
+   pattern-matching over a constructed term, and unfolding of :g:`fix` and
+   :g:`cofix` expressions) and ζ (contraction of local definitions), the
+   flags are either ``beta``, ``delta``, ``match``, ``fix``, ``cofix``,
+   ``iota`` or ``zeta``. The ``iota`` flag is a shorthand for ``match``, ``fix``
+   and ``cofix``. The ``delta`` flag itself can be refined into
+   :n:`delta {+ @qualid}` or :n:`delta -{+ @qualid}`, restricting in the first
+   case the constants to unfold to the constants listed, and restricting in the
+   second case the constant to unfold to all but the ones explicitly mentioned.
+   Notice that the ``delta`` flag does not apply to variables bound by a let-in
+   construction inside the :n:`@term` itself (use here the ``zeta`` flag). In
+   any cases, opaque constants are not unfolded (see :ref:`TODO-6.10.1-Opaque`).
 
-8.7.1 cbv flag 1 … flag n , lazy flag 1 … flag n , and compute
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   Normalization according to the flags is done by first evaluating the
+   head of the expression into a *weak-head* normal form, i.e. until the
+   evaluation is bloked by a variable (or an opaque constant, or an
+   axiom), as e.g. in :g:`x u1 ... un` , or :g:`match x with ... end`, or
+   :g:`(fix f x {struct x} := ...) x`, or is a constructed form (a
+   :math:`\lambda`-expression, a constructor, a cofixpoint, an inductive type, a
+   product type, a sort), or is a redex that the flags prevent to reduce. Once a
+   weak-head normal form is obtained, subterms are recursively reduced using the
+   same strategy.
 
+   Reduction to weak-head normal form can be done using two strategies:
+   *lazy* (``lazy`` tactic), or *call-by-value* (``cbv`` tactic). The lazy
+   strategy is a call-by-need strategy, with sharing of reductions: the
+   arguments of a function call are weakly evaluated only when necessary,
+   and if an argument is used several times then it is weakly computed
+   only once. This reduction is efficient for reducing expressions with
+   dead code. For instance, the proofs of a proposition :g:`exists x. P(x)`
+   reduce to a pair of a witness :g:`t`, and a proof that :g:`t` satisfies the
+   predicate :g:`P`. Most of the time, :g:`t` may be computed without computing
+   the proof of :g:`P(t)`, thanks to the lazy strategy.
 
+   The call-by-value strategy is the one used in ML languages: the
+   arguments of a function call are systematically weakly evaluated
+   first. Despite the lazy strategy always performs fewer reductions than
+   the call-by-value strategy, the latter is generally more efficient for
+   evaluating purely computational expressions (i.e. with few dead code).
 
-These parameterized reduction tactics apply to any goal and perform
-the normalization of the goal according to the specified flags. In
-correspondence with the kinds of reduction considered in Coq namely β
-(reduction of functional application), δ (unfolding of transparent
-constants, see `6.10.2`_), ι (reduction of pattern-matching over a
-constructed @term, and unfolding of fix and cofix expressions) and ζ
-(contraction of local definitions), the flags are either beta,
-delta,match, fix, cofix, iota or zeta. The iota flag is a shorthand
-for match, fix and cofix. The delta flag itself can be refined into
-delta [qualid 1 …qualid k ] or delta -[qualid 1 …qualid k ],
-restricting in the first case the constants to unfold to the constants
-listed, and restricting in the second case the constant to unfold to
-all but the ones explicitly mentioned. Notice that the delta flag does
-not apply to variables bound by a let-in construction inside the @term
-itself (use here the zeta flag). In any cases, opaque constants are
-not unfolded (see Section `6.10.1`_).
+.. tacv:: compute
+.. tacv:: cbv
 
-Normalization according to the flags is done by first evaluating the
-head of the expression into a *weak-head* normal form, i.e. until the
-evaluation is bloked by a variable (or an opaque constant, or an
-axiom), as e.g. in x u 1 ... u n , or match x with ... end, or (fix f
-x {struct x} := ...) x, or is a constructed form (a λ-expression, a
-constructor, a cofixpoint, an inductive type, a product type, a sort),
-or is a redex that the flags prevent to reduce. Once a weak-head
-normal form is obtained, sub@terms are recursively reduced using the
-same strategy.
+   These are synonyms for ``cbv beta delta iota zeta``.
 
-Reduction to weak-head normal form can be done using two strategies:
-*lazy* (lazy tactic), or *call-by-value* (cbv tactic). The lazy
-strategy is a call-by-need strategy, with sharing of reductions: the
-arguments of a function call are weakly evaluated only when necessary,
-and if an argument is used several times then it is weakly computed
-only once. This reduction is efficient for reducing expressions with
-dead code. For instance, the proofs of a propositionexists x. P(x)
-reduce to a pair of a witness t, and a proof that t satisfies the
-predicate P. Most of the time, t may be computed without computing the
-proof of P(t), thanks to the lazy strategy.
+.. tacv:: lazy
 
-The call-by-value strategy is the one used in ML languages: the
-arguments of a function call are systematically weakly evaluated
-first. Despite the lazy strategy always performs fewer reductions than
-the call-by-value strategy, the latter is generally more efficient for
-evaluating purely computational expressions (i.e. with few dead code).
+   This is a synonym for ``lazy beta delta iota zeta``.
 
+.. tacv:: compute {+ @qualid}
+.. tacv:: cbv {+ @qualid}
 
-**Variants:**
+   These are synonyms of :n:`cbv beta delta {+ @qualid} iota zeta`.
 
+.. tacv:: compute -{+ @qualid}
+.. tacv:: cbv -{+ @qualid}
 
-#. compute cbvThese are synonyms for cbv beta delta iota zeta.
-#. lazyThis is a synonym for lazy beta delta iota zeta.
-#. compute [qualid 1 …qualid k ] cbv [qualid 1 …qualid k ]These are
-   synonyms of cbv beta delta [qualid 1 …qualid k ] iota zeta.
-#. compute -[qualid 1 …qualid k ] cbv -[qualid 1 …qualid k ]These are
-   synonyms of cbv beta delta -[qualid 1 …qualid k ] iota zeta.
-#. lazy [qualid 1 …qualid k ] lazy -[qualid 1 …qualid k ]These are
-   respectively synonyms of lazy beta delta [qualid 1 …qualid k ] iota
-   zeta and lazy beta delta -[qualid 1 …qualid k ] iota zeta.
-#. vm_compute This tactic evaluates the goal using the optimized call-
-   by-value evaluation bytecode-based virtual machine described in
-   [`77`_]. This algorithm is dramatically more efficient than the
-   algorithm used for the cbv tactic, but it cannot be fine-tuned. It is
-   specially interesting for full evaluation of algebraic objects. This
-   includes the case of reflection-based tactics.
-#. native_compute This tactic evaluates the goal by compilation to
-   Objective Caml as described in [`16`_]. If Coq is running in native
-   code, it can be typically two to five times faster than vm_compute.
-   Note however that the compilation cost is higher, so it is worth using
-   only for intensive computations.
+   These are synonyms of :n:`cbv beta delta -{+ @qualid} iota zeta`.
 
+.. tacv:: lazy {+ @qualid}
+.. tacv:: lazy -{+ @qualid}
 
+   These are respectively synonyms of :n:`lazy beta delta {+ @qualid} iota zeta`
+   and :n:`lazy beta delta -{+ @qualid} iota zeta`.
+
+.. tacv:: vm_compute
+
+   This tactic evaluates the goal using the optimized call-by-value evaluation
+   bytecode-based virtual machine described in [`CompiledStrongReduction`_].
+   This algorithm is dramatically more efficient than the algorithm used for the
+   ``cbv`` tactic, but it cannot be fine-tuned. It is specially interesting for
+   full evaluation of algebraic objects. This includes the case of
+   reflection-based tactics.
+
+.. tacv:: native_compute
+
+   This tactic evaluates the goal by compilation to Objective Caml as described
+   in [`16`_]. If Coq is running in native code, it can be typically two to
+   five times faster than ``vm_compute``. Note however that the compilation cost
+   is higher, so it is worth using only for intensive computations.
 
 8.7.2 red
 ~~~~~~~~~
