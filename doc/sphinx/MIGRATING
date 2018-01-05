@@ -5,6 +5,14 @@ How to migrate the Coq Reference Manual to Sphinx
 
   * pip3 install bs4 sphinx sphinx_rtd_theme pexpect antlr4-python3-runtime sphinxcontrib-bibtex
 
+# You may want to do this under a virtualenv, particularly if you end up with issues finding sphinxcontrib.bibtex. http://docs.python-guide.org/en/latest/dev/virtualenvs/
+
+  * pip3 install virtualenv
+  * virtualenv coqsphinxing # you may want to use -p to specify the python version
+  * source coqsphinxing/bin/activate # activate the virtual environment
+
+# After activating the virtual environment you can run the above pip3 command to install sphinx. You will have to activate the virtual environment before building the docs in your session.  
+
 # Add this Elisp code to .emacs, if you're using emacs (recommended):
 
  (defun sphinx/quote-coq-refman-region (left right &optional beg end count)
