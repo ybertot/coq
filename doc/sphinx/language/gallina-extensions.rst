@@ -1,5 +1,7 @@
 .. include:: ../replaces.rst
 
+.. _extensionsofgallina:
+
 Extensions of |Gallina|
 =======================
 
@@ -89,7 +91,7 @@ To build an object of type `ident`, one should provide the constructor
 Alternatively, the following syntax allows creating objects by using named fields, as
 shown in this grammar. The fields do not have to be in any particular order, nor do they have
 to be all present if the missing ones can be inferred or prompted for
-(see Chapter :ref:`TODO-24-Programs`).
+(see :ref:`programs`).
 
 .. coqtop:: all
 
@@ -1948,7 +1950,7 @@ A canonical structure is an instance of a record/structure type that
 can be used to solve unification problems involving a projection
 applied to an unknown structure instance (an implicit argument) and a
 value. The complete documentation of canonical structures can be found
-in Chapter :ref:`TODO-19-canonical-structures`; here only a simple example is given.
+in :ref:`canonicalstructures`; here only a simple example is given.
 
 Assume that `qualid` denotes an object ``(Build_struc`` |c_1| … |c_n| ``)`` in the
 structure *struct* of which the fields are |x_1|, …, |x_n|. Assume that
@@ -2142,7 +2144,7 @@ which declares the construction denoted by qualid as a coercion
 between the two given classes.
 
 More details and examples, and a description of the commands related
-to coercions are provided in Chapter :ref:`TODO-18-implicit coercions`.
+to coercions are provided in :ref:`implicitcoercions`.
 
 .. _printing_constructions_full:
 
@@ -2150,7 +2152,7 @@ Printing constructions in full
 ------------------------------
 
 Coercions, implicit arguments, the type of pattern-matching, but also
-notations (see Chapter :ref:`TODO-12-interpretation-scopes`) can obfuscate the behavior of some
+notations (see :ref:`syntaxextensionsandinterpretationscopes`) can obfuscate the behavior of some
 tactics (typically the tactics applying to occurrences of subterms are
 sensitive to the implicit arguments). The command
 
@@ -2286,7 +2288,7 @@ is not specified and is implementation-dependent. The inner tactic may
 use any variable defined in its scope, including repeated alternations
 between variables introduced by term binding as well as those
 introduced by tactic binding. The expression `tacexpr` can be any tactic
-expression as described in Chapter :ref:`TODO-9-ltac`.
+expression as described in :ref:`thetacticlanguage`.
 
 .. coqtop:: all
 

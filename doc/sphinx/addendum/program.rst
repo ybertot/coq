@@ -1,6 +1,8 @@
-.. _program:
-
 .. include:: ../replaces.rst
+
+.. this should be just "_program", but refs to it don't work
+
+.. _programs:
 
 ----------
 Program
