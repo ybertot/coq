@@ -1,0 +1,5 @@
+/* rules for associating fonts with Sphinx roles */
+
+.smallcaps {
+    font-variant: small-caps;
+}

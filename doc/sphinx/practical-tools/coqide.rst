@@ -1,7 +1,9 @@
+.. include:: ../replaces.rst
+
 .. _coqintegrateddevelopmentenvironment:
 
 ----------------------------------------
- Coq Integrated Development Environment
+|Coq| Integrated Development Environment
 ----------------------------------------
 
 :Source: https://coq.inria.fr/distrib/current/refman/coqide.html
