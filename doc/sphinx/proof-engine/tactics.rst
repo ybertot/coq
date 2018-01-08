@@ -273,26 +273,20 @@ depends on the form of the goal. If the goal is of the form
 :g:`(fun x => Q) u`:sub:`1` :g:`...` :g:`u`:sub:`n` and the :g:`t`:sub:`i` and
 :g:`u`:sub:`i` unifies, then :g:`P` is taken to be :g:`(fun x => Q)`. Otherwise,
 ``apply`` tries to define :g:`P` by abstracting over :g:`t`:sub:`1`  :g:`...`
-:g:`t`:sub:`n` in the goal. See the :ref:`pattern tactic <pattern_term>` to
-transform the goal so that it gets the form :g:`(fun x => Q) u`:sub:`1`
-:g:`...`  :g:`u`:sub:`n`.
-
-**Error messages:**
+:g:`t`:sub:`n` in the goal. See :tacn:`pattern` to transform the goal so that it
+   gets the form :g:`(fun x => Q) u`:sub:`1` :g:`...`  :g:`u`:sub:`n`.
 
 .. exn:: Unable to unify ... with ... .
 
 The apply tactic failed to match the conclusion of term and the current goal.
 You can help the apply tactic by transforming your goal with the
-:ref:`change <change_term>` or :ref:`pattern <pattern_term>` tactics.
+:ref:`change <change_term>` or :tacn:`pattern` tactics.
 
 .. exn:: Unable to find an instance for the variables {+ @ident}.
 
 This occurs when some instantiations of the premises of term are not deducible
 from the unification. This is the case, for instance, when you want to apply a
 transitivity property. In this case, you have to use one of the variants below:
-
-**Variants:**
-
 
 .. cmd:: apply @term with {+ @term}
 
@@ -2627,11 +2621,12 @@ the conversion in hypotheses :n:`{+ @ident}`.
 
    These parameterized reduction tactics apply to any goal and perform
    the normalization of the goal according to the specified flags. In
-   correspondence with the kinds of reduction considered in Coq namely :math:`\beta`
-   (reduction of functional application), :math:`\delta` (unfolding of
-   transparent constants, see :ref:`TODO-6.10.2-Transparent`), ι (reduction of
+   correspondence with the kinds of reduction considered in Coq namely
+   :math:`\beta` (reduction of functional application), :math:`\delta`
+   (unfolding of transparent constants, see :ref:`TODO-6.10.2-Transparent`),
+   :math:`\iota` (reduction of
    pattern-matching over a constructed term, and unfolding of :g:`fix` and
-   :g:`cofix` expressions) and ζ (contraction of local definitions), the
+   :g:`cofix` expressions) and :math:`\zeta` (contraction of local definitions), the
    flags are either ``beta``, ``delta``, ``match``, ``fix``, ``cofix``,
    ``iota`` or ``zeta``. The ``iota`` flag is a shorthand for ``match``, ``fix``
    and ``cofix``. The ``delta`` flag itself can be refined into
@@ -2706,266 +2701,288 @@ the conversion in hypotheses :n:`{+ @ident}`.
 .. tacv:: native_compute
 
    This tactic evaluates the goal by compilation to Objective Caml as described
-   in [`16`_]. If Coq is running in native code, it can be typically two to
+   in [`FullReduction`_]. If Coq is running in native code, it can be typically two to
    five times faster than ``vm_compute``. Note however that the compilation cost
    is higher, so it is worth using only for intensive computations.
 
-8.7.2 red
-~~~~~~~~~
+.. tacn:: red
+   :name: red
 
+   This tactic applies to a goal that has the form::
 
+     forall (x:T1) ... (xk:Tk), t
 
-This tactic applies to a goal that has the form forall (x:T1)…(xk:Tk),
-t with t βιζ-reducing to c t1 … tn and c a constant. Ifc is
-transparent then it replaces c with its definition (say t) and then
-reduces (t t1 … tn) according to βιζ-reduction rules.
+   with :g:`t` :math:`\beta`:math:`\iota`:math:`\zeta`-reducing to :g:`c t`:sub:`1` :g:`... t`:sub:`n` and :g:`c` a
+   constant. If :g:`c` is transparent then it replaces :g:`c` with its
+   definition (say :g:`t`) and then reduces
+   :g:`(t t`:sub:`1` :g:`... t`:sub:`n` :g:`)` according to :math:`\beta`:math:`\iota`:math:`\zeta`-reduction rules.
 
+.. exn:: Not reducible
 
-**Error messages:**
+.. tacn:: hnf
+   :name: hnf
 
+   This tactic applies to any goal. It replaces the current goal with its
+   head normal form according to the :math:`\beta`:math:`\delta`:math:`\iota`:math:`\zeta`-reduction rules, i.e. it
+   reduces the head of the goal until it becomes a product or an
+   irreducible term. All inner :math:`\beta`:math:`\iota`-redexes are also reduced.
 
-#. Not reducible
-
-
-
-8.7.3 hnf
-~~~~~~~~~
-
-
-
-This tactic applies to any goal. It replaces the current goal with its
-head normal form according to the βδιζ-reduction rules, i.e. it
-reduces the head of the goal until it becomes a product or an
-irreducible @term. All inner βι-redexes are also reduced.
-
-
-Example: The @term `forall n:nat, (plus (S n) (S n))` is not reduced by
-hnf.
-
+   Example: The term :g:`forall n:nat, (plus (S n) (S n))` is not reduced by
+   :n:`hnf`.
 
 .. note::
- The δ rule only applies to transparent constants (see Section
-`6.10.1`_ on transparency and opacity).
+ The :math:`\delta` rule only applies to transparent constants (see :ref:`TODO-6.10.1-Opaque`
+ on transparency and opacity).
 
+.. tacn:: cbn
+   :name: cbn
+.. tacn:: simpl
+   :name: simpl
 
-8.7.4 cbn and simpl
-~~~~~~~~~~~~~~~~~~~
+   These tactics apply to any goal. They try to reduce a term to
+   something still readable instead of fully normalizing it. They perform
+   a sort of strong normalization with two key differences:
 
+   + They unfold a constant if and only if it leads to a :math:`\iota`-reduction,
+     i.e. reducing a match or unfolding a fixpoint.
+   + While reducing a constant unfolding to (co)fixpoints, the tactics
+     use the name of the constant the (co)fixpoint comes from instead of
+     the (co)fixpoint definition in recursive calls.
 
+   The ``cbn`` tactic is claimed to be a more principled, faster and more
+   predictable replacement for ``simpl``.
 
-These tactics apply to any goal. They try to reduce a @term to
-something still readable instead of fully normalizing it. They perform
-a sort of strong normalization with two key differences:
+   The ``cbn`` tactic accepts the same flags as ``cbv`` and ``lazy``. The
+   behavior of both ``simpl`` and ``cbn`` can be tuned using the
+   Arguments vernacular command as follows:
 
+   + A constant can be marked to be never unfolded by ``cbn`` or ``simpl``:
 
-+ They unfold a constant if and only if it leads to a ι-reduction,
-  i.e. reducing a match or unfolding a fixpoint.
-+ While reducing a constant unfolding to (co)fixpoints, the tactics
-  use the name of the constant the (co)fixpoint comes from instead of
-  the (co)fixpoint definition in recursive calls.
+     .. example::
+        .. coqtop:: all
 
+           Arguments minus n m : simpl never.
 
-The cbn tactic is claimed to be a more principled, faster and more
-predictable replacement for simpl.
+     After that command an expression like :g:`(minus (S x) y)` is left
+     untouched by the tactics ``cbn`` and ``simpl``.
 
-The cbn tactic accepts the same flags as cbv andlazy. The behavior of
-both simpl and cbn can be tuned using the Arguments vernacular command
-as follows:
+   + A constant can be marked to be unfolded only if applied to enough
+     arguments. The number of arguments required can be specified using the
+     ``/`` symbol in the arguments list of the ``Arguments`` vernacular command.
 
+     .. example::
+        .. coqtop:: all
 
-+ A constant can be marked to be never unfolded by cbn orsimpl: Coq <
-  Arguments minus n m : simpl never. After that command an expression
-  like (minus (S x) y) is left untouched by the tactics cbn and simpl.
-+ A constant can be marked to be unfolded only if applied to enough
-  arguments. The number of arguments required can be specified using the
-  / symbol in the arguments list of the Arguments vernacular command.
-  Coq < Definition fcomp A B C f (g : A -> B) (x : A) : C := f (g x).
-  Coq < Notation "f \o g" := (fcomp f g) (at level 50). Coq < Arguments
-  fcomp {A B C} f g x /. After that command the expression (f `\`o g) is
-  left untouched bysimpl while ((f `\`o g) t) is reduced to (f (g t)).
-  The same mechanism can be used to make a constant volatile, i.e.
-  always unfolded. Coq < Definition volatile := fun x : nat => x. Coq <
-  Arguments volatile / x.
-+ A constant can be marked to be unfolded only if an entire set of
-  arguments evaluates to a constructor. The ! symbol can be used to mark
-  such arguments. Coq < Arguments minus !n !m. After that command, the
-  expression (minus (S x) y) is left untouched bysimpl, while (minus (S
-  x) (S y)) is reduced to (minus x y).
-+ A special heuristic to de@termine if a constant has to be unfolded
-  can be activated with the following command: Coq < Arguments minus n m
-  : simpl nomatch. The heuristic avoids to perform a simplification step
-  that would expose a match construct in head position. For example the
-  expression (minus (S (S x)) (S y)) is simplified to(minus (S x) y)
-  even if an extra simplification is possible.
+           Definition fcomp A B C f (g : A -> B) (x : A) : C := f (g x).
+           Notation "f \o g" := (fcomp f g) (at level 50).
+           Arguments fcomp {A B C} f g x /.
 
+     After that command the expression :g:`(f \o g)` is left untouched by
+     ``simpl`` while :g:`((f \o g) t)` is reduced to :g:`(f (g t))`.
+     The same mechanism can be used to make a constant volatile, i.e.
+     always unfolded.
 
-In detail, the tactic simpl first applies βι-reduction. Then, it
-expands transparent constants and tries to reduce further using βι-
-reduction. But, when no ι rule is applied after unfolding then
-δ-reductions are not applied. For instance trying to use simpl on(plus
-n O)=n changes nothing.
+     .. example::
+        .. coqtop:: all
 
-Notice that only transparent constants whose name can be reused in the
-recursive calls are possibly unfolded by simpl. For instance a
-constant defined by plus’ := plus is possibly unfolded and reused in
-the recursive calls, but a constant such as succ := plus (S O) is
-never unfolded. This is the main difference betweensimpl and cbn. The
-tactic cbn reduces whenever it will be able to reuse it or not: succ t
-is reduced to S t.
+           Definition volatile := fun x : nat => x.
+           Arguments volatile / x.
 
+   + A constant can be marked to be unfolded only if an entire set of
+     arguments evaluates to a constructor. The ``!`` symbol can be used to mark
+     such arguments.
 
-**Variants:**
+     .. example::
+        .. coqtop:: all
 
+           Arguments minus !n !m.
 
-#. cbn [qualid 1 …qualid k ] cbn -[qualid 1 …qualid k ]These are
-   respectively synonyms of cbn beta delta [qualid 1 …qualid k ] iota
-   zeta and cbn beta delta -[qualid 1 …qualid k ] iota zeta (see 8.7.1).
-#. simpl patternThis applies simpl only to the sub@terms matching
-   pattern in the current goal.
-#. simpl pattern at num 1 … num i This applies simpl only to the num 1
-   , …, num i occurrences of the sub@terms matching pattern in the current
-   goal. Error message: Too few occurrences
-#. simpl qualid simpl stringThis applies simpl only to the applicative
-   sub@terms whose head occurrence is the unfoldable constant qualid (the
-   constant can be referred to by its notation using string if such a
-   notation exists).
-#. simpl qualid at num 1 … num i simpl string at num 1 … num i This
-   applies simpl only to the num 1 , …, num i applicative sub@terms whose
-   head occurrence is qualid (orstring).
+     After that command, the expression :g:`(minus (S x) y)` is left untouched
+     by ``simpl``, while :g:`(minus (S x) (S y))` is reduced to :g:`(minus x y)`.
 
-Refolding Reduction
-*Deprecated since 8.7*
+   + A special heuristic to determine if a constant has to be unfolded
+     can be activated with the following command:
 
-This option (off by default) controls the use of the refolding
-strategy of cbn while doing reductions in unification, type inference
-and tactic applications. It can result in expensive unifications, as
-refolding currently uses a potentially exponential heuristic.
+     .. example::
 
+        .. coqtop:: all
 
-8.7.5 unfold qualid
-~~~~~~~~~~~~~~~~~~~
+           Arguments minus n m : simpl nomatch.
 
+     The heuristic avoids to perform a simplification step that would expose a
+     match construct in head position. For example the expression
+     :g:`(minus (S (S x)) (S y))` is simplified to :g:`(minus (S x) y)`
+     even if an extra simplification is possible.
 
+   In detail, the tactic ``simpl`` first applies :math:`\beta`:math:`\iota`-reduction. Then, it
+   expands transparent constants and tries to reduce further using :math:`\beta`:math:`\iota`-
+   reduction. But, when no :math:`\iota` rule is applied after unfolding then
+   :math:`\delta`-reductions are not applied. For instance trying to use ``simpl`` on
+   :g:`(plus n O) = n` changes nothing.
 
-This tactic applies to any goal. The argument qualid must denote a
-defined transparent constant or local definition (see Sections
-`1.3.2`_ and `6.10.2`_). The tactic unfold applies the δ rule to each
-occurrence of the constant to which qualid refers in the current goal
-and then replaces it with its βι-normal form.
+   Notice that only transparent constants whose name can be reused in the
+   recursive calls are possibly unfolded by ``simpl``. For instance a
+   constant defined by :g:`plus' := plus` is possibly unfolded and reused in
+   the recursive calls, but a constant such as :g:`succ := plus (S O)` is
+   never unfolded. This is the main difference between ``simpl`` and ``cbn``.
+   The tactic ``cbn`` reduces whenever it will be able to reuse it or not:
+   :g:`succ t` is reduced to :g:`S t`.
 
+.. tacv:: cbn {+ @qualid}
+.. tacv:: cbn -{+ @qualid}
 
-**Error messages:**
+   These are respectively synonyms of :n:`cbn beta delta {+ @qualid} iota zeta`
+   and :n:`cbn beta delta -{+ @qualid} iota zeta` (see :tacn:`cbn`).
 
+.. tacv:: simpl @pattern
 
-#. qualid does not denote an evaluable constant
+   This applies ``simpl`` only to the subterms matching :n:`@pattern` in the
+   current goal.
 
+.. tacv:: simpl @pattern at {+ @num}
 
+   This applies ``simpl`` only to the :n:`{+ @num}` occurrences of the subterms
+   matching :n:`@pattern` in the current goal.
 
-**Variants:**
+   .. exn:: Too few occurrences
 
+.. tacv:: simpl @qualid
+.. tacv:: simpl @string
 
-#. unfold qualid 1 , …, qualid n Replaces *simultaneously* qualid 1 ,
-   …, qualid n with their definitions and replaces the current goal with
-   its βι normal form.
-#. unfold qualid 1 at num 1 1 , …, num i 1 , …, qualid n at num 1 n …
-   num j n The lists num 1 1 , …, num i 1 and num 1 n , …,num j n specify
-   the occurrences of qualid 1 , …,qualid n to be unfolded. Occurrences
-   are located from left to right. Error message: bad occurrence number
-   of qualid i Error message: qualid i does not occur
-#. unfold stringIf string denotes the discriminating symbol of a
-   notation (e.g. "+") or an expression defining a notation (e.g. `"_ +
-   _"`), and this notation refers to an unfoldable constant, then the
+   This applies ``simpl`` only to the applicative subterms whose head occurrence
+   is the unfoldable constant :n:`@qualid` (the constant can be referred to by
+   its notation using :n:`@string` if such a notation exists).
+
+.. tacv:: simpl @qualid at {+ @num}
+.. tacv:: simpl @string at {+ @num}
+
+   This applies ``simpl`` only to the :n:`{+ @num}` applicative subterms whose
+   head occurrence is :n:`@qualid` (or :n:`@string`).
+
+.. cmd:: Refolding Reduction
+
+   *Deprecated since 8.7*
+
+   This option (off by default) controls the use of the refolding
+   strategy of ``cbn`` while doing reductions in unification, type inference
+   and tactic applications. It can result in expensive unifications, as
+   refolding currently uses a potentially exponential heuristic.
+
+.. tacn:: unfold @qualid
+   :name: unfold
+
+   This tactic applies to any goal. The argument qualid must denote a
+   defined transparent constant or local definition (see
+   :ref:`TODO-1.3.2-Definitions` and :ref:`TODO-6.10.2-Transparent`). The tactic
+   ``unfold`` applies the :math:`\delta` rule to each occurrence of the constant to which
+   :n:`@qualid` refers in the current goal and then replaces it with its
+   :math:`\beta`:math:`\iota`-normal form.
+
+.. exn:: @qualid does not denote an evaluable constant
+
+.. tacv:: unfold {+, @qualid}
+
+   Replaces *simultaneously* :n:`{+, @qualid}` with their definitions and
+   replaces the current goal with its :math:`\beta`:math:`\iota` normal form.
+
+.. tacv:: unfold {+, @qualid at {+, @num }}
+
+   The lists :n:`{+, @num}` specify the occurrences of :n:`@qualid` to be
+   unfolded. Occurrences are located from left to right.
+
+   .. exn:: bad occurrence number of @qualid
+
+   .. exn:: @qualid does not occur
+
+.. tacv:: unfold @string
+
+   If :n:`@string` denotes the discriminating symbol of a notation (e.g. "+") or
+   an expression defining a notation (e.g. `"_ + _"`), and this notation refers to an unfoldable constant, then the
    tactic unfolds it.
-#. unfold string%keyThis is variant of unfold string where string gets
-   its interpretation from the scope bound to the delimiting keykey
-   instead of its default interpretation (see Section `12.2.2`_).
-#. unfold qualid_or_string 1 at num 1 1 , …, num i 1 , …,
-   qualid_or_string n at num 1 n … num j n This is the most general form,
-   where qualid_or_string is either aqualid or a string referring to a
-   notation.
 
+.. tacv:: unfold @string%key
 
+   This is variant of :n:`unfold @string` where :n:`@string` gets its
+   interpretation from the scope bound to the delimiting key :n:`key`
+   instead of its default interpretation (see :ref:`TODO-12.2.2-Localinterpretationrulesfornotations`).
+.. tacv:: unfold {+, qualid_or_string at {+, @num}}
 
-8.7.6 fold @term
-~~~~~~~~~~~~~~~
+   This is the most general form, where :n:`qualid_or_string` is either a
+   :n:`@qualid` or a :n:`@string` referring to a notation.
 
+.. tacn:: fold @term
+   :name: fold
 
+   This tactic applies to any goal. The term :n:`@term` is reduced using the
+   ``red`` tactic. Every occurrence of the resulting :n:`@term` in the goal is
+   then replaced by :n:`@term`.
 
-This tactic applies to any goal. The @term @term is reduced using the
-red tactic. Every occurrence of the resulting @term in the goal is then
-replaced by @term.
+.. tacv:: fold {+ @term}
 
+   Equivalent to :n:`fold @term ; ... ; fold @term`.
 
-**Variants:**
+.. tacn:: pattern @term
+   :name: pattern
 
+   This command applies to any goal. The argument :n:`@term` must be a free
+   subterm of the current goal. The command pattern performs :math:`\beta`-expansion
+   (the inverse of :math:`\beta`-reduction) of the current goal (say :g:`T`) by
 
-#. fold @term … @term n Equivalent to fold @term ;…; fold @term n .
+   + replacing all occurrences of :n:`@term` in :g:`T` with a fresh variable
+   + abstracting this variable
+   + applying the abstracted goal to :n:`@term`
 
+   For instance, if the current goal :g:`T` is expressible has
+   :math:`\varphi`:g:`(t)` where the notation captures all the instances of :g:`t`
+   in :math:`\varphi`:g:`(t)`, then :n:`pattern t` transforms it into
+   :g:`(fun x:A =>` :math:`\varphi`:g:`(x)) t`. This command can be used, for
+   instance, when the tactic ``apply`` fails on matching.
 
-.. _pattern_@term:
-.. cmd:: pattern @@term
+.. tacv:: pattern @term at {+ @num}
 
+   Only the occurrences :n:`{+ @num}` of :n:`@term` are considered for
+   :math:`\beta`-expansion. Occurrences are located from left to right.
 
-This command applies to any goal. The argument @term must be a free
-sub@term of the current goal. The command pattern performs β-expansion
-(the inverse of β-reduction) of the current goal (say T) by
+.. tacv:: pattern @term at - {+ @num}
 
+   All occurrences except the occurrences of indexes :n:`{+ @num }`
+   of :n:`@term` are considered for :math:`\beta`-expansion. Occurrences are located from
+   left to right.
 
-#. replacing all occurrences of @term in T with a fresh variable
-#. abstracting this variable
-#. applying the abstracted goal to @term
+.. tacv:: pattern {+, @term}
 
+   Starting from a goal :math:`\varphi`:g:`(t`:sub:`1` :g:`... t`:sub:`m`:g:`)`,
+   the tactic :n:`pattern t`:sub:`1`:n:`, ..., t`:sub:`m` generates the
+   equivalent goal
+   :g:`(fun (x`:sub:`1`:g:`:A`:sub:`1`:g:`) ... (x`:sub:`m` :g:`:A`:sub:`m` :g:`) =>`:math:`\varphi`:g:`(x`:sub:`1` :g:`... x`:sub:`m` :g:`)) t`:sub:`1` :g:`... t`:sub:`m`.
+   If :g:`t`:sub:`i` occurs in one of the generated types :g:`A`:sub:`j` these
+   occurrences will also be considered and possibly abstracted.
 
-For instance, if the current goal T is expressible has φ(t) where the
-notation captures all the instances of t in φ(t), then pattern t
-transforms it into (fun x:A => φ(x)) t. This command can be used, for
-instance, when the tacticapply fails on matching.
+.. tacv:: pattern {+, @term at {+ @num}}
 
+   This behaves as above but processing only the occurrences :n:`{+ @num}` of
+   :n:`@term` starting from :n:`@term`.
 
-**Variants:**
+.. tacv:: pattern {+, @term {? at {? -} {+, @num}}}
 
+   This is the most general syntax that combines the different variants.
 
-#. pattern @term at num 1 … num n Only the occurrences num 1 … num n of
-   @term are considered for β-expansion. Occurrences are located from left
-   to right.
-#. pattern @term at - num 1 … num n All occurrences except the
-   occurrences of indexes num 1 … num n of @term are considered for
-   β-expansion. Occurrences are located from left to right.
-#. pattern @term , …, @term m Starting from a goal φ(t 1 … t m ), the
-   tacticpattern t 1 , …, t m generates the equivalent goal (fun (x 1 :A
-   1 ) … (x m :A m ) => φ(x 1 … x m )) t 1 … t m . If t i occurs in one
-   of the generated types A j these occurrences will also be considered
-   and possibly abstracted.
-#. pattern @term at num 1 1 … num n 1 1 , …,@term m at num 1 m … num n
-   m m This behaves as above but processing only the occurrences num 1 1
-   , …, num i 1 of @term , …, num 1 m , …, num j m of @term m starting
-   from @term m .
-#. pattern @term [at [-] num 1 1 … num n 1 1 ] , …,@term m [at [-] num
-   1 m … num n m m ]This is the most general syntax that combines the
-   different variants.
+Conversion tactics applied to hypotheses
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+.. tacn:: conv_tactic in {+, @ident}
 
+   Applies the conversion tactic :n:`conv_tactic` to the hypotheses
+   :n:`{+ @ident}`. The tactic :n:`conv_tactic` is any of the conversion tactics
+   listed in this section.
 
-8.7.8 Conversion tactics applied to hypotheses
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   If :n:`@ident` is a local definition, then :n:`@ident` can be replaced by
+   (Type of :n:`@ident`) to address not the body but the type of the local
+   definition.
 
-conv_tactic in ident 1 … ident n
+   Example: :n:`unfold not in (Type of H1) (Type of H3)`.
 
-Applies the conversion tactic conv_tactic to the hypotheses ident 1 ,
-…, ident n . The tactic conv_tactic is any of the conversion tactics
-listed in this section.
-
-If ident i is a local definition, then ident i can be replaced by
-(Type of ident i ) to address not the body but the type of the local
-definition. Example: unfold not in (Type of H1) (Type of H3).
-
-
-**Error messages:**
-
-
-#. No such hypothesis : ident.
-
-
+.. exn:: No such hypothesis : ident.
 
 8.8 Automation
 --------------
