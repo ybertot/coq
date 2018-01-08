@@ -18,21 +18,20 @@ tactics for solving arithmetic goals over :math:`\mathbb{Z}`, :math:`\mathbb{Q}`
 It also possible to get the tactics for integers by a ``Require Import Lia``,
 rationals ``Require Import Lqa`` and reals ``Require Import Lra``.
 
-+ ``lia`` is a decision procedure for linear integer arithmetic (see
-  Section 22.4);
++ ``lia`` is a decision procedure for linear integer arithmetic (see Section :ref:`lia <lia>`);
 + ``nia`` is an incomplete proof procedure for integer non-linear
-  arithmetic (see Section 22.6);
+  arithmetic (see Section :ref:`nia <nia>`);
 + ``lra`` is a decision procedure for linear (real or rational) arithmetic
-  (see Section 22.3);
+  (see Section :ref:`lra <lra>`);
 + ``nra`` is an incomplete proof procedure for non-linear (real or
-  rational) arithmetic (see Section 22.5);
-+ ``psatz D n`` where ``D`` is ``Z`` or ``Q`` or ``R``, and
+  rational) arithmetic (see Section :ref:`nra <nra>`);
++ ``psatz D n`` where ``D`` is :math:`\mathbb{Z}` or :math:`\mathbb{Q}` or :math:`\mathbb{R}`, and
   ``n`` is an optional integer limiting the proof search depth
   is an incomplete proof procedure for non-linear arithmetic.
   It is based on John Harrison’s HOL Light
   driver to the external prover `csdp` [#]_. Note that the `csdp` driver is
   generating a *proof cache* which makes it possible to rerun scripts
-  even without `csdp` (see Section :ref:`psatz`_).
+  even without `csdp` (see Section :ref:`psatz <psatz>`).
 
 The tactics solve propositional formulas parameterized by atomic
 arithmetic expressions interpreted over a domain :math:`D` ∈ {ℤ, ℚ, ℝ}.
@@ -45,7 +44,7 @@ The syntax of the formulas is the following:
 		     
 where :math:`c` is a numeric constant, :math:`x \in D` is a numeric variable, the
 operators :math:`−, +, ×` are respectively subtraction, addition, and product;
- :math:`p ^ n` is exponentiation by a constant :math:`n`, :math:`P` is an arbitrary proposition.
+:math:`p ^ n` is exponentiation by a constant :math:`n`, :math:`P` is an arbitrary proposition.
 For :math:`\mathbb{Q}`, equality is not Leibniz equality = but the equality of
 rationals ==.
 
@@ -97,6 +96,7 @@ For each conjunct :math:`C_i`, the tactic calls a oracle which searches for
 expression* that is normalized by the ring tactic (see :ref:`theringandfieldtacticfamilies`)
 and checked to be :math:`-1`.
 
+.. _lra:
 
 `lra`: a decision procedure for linear real and rational arithmetic
 ----------------------------------------------------------------------
@@ -112,14 +112,16 @@ The deductive power of `lra` is the combined deductive power of
 tactic *e.g.*, :math:`x = 10 * x / 10` is solved by `lra`.
 
 
+.. _lia:
+
 `lia`: a tactic for linear integer arithmetic
 ------------------------------------------------
 
 The tactic lia offers an alternative to the omega and romega tactic
-(see :ref:`omega`_). Roughly speaking, the deductive power of lia is
+(see :ref:`omega`). Roughly speaking, the deductive power of lia is
 the combined deductive power of `ring_simplify` and `omega`. However, it
 solves linear goals that `omega` and `romega` do not solve, such as the
-following so-called *omega nightmare* [`TODO-130-Pugh-article`_].
+following so-called *omega nightmare* :cite:`TheOmegaPaper`.
 
 .. coqtop:: in
 
@@ -185,6 +187,8 @@ Our current oracle tries to find an expression :math:`e` with a small range
 with an equation :math:`e = i` for :math:`i \in [c_1,c_2]` and recursively search for
 a proof.
 
+.. _nra:
+
 `nra`: a proof procedure for non-linear arithmetic
 -----------------------------------------------------
 
@@ -202,6 +206,8 @@ does the following:
 
 After this pre-processing, the linear prover of `lra` searches for a
 proof by abstracting monomials by variables.
+
+.. _nia:
 
 `nia`: a proof procedure for non-linear integer arithmetic
 -------------------------------------------------------------

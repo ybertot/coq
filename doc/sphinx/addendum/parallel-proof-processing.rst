@@ -5,8 +5,9 @@
 :Source: https://coq.inria.fr/distrib/current/refman/async-proofs.html
 :Converted by: Paul Steckler
 
+------------------------------------------
 Asynchronous and Parallel Proof Processing
-=====================================================
+------------------------------------------
 
 Author: Enrico Tassi
 
@@ -92,7 +93,7 @@ kind of proof blocks, and an ML API to add new ones.
   indentation level
 
 Caveats
-~~~~~~~~~~~~~~
+````````
 
 When a vernacular command fails the subsequent error messages may be
 bogus, i.e. caused by the first error. Error resiliency for vernacular

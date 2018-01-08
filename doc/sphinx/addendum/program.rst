@@ -1,3 +1,4 @@
+.. include:: ../preamble.rst
 .. include:: ../replaces.rst
 
 .. this should be just "_program", but refs to it don't work
@@ -17,17 +18,17 @@ Program
 
 We present here the |Program| tactic commands, used to build
 certified |Coq| programs, elaborating them from their algorithmic
-skeleton and a rich specification :cite:`p-sozeau06`. It can be thought of as a
+skeleton and a rich specification :cite:`sozeau06`. It can be thought of as a
 dual of :ref:`Extraction <extraction>`. The goal of |Program| is to
 program as in a regular functional programming language whilst using
 as rich a specification as desired and proving that the code meets the
 specification using the whole |Coq| proof apparatus. This is done using
 a technique originating from the “Predicate subtyping” mechanism of
-PVS :cite:`p-Rushby98`, which generates type-checking conditions while typing a
+PVS :cite:`Rushby98`, which generates type-checking conditions while typing a
 term constrained to a particular type. Here we insert existential
 variables in the term, which must be filled with proofs to get a
 complete |Coq| term. |Program| replaces the |Program| tactic by Catherine
-Parent :cite:`p-Parent95b` which had a similar goal but is no longer maintained.
+Parent :cite:`Parent95b` which had a similar goal but is no longer maintained.
 
 The languages available as input are currently restricted to |Coq|’s
 term language, but may be extended to OCaml, Haskell and
@@ -52,7 +53,7 @@ direction, Russell will automatically insert a projection.
 
 Another distinction is the treatment of pattern-matching. Apart from
 the following differences, it is equivalent to the standard match
-operation (see :ref:`extended-pattern-matching`).
+operation (see :ref:`extendedpatternmatching`).
 
 
 + Generation of equalities. A match expression is always generalized
@@ -94,7 +95,7 @@ coercions.
    This deactivates the special treatment of
    pattern-matching generating equalities and inequalities when using
    |Program| (it is on by default). All pattern-matchings and let-patterns
-   are handled using the standard algorithm of |Coq| (see :ref:`extended-pattern-matching`)
+   are handled using the standard algorithm of |Coq| (see :ref:`extendedpatternmatching`)
    when this option is deactivated.
 
 .. cmd:: Unset Program Generalized Coercion

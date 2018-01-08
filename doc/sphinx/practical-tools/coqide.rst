@@ -19,15 +19,15 @@ Without argument, the main screen is displayed with an “unnamed
 buffer”, and with a file name as argument, another buffer displaying
 the contents of that file. Additionally, `coqide` accepts the same
 options as `coqtop`, given in :ref:`thecoqcommands`, the ones having obviously
-no meaning for CoqIDE being ignored. Additionally, `coqide` accepts
+no meaning for |CoqIDE| being ignored. Additionally, `coqide` accepts
 the option `-enable-geoproof` to enable the support for *GeoProof* [#]_.
 
 .. _coqide_mainscreen:
 
   .. image:: ../_static/coqide.png
-     :alt: CoqIDE main screen
+     :alt: |CoqIDE| main screen
 
-A sample CoqIDE main screen, while navigating into a file `Fermat.v`,
+A sample |CoqIDE| main screen, while navigating into a file `Fermat.v`,
 is shown in the figure :ref:`CoqIDE main screen <coqide_mainscreen>`.
 At the top is a menu bar, and a tool bar
 below it. The large window on the left is displaying the various
@@ -139,7 +139,7 @@ Queries
 .. _coqide_querywindow:
 
 .. image:: ../_static/coqide-queries.png
-   :alt: CoqIDE queries
+   :alt: |CoqIDE| queries
 
 We call *query* any vernacular command that does not change the current
 state, such as ``Check``, ``Search``, *etc*. Those commands are of course
@@ -180,7 +180,7 @@ The second section is devoted to file management: you may configure
 automatic saving of files, by periodically saving the contents into
 files named `#f#` for each opened file `f`. You may also activate the
 *revert* feature: in case a opened file is modified on the disk by a
-third party, CoqIDE may read it again for you. Note that in the case
+third party, |CoqIDE| may read it again for you. Note that in the case
 you edited that same file, you will be prompt to choose to either
 discard your changes or not. The File charset encoding choice is
 described below in :ref:`character-encoding-saved-files`.
@@ -232,7 +232,7 @@ mathematical symbols ∀ and ∃, you may define:
 
 There exists a small set of such notations already defined, in the
 file `utf8.v` of Coq library, so you may enable them just by
-``Require utf8`` inside CoqIDE, or equivalently, by starting CoqIDE with
+``Require utf8`` inside |CoqIDE|, or equivalently, by starting |CoqIDE| with
 ``coqide -l utf8``.
 
 However, there are some issues when using such Unicode symbols: you of
@@ -242,3 +242,61 @@ symbols, so you could figure out if the selected font is OK. Related
 to this, one thing you may need to do is choose whether GTK+ should
 use antialiased fonts or not, by setting the environment variable
 `GDK_USE_XFT` to 1 or 0 respectively.
+
+
+Defining an input method for non-ASCII symbols
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To input a Unicode symbol, a general method provided by GTK+ is to
+simultaneously press the Control, Shift and “u” keys, release, then
+type the hexadecimal code of the symbol required, for example `2200`
+for the ∀ symbol. A list of symbol codes is available at
+`http://www.unicode.org`.
+
+An alternative method which does not require to know the hexadecimal
+code of the character is to use an Input Method Editor. On POSIX
+systems (Linux distributions, BSD variants and MacOS X), you can
+use `uim` version 1.6 or later which provides a :math:`\LaTeX`-style input
+method.
+
+To configure uim, execute uim-pref-gtk as your regular user. In the
+"Global Settings" group set the default Input Method to "ELatin"
+(don’t forget to tick the checkbox "Specify default IM"). In the
+"ELatin" group set the layout to "TeX", and remember the content of
+the "[ELatin] on" field (by default Control-\\). You can now execute
+|CoqIDE| with the following commands (assuming you use a Bourne-style
+shell):
+
+::
+
+    $ export GTK_IM_MODULE=uim
+    $ coqide
+
+
+Activate the ELatin Input Method with Control-\\, then type the
+sequence `\\Gamma`. You will see the sequence being replaced by Γ as
+soon as you type the second "a".
+
+.. _character-encoding-saved-files:
+
+Character encoding for saved files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the Files section of the preferences, the encoding option is
+related to the way files are saved.
+
+If you have no need to exchange files with non UTF-8 aware
+applications, it is better to choose the UTF-8 encoding, since it
+guarantees that your files will be read again without problems. (This
+is because when |CoqIDE| reads a file, it tries to automatically detect
+its character encoding.)
+
+If you choose something else than UTF-8, then missing characters will
+be written encoded by `\x{....}` or `\x{........}` where each dot is
+an hexadecimal digit: the number between braces is the hexadecimal
+Unicode index for the missing character.
+
+.. [#] *GeoProof* is dynamic geometry software which can be used in
+   conjunction with |CoqIDE| to interactively build a Coq statement
+   corresponding to a geometric figure. More information about *GeoProof*
+   can be found here: `http://home.gna.org/geoproof/`.
