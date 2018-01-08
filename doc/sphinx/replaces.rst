@@ -2,6 +2,7 @@
 
 .. role:: smallcaps
 
+.. |Cic| replace:: :smallcaps:`Cic`
 .. |Coq| replace:: :smallcaps:`Coq`
 .. |CoqIDE| replace:: :smallcaps:`CoqIDE`
 .. |Gallina| replace:: :smallcaps:`Gallina`
