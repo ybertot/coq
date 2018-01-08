@@ -137,6 +137,8 @@ placeholder .rst files for each chapter.
 
   Yes, the angle-brackets are needed here!
 
+  For bibliographic references (those in biblio.bib), use :cite:`thecitation`.
+
   Grammars will get mangled by the translation. Look for "productionlist" in the examples, also see
   http://www.sphinx-doc.org/en/stable/markup/para.html.
 
