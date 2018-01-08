@@ -81,7 +81,7 @@ where:
   :math:`c (P−Q) r = \sum_{i=1..s} S_i (P i − Q i)`
 
 * `strategy` gives the order on variables :math:`X_1,\ldots,X_n` and the strategy
-  used in Buchberger algorithm (see :ref:`TODO-72` for details):
+  used in Buchberger algorithm (see :cite:`sugar` for details):
 
     * strategy = 0: reverse lexicographic order and newest s-polynomial.
     * strategy = 1: reverse lexicographic order and sugar strategy.
