@@ -1331,8 +1331,9 @@ Dénès to put together a |Coq| consortium.
 |
 
 
+------------------
 Table of contents
-=================
+------------------
 
 .. toctree::
    :caption: The language
@@ -1403,8 +1404,9 @@ Table of contents
 
 There's also an work-in-progress version of a `PDF manual <http://web.mit.edu/cpitcla/www/coq-rst/Coq85.pdf>`_.
 
-Indices and tables
-==================
+--------
+Indexes
+--------
 
 * :ref:`genindex`
 * :index:`cmdindex`
