@@ -1224,9 +1224,9 @@ qualified name.
        When the module containing the command Export qualid
        is imported, qualid is imported as well.
 
-    .. exn:: `qualid` is not a module
+    .. exn:: @qualid is not a module
 
-    .. warn:: Trying to mask the absolute name `qualid`\ !
+    .. warn:: Trying to mask the absolute name @qualid!
 
 .. cmd:: Print Module @ident.
 
