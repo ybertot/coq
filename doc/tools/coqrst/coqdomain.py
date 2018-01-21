@@ -393,6 +393,7 @@ class InferenceDirective(Directive):
     required_arguments = 1
     optional_arguments = 0
     has_content = True
+    final_argument_whitespace = True
 
     def make_math_node(self, latex):
         node = displaymath()
