@@ -1,6 +1,6 @@
 .. _introduction:
 
-===========================================
+
 Introduction
 ===========================================
 
@@ -1390,30 +1390,23 @@ Table of contents
    addendum/universe-polymorphism
    addendum/miscellaneous-extensions
 
+.. toctree::
+   :caption: Reference
+   :maxdepth: 10
+	     
    glossary
 
    zebibliography
 
 .. toctree::
-   :caption: Porting to Sphinx
-
-   porting/gallina-specification-language
-   porting/cic
-   porting/tactics
-   porting/tricky-bits
-
-There's also an work-in-progress version of a `PDF manual <http://web.mit.edu/cpitcla/www/coq-rst/Coq85.pdf>`_.
-
---------
-Indexes
---------
-
-* :ref:`genindex`
-* :index:`cmdindex`
-* :index:`tacindex`
-* :index:`optindex`
-* :index:`exnindex`
-* :ref:`search`
-
+   :caption: Indexes
+   :maxdepth: 10
+	     
+   genindex
+   coq-cmdindex
+   coq-tacindex	      
+   coq-optindex	      
+   coq-exnindex	      
+   
 .. No entries yet
   * :index:`thmindex`
