@@ -6,6 +6,8 @@
 .. |Coq| replace:: :smallcaps:`Coq`
 .. |CoqIDE| replace:: :smallcaps:`CoqIDE`
 .. |Gallina| replace:: :smallcaps:`Gallina`
+.. |Ocaml| replace:: :smallcaps:`OCaml`
+.. |ML| replace:: :smallcaps:`ML`
 
 .. |A_1| replace:: `A`\ :math:`_{1}`
 .. |A_n| replace:: `A`\ :math:`_{n}`
@@ -65,6 +67,7 @@
 
 .. |t_1| replace:: `t`\ :math:`_{1}`
 .. |t_i| replace:: `t`\ :math:`_{i}`
+.. |t_m| replace:: `t`\ :math:`_{m}`
 .. |t_n| replace:: `t`\ :math:`_{n}`
 
 .. |term_0| replace:: `term`\ :math:`_{0}`
@@ -82,4 +85,15 @@
 .. |x_i| replace:: `x`\ :math:`_{i}`
 .. |x_n| replace:: `x`\ :math:`_{n}`
 
+.. |mod_0| replace:: `mod`\ :math:`_{0}`
+.. |mod_1| replace:: `mod`\ :math:`_{1}`
+.. |mod_2| replace:: `mod`\ :math:`_{1}`
+.. |mod_n| replace:: `mod`\ :math:`_{n}`
+
 .. |Program| replace:: :strong:`Program`
+
+.. |nat| replace:: ``nat``
+.. |Z| replace:: ``Z``
+.. |N| replace:: ``N``
+.. |L_tac| replace:: `L`:sub:`tac`
+.. |bdi| replace:: :math:`\beta\delta\iota`
