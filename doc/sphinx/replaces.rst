@@ -1,5 +1,12 @@
 .. some handy replacements for common items
 
+.. role:: smallcaps
+
+.. |Cic| replace:: :smallcaps:`Cic`
+.. |Coq| replace:: :smallcaps:`Coq`
+.. |CoqIDE| replace:: :smallcaps:`CoqIDE`
+.. |Gallina| replace:: :smallcaps:`Gallina`
+
 .. |A_1| replace:: `A`\ :math:`_{1}`
 .. |A_n| replace:: `A`\ :math:`_{n}`
 

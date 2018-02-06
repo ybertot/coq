@@ -1,3 +1,5 @@
+.. include:: ../replaces.rst
+
 .. _extendedpatternmatching:
 
 ==================================================
@@ -13,7 +15,7 @@
 
 .. TODO links to figures
 
-This section describes the full form of pattern-matching in Coq terms.
+This section describes the full form of pattern-matching in |Coq| terms.
 
 .. |rhs| replace:: right hand side
 
