@@ -601,7 +601,7 @@ Managing the local context
 
 This tactic applies to a goal that is either a product or starts with a let
 binder. If the goal is a product, the tactic implements the "Lam" rule given in
-:ref:`TODO-4.2-Typing-rules`. If the goal starts with a let binder, then the
+:ref:`TODO-4.2-Typing-rules` [1]_. If the goal starts with a let binder, then the
 tactic implements a mix of the "Let" and "Conv".
 
 If the current goal is a dependent product :math:`\forall` :g:`x:T, U` (resp
@@ -1082,7 +1082,7 @@ Controlling the proof flow
 
    This tactic applies to any goal. :n:`assert (H : U)` adds a new hypothesis
    of name :n:`H` asserting :g:`U` to the current goal and opens a new subgoal
-   :g:`U`. The subgoal :g:`U` comes first in the list of subgoals remaining to
+   :g:`U` [2]_. The subgoal :g:`U` comes first in the list of subgoals remaining to
    prove.
 
 .. exn:: Not a proposition or a type
@@ -1823,13 +1823,12 @@ See also: :ref:`TODO-2.3-Advancedrecursivefunctions`
 
    The argument :n:`@term` is assumed to be a proof of a statement of
    conclusion :n:`@term = @term` with the two terms being elements of an
-   inductive set. To build the proof, the tactic traverses the normal
-   forms of the terms looking for a couple of subterms :g:`u` and :g:`w`
-   (:g:`u` subterm of the normal form of :n:`@term` and :g:`w` subterm of the
-   normal form of :n:`@term`), placed at the same positions and whose head
-   symbols are two different constructors. If such a couple of subterms exists,
-   then the proof of the current goal is completed, otherwise the tactic
-   fails.
+   inductive set. To build the proof, the tactic traverses the normal forms
+   [3]_ of the terms looking for a couple of subterms :g:`u` and :g:`w` (:g:`u`
+   subterm of the normal form of :n:`@term` and :g:`w` subterm of the normal
+   form of :n:`@term`), placed at the same positions and whose head symbols are
+   two different constructors. If such a couple of subterms exists, then the
+   proof of the current goal is completed, otherwise the tactic fails.
 
 .. note::
    The syntax :n:`discriminate @ident` can be used to refer to a hypothesis
@@ -2332,251 +2331,270 @@ turned off by setting the option ``Set Keep Proof Equalities``.
    simultaneously proved are respectively :g:`forall binder ... binder, type`
    The identifiers :n:`@ident` are the names of the coinduction hypotheses.
 
-8.6 Rewriting expressions
--------------------------
+.. _rewritingexpressions:
+Rewriting expressions
+---------------------
 
-These tactics use the equality eq:forall A:Type, A->A->Prop defined in
-file Logic.v (see Section `3.1.2`_). The notation for eq T t u is
-simply t=u dropping the implicit type of t and u.
+These tactics use the equality :g:`eq:forall A:Type, A->A->Prop` defined in
+file ``Logic.v`` (see :ref:`TODO-3.1.2-Logic`). The notation for :g:`eq T t u` is
+simply :g:`t=u` dropping the implicit type of :g:`t` and :g:`u`.
 
+.. tacn:: rewrite @term
+   :name: rewrite
 
-8.6.1 rewrite @term
-~~~~~~~~~~~~~~~~~~
+  This tactic applies to any goal. The type of :n:`@term` must have the form::
 
-This tactic applies to any goal. The type of @term must have the form
+    forall (x\ :sub:`1` :A\ :sub:`1` ) ... (x\ :sub:`n`:A\ :sub:`n` )eq term:sub:`1` term:sub:`2`.
 
-forall (x 1 :A 1 ) … (x n :A n )eq @term @term .
+  where :g:`eq` is the Leibniz equality or a registered setoid equality.
 
-where eq is the Leibniz equality or a registered setoid equality.
+  Then :n:`rewrite @term` finds the first subterm matching `term`\ :sub:`1` in the goal,
+  resulting in instances `term`:sub:`1`' and `term`:sub:`2`' and then
+  replaces every occurrence of `term`:subscript:`1`' by `term`:subscript:`2`'.
+  Hence, some of the variables :g:`x`\ :sub:`i` are solved by unification,
+  and some of the types :g:`A`\ :sub:`1`:g:`, ..., A`\ :sub:`n` become new
+  subgoals.
 
-Then rewrite @term finds the first sub@term matching@term in the goal,
-resulting in instances @term ′ and @term ′ and then replaces every
-occurrence of @term ′ by @term ′. Hence, some of the variables x i
-are solved by unification, and some of the types A 1 , …,A n become
-new subgoals.
-
-**Error messages:**
-
-#. The @term provided does not end with an equation
-#. Tactic generated a subgoal identical to the original goalThis
+.. exn:: The @term provided does not end with an equation
+.. exn:: Tactic generated a subgoal identical to the original goal. This
    happens if @term does not occur in the goal.
 
-**Variants:**
+.. tacv:: rewrite -> @term
 
-#. rewrite -> @termIs equivalent to rewrite @term
-#. rewrite <- @termUses the equality @term =@term from right to left
-#. rewrite @term in clauseAnalogous to rewrite @term but rewriting is
-   done followingclause (similarly to 8.7). For instance:
+  Is equivalent to :n:`rewrite @term`
 
-    + rewrite H in H1 will rewrite H in the hypothesisH1 instead of the
-      current goal.
-    + rewrite H in H1 at 1, H2 at - 2 |- * means rewrite H; rewrite H in
-      H1 at 1; rewrite H in H2 at - 2. In particular a failure will happen
-      if any of these three simpler tactics fails.
-    + rewrite H in * |- will do rewrite H in H i for all hypothesis H i <>
-      H. A success will happen as soon as at least one of these simpler
-      tactics succeeds.
-    + rewrite H in * is a combination of rewrite H and rewrite H in * |-
-      that succeeds if at least one of these two tactics succeeds.
-   Orientation -> or <- can be inserted before the @term to rewrite.
-#. rewrite @term at occurrencesRewrite only the given occurrences of
-   @term ′. Occurrences are specified from left to right as for pattern
-   (§8.7.7). The rewrite is always performed using setoid rewriting, even
-   for Leibniz’s equality, so one has toImport Setoid to use this
-   variant.
-#. rewrite @term by tacticUse tactic to completely solve the side-
-   conditions arising from the rewrite.
-#. rewrite @term , … , @term n Is equivalent to the n successive
-   tactics rewrite @term up to rewrite @term n , each one working on the
-   first subgoal generated by the previous one. Orientation -> or <- can
-   be inserted before each @term to rewrite. One unique clause can be
-   added at the end after the keyword in; it will then affect all rewrite
-   operations.
-#. In all forms of rewrite described above, a @term to rewrite can be
-   immediately prefixed by one of the following modifiers:
+.. tacv:: rewrite <- @term
 
-    + ? : the tactic rewrite ?@term performs the rewrite of @term as many
-      times as possible (perhaps zero time). This form never fails.
-    + n? : works similarly, except that it will do at mostn rewrites.
-    + ! : works as ?, except that at least one rewrite should succeed,
-      otherwise the tactic fails.
-    + n! (or simply n) : precisely n rewrites of @term will be done,
-      leading to failure if these n rewrites are not possible.
+  Uses the equality :n:`@term`\ :sub:`1`:n:` = @term`\ :sub:`2` from right to
+  left
 
-#. erewrite @termThis tactic works as rewrite @term but turning
-   unresolved bindings into existential variables, if any, instead of
-   failing. It has the same variants as rewrite has.
+.. tacv:: rewrite @term in clause
 
+  Analogous to :n:`rewrite @term` but rewriting is done following clause
+  (similarly to :ref:`performingcomputations`). For instance:
 
+      + :g:`rewrite H in H:sub:`1`` will rewrite `H` in the hypothesis
+        `H:sub:`1`` instead of the current goal.
+      + :g:`rewrite H in H:sub:`1` at 1, H:sub:`2` at - 2 |- *` means :g:`rewrite
+        H; rewrite H in H:sub:`1` at 1; rewrite H in H:sub:`2` at - 2.` In
+        particular a failure will happen if any of these three simpler tactics
+        fails.
+      + :g:`rewrite H in * |-` will do :g:`rewrite H in H:sub:`i`` for all hypothesis
+        :g:`H:sub:`i` <> H`. A success will happen as soon as at least one of these
+        simpler tactics succeeds.
+      + :g:`rewrite H in *` is a combination of :g:`rewrite H` and :g:`rewrite H
+        in * |-` that succeeds if at least one of these two tactics succeeds.
+     Orientation :g:`->` or :g:`<-` can be inserted before the :n:`@term` to rewrite.
 
-8.6.2 replace @term with @term
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. tacv:: rewrite @term at occurrences
 
+  Rewrite only the given occurrences of :n:`@term'`\ :sub:`1`. Occurrences are
+  specified from left to right as for pattern (:ref:`TODO-8.7.7-Pattern`). The rewrite is
+  always performed using setoid rewriting, even for Leibniz’s equality, so one
+  has to ``Import Setoid`` to use this variant.
 
+.. tacv:: rewrite @term by tactic
 
-This tactic applies to any goal. It replaces all free occurrences
-of@term in the current goal with @term and generates the equality
-@term =@term as a subgoal. This equality is automatically solved if
-it occurs among the assumption, or if its symmetric form occurs. It is
-equivalent to cut@term =@term ; [intro Hn; rewrite <- Hn; clear Hn|
-assumption || symmetry; try assumption].
+  Use tactic to completely solve the side-conditions arising from the
+  :tacn:`rewrite`.
 
+.. tacv:: rewrite {+ @term}
 
-**Error messages:**
+  Is equivalent to the `n` successive tactics :n:`{+ rewrite @term}`, each one
+  working on the first subgoal generated by the previous one. Orientation
+  :g:`->` or :g:`<-` can be inserted before each :n:`@term` to rewrite.  One
+  unique clause can be added at the end after the keyword in; it will then
+  affect all rewrite operations.
 
+  In all forms of rewrite described above, a :n:`@term` to rewrite can be
+  immediately prefixed by one of the following modifiers:
 
-#. @terms do not have convertible types
+  + `?` : the tactic rewrite :n:`?@term` performs the rewrite of :n:`@term` as many
+    times as possible (perhaps zero time). This form never fails.
+  + `n?` : works similarly, except that it will do at most `n` rewrites.
+  + `!` : works as ?, except that at least one rewrite should succeed, otherwise
+    the tactic fails.
+  + `n!` (or simply `n`) : precisely `n` rewrites of :n:`@term` will be done,
+    leading to failure if these n rewrites are not possible.
+
+.. tacv:: erewrite @term
+
+  This tactic works as :n:`rewrite @term` but turning
+  unresolved bindings into existential variables, if any, instead of
+  failing. It has the same variants as :tacn:`rewrite` has.
 
 
+.. tacn:: replace @term:sub:`1` with @term:sub:`2`
+   :name: replace
 
-**Variants:**
-
-
-#. replace @term with @term by tacticThis acts as replace @term
-   with @term but applies tactic to solve the generated subgoal @term
-   =@term .
-#. replace @termReplaces @term with @term’ using the first assumption
-   whose type has the form @term=@term’ or @term’=@term.
-#. replace -> @termReplaces @term with @term’ using the first assumption
-   whose type has the form @term=@term’
-#. replace <- @termReplaces @term with @term’ using the first assumption
-   whose type has the form @term’=@term
-#. replace @term with @term in clause replace @term with @term in
-   clause by tactic replace @term in clause replace -> @term in clause
-   replace <- @term in clauseActs as before but the replacements take
-   place inclause (see Section 8.7) and not only in the conclusion of the
-   goal. The clause argument must not contain any type of nor value of.
-#. cutrewrite <- (@term = @term )This tactic is deprecated. It acts
-   like replace @term with@term , or, equivalently as enough (@term
-   =@term ) as <-.
-#. cutrewrite -> (@term = @term )This tactic is deprecated. It can
-   be replaced by enough (@term = @term ) as ->.
+  This tactic applies to any goal. It replaces all free occurrences of :n:`@term`
+  in the current goal with :n:`@term` and generates the equality :n:`@term =
+  @term` as a subgoal. This equality is automatically solved if it occurs among
+  the assumption, or if its symmetric form occurs. It is equivalent to :g:`cut
+  `:n:`@term = @term`:g:`; [intro H:sub:`n`; rewrite <- H:sub:`n`; clear H:sub:`n`|
+  assumption || symmetry; try assumption]`.
 
 
-
-8.6.3 subst ident
-~~~~~~~~~~~~~~~~~
+.. exn:: @terms do not have convertible types
 
 
+.. tacv:: replace @term with @term by tactic
 
-This tactic applies to a goal that has ident in its context and (at
-least) one hypothesis, say H, of type ident = t or t= ident with ident
-not occurring in t. Then it replacesident by t everywhere in the goal
-(in the hypotheses and in the conclusion) and clears ident and H from
-the context.
+  This acts as :n:`replace @term` with :n:`@term` but applies tactic to solve the generated
+  subgoal :n:`@term = @term`.
 
-If ident is a local definition of the form ident := t, it is also
-unfolded and cleared.
+.. tacv:: replace @term
+
+  Replaces :n:`@term` with :n:`@term’` using the first assumption whose type has
+  the form :n:`@term = @term’` or :n:`@term’ = @term`.
+
+.. tacv:: replace -> @term
+
+  Replaces :n:`@term` with :n:`@term’` using the first assumption whose type has
+  the form :n:`@term = @term’`
+
+.. tacv:: replace <- @term
+
+  Replaces :n:`@term` with :n:`@term’` using the first assumption whose type has
+  the form :n:`@term’ = @term`
+
+.. tacv:: replace @term with @term in clause
+.. tacv:: replace @term with @term in clause by tactic
+.. tacv:: replace @term in clause replace -> @term in clause
+.. tacv:: replace <- @term in clause
+
+  Acts as before but the replacements take place inclause (see
+  :ref:`performingcomputations`) and not only in the conclusion of the goal. The
+  clause argument must not contain any type of nor value of.
+
+.. tacv:: cutrewrite <- (@term = @term)
+
+  This tactic is deprecated. It acts like :n:`replace @term with @term`, or,
+  equivalently as :n:`enough (@term = @term) as <-`.
+
+.. tacv:: cutrewrite -> (@term = @term)
+
+  This tactic is deprecated. It can be replaced by enough :n:`(@term = @term) as ->`.
+
+
+.. tacn:: subst @ident`
+   :name: subst
+
+
+  This tactic applies to a goal that has :n:`@ident` in its context and (at
+  least) one hypothesis, say :g:`H`, of type :n:`@ident = t` or :n:`t = @ident`
+  with :n:`@ident` not occurring in :g:`t`. Then it replaces :n:`@ident` by
+  :g:`t` everywhere in the goal (in the hypotheses and in the conclusion) and
+  clears :n:`@ident` and :g:`H` from the context.
+
+  If :n:`@ident` is a local definition of the form :n:`@ident := t`, it is also
+  unfolded and cleared.
 
 
 .. note::
- When several hypotheses have the form ident = t or t = ident,
-the first one is used.
+  When several hypotheses have the form :n:`@ident = t` or :n:`t = @ident`, the
+  first one is used.
 
 
 .. note::
- If H is itself dependent in the goal, it is replaced by the
-proof of reflexivity of equality.
+  If `H` is itself dependent in the goal, it is replaced by the proof of
+  reflexivity of equality.
 
 
-**Variants:**
+.. tacv:: subst {+ @ident}
+
+  This is equivalent to :n:`subst @ident:sub:`1`; ...; subst @ident:sub:`n``.
+
+.. tacv:: subst
+
+   This applies subst repeatedly from top to bottom to all identifiers of the
+   context for which an equality of the form :n:`@ident = t` or :n:`t = @ident`
+   or :n:`@ident := t` exists, with :n:`@ident` not occurring in `t`.
+
+     ..  note::
+
+       The behavior of subst can be controlled using option ``Set Regular Subst
+       Tactic.`` When this option is activated, subst also deals with the
+       following corner cases:
+
+        + A context with ordered hypotheses :n:`@ident:sub:`1` = @ident:sub:`2``
+          and :n:`@ident:sub:`1` = t`, or :n:`t′ = @ident:sub:`1`` with `t′` not
+          a variable, and no other hypotheses of the form :n:`@ident:sub:`2` =
+          u` or :n:`u = @ident:sub:`2``; without the option, a second call to
+          subst would be necessary to replace :n:`@ident:sub:`2`` by `t` or
+          `t′` respectively.
+        + The presence of a recursive equation which without the option would
+          be a cause of failure of :tacn:`subst`.
+        + A context with cyclic dependencies as with hypotheses :n:`@ident:sub:`1` = f`
+          :n:`@ident:sub:`2`` and :n:`@ident:sub:`2` = g @ident:sub:`1`` which
+          without the option would be a cause of failure of :tacn:`subst`.
+
+       Additionally, it prevents a local definition such as :n:`@ident := t` to be
+       unfolded which otherwise it would exceptionally unfold in configurations
+       containing hypotheses of the form :n:`@ident = u`, or :n:`u′ = @ident`
+       with `u′` not a variable. Finally, it preserves the initial order of
+       hypotheses, which without the option it may break. The option is on by
+       default.
 
 
-#. subst ident 1 … ident n This is equivalent to subst ident 1 ; …;
-   subst ident n .
-#. substThis applies subst repeatedly from top to bottom to all
-   identifiers of the context for which an equality of the form ident = t
-   or t = ident or ident := t exists, withident not occurring in
-   t... note::
- The behavior of subst can be controlled using option Set
-   Regular Subst Tactic. When this option is activated, subst also deals
-   with the following corner cases:
-
-    + A context with ordered hypotheses ident 1 = ident 2 and ident 1 = t,
-      or t′ = ident 1 with t′ not a variable, and no other hypotheses of the
-      form ident 2 = u or u = ident 2 ; without the option, a second call to
-      subst would be necessary to replace ident 2 by t or t′ respectively.
-    + The presence of a recursive equation which without the option would
-      be a cause of failure of subst.
-    + A context with cyclic dependencies as with hypotheses ident 1 = f
-      ident 2 and ident 2 = g ident 1 which without the option would be a
-      cause of failure of subst.
-   Additionally, it prevents a local definition such as ident :=t to be
-   unfolded which otherwise it would exceptionally unfold in
-   configurations containing hypotheses of the form ident = u, or u′ =
-   ident with u′ not a variable.Finally, it preserves the initial order
-   of hypotheses, which without the option it may break.The option is on
-   by default.
+.. tacn:: stepl @term
+   :name: stepl
 
 
+  This tactic is for chaining rewriting steps. It assumes a goal of the
+  form :n:`R @term @term` where `R` is a binary relation and relies on a
+  database of lemmas of the form :g:`forall x y z, R x y -> eq x z -> R z y`
+  where `eq` is typically a setoid equality. The application of :n:`stepl @term`
+  then replaces the goal by :n:`R @term @term` and adds a new goal stating
+  :n:`eq @term @term`.
 
-8.6.4 stepl @term
-~~~~~~~~~~~~~~~~
+  Lemmas are added to the database using the command ``Declare Left Step @term.``
+  The tactic is especially useful for parametric setoids which are not accepted
+  as regular setoids for :tacn:`rewrite` and :tacn:`setoid_replace` (see
+  :ref:`TODO-27-Generalized-rewriting`).
 
+.. tacv:: stepl @term by tactic
 
+  This applies :n:`stepl @term` then applies tactic to the second goal.
 
-This tactic is for chaining rewriting steps. It assumes a goal of the
-form “R @term @term ” where R is a binary relation and relies on a
-database of lemmas of the form forall x yz, R x y -> eq x z -> R z y
-where eq is typically a setoid equality. The application of stepl @term
-then replaces the goal by “R @term @term ” and adds a new goal stating
-“eq @term @term ”.
+.. tacv:: stepr @term stepr @term by tactic
 
-Lemmas are added to the database using the command
-Declare Left Step @term.
-The tactic is especially useful for parametric setoids which are not
-accepted as regular setoids for rewrite and setoid_replace (see
-Chapter `27`_).
-
-
-**Variants:**
-
-
-#. stepl @term by tacticThis applies stepl @term then applies tactic to
-   the second goal.
-#. stepr @term stepr @term by tacticThis behaves as stepl but on the
-   right-hand-side of the binary relation. Lemmas are expected to be of
-   the form “forall x yz, R x y -> eq y z -> R x z” and are registered
-   using the command Declare Right Step @term.
+  This behaves as :tacn:`stepl` but on the right-hand-side of the binary
+  relation. Lemmas are expected to be of the form :g:`forall x y z, R x y -> eq
+  y z -> R x z` and are registered using the command ``Declare Right Step
+  @term.``
 
 
-.. _change_term:
+.. tacn:: change @term
+   :name: change
 
-.. cmd:: change @term
-~~~~~~~~~~~~~~~~~
+  This tactic applies to any goal. It implements the rule ``Conv`` given in
+  :ref:`TODO-4.4-Subtyping-rules`. :g:`change U` replaces the current goal `T`
+  with `U` providing that `U` is well-formed and that `T` and `U` are
+  convertible.
 
-
-
-This tactic applies to any goal. It implements the rule “Conv” given
-in Section `4.4`_. change U replaces the current goal T with U
-providing thatU is well-formed and that T and U are convertible.
-
-
-**Error messages:**
+.. exn:: Not convertible
 
 
-#. Not convertible
+.. tacv:: change @term with @term
 
+  This replaces the occurrences of :n:`@term` by :n:`@term` in the current goal.
+  The term :n:`@term` and :n:`@term` must be convertible.
 
+.. tacv:: change @term at {+ @num} with @term
 
-**Variants:**
+  This replaces the occurrences numbered :n:`{+ @num}` of :n:`@term by @term`
+  in the current goal. The terms :n:`@term` and :n:`@term` must be convertible.
 
+.. exn:: Too few occurrences
 
-#. change @term with @term This replaces the occurrences of @term
-   by @term in the current goal. The @terms @term and @term must be
-   convertible.
-#. change @term at num 1 … num i with @term This replaces the
-   occurrences numbered num 1 … num i of@term by @term in the current
-   goal. The @terms @term and @term must be convertible. Error message:
-   Too few occurrences
-#. change @term in ident
-#. change @term with @term in ident
-#. change @term at num 1 … num i with @term inidentThis applies the
-   change tactic not to the goal but to the hypothesis ident.
+.. tacv:: change @term in @ident
+.. tacv:: change @term with @term in @ident
+.. tacv:: change @term at {+ @num} with @term in @ident
 
+  This applies the change tactic not to the goal but to the hypothesis :n:`@ident`.
 
-
-See also: 8.7
+See also: :ref:`TODO-8.7-performingcomputations`
 
 .. _performingcomputations:
 Performing computations
@@ -2984,18 +3002,17 @@ Conversion tactics applied to hypotheses
 
 .. exn:: No such hypothesis : ident.
 
-8.8 Automation
---------------
 
+.. _automation:
+Automation
+----------
 
-8.8.1 auto
-~~~~~~~~~~
-
-
+.. tacn:: auto
+   :name: auto
 
 This tactic implements a Prolog-like resolution procedure to solve the
 current goal. It first tries to solve the goal using the assumption
-tactic, then it reduces the goal to an atomic one usingintros and
+tactic, then it reduces the goal to an atomic one using intros and
 introduces the newly generated hypotheses as hints. Then it looks at
 the list of tactics associated to the head symbol of the goal and
 tries to apply one of them (starting from the tactics with lower
@@ -3005,51 +3022,64 @@ By default, auto only uses the hypotheses of the current goal and the
 hints of the database named core.
 
 
-**Variants:**
+.. tacv:: auto @num
 
+  Forces the search depth to be :n:`@num`. The maximal search depth
+  is `5` by default.
 
-#. auto numForces the search depth to be num. The maximal search depth
-   is 5 by default.
-#. auto with ident 1 … ident n Uses the hint databases ident 1 … ident
-   n in addition to the database core. See Section 8.9.1 for the list of
-   pre-defined databases and the way to create or extend a database.
-#. auto with *Uses all existing hint databases. See Section 8.9.1
-#. auto using lemma 1 , … , lemma n Uses lemma 1 , …, lemma n in
-   addition to hints (can be combined with the with ident option).
-   Iflemma i is an inductive type, it is the collection of its
-   constructors which is added as hints.
-#. info_autoBehaves like auto but shows the tactics it uses to solve
-   the goal. This variant is very useful for getting a better
-   understanding of automation, or to know what lemmas/assumptions were
-   used.
-#. [info_]auto [num] [using lemma 1 , … , lemma n ] [withident 1 …
-   ident n ]This is the most general form, combining the various options.
-#. trivialThis tactic is a restriction of auto that is not recursive
-   and tries only hints that cost 0. Typically it solves trivial
-   equalities like X=X.
-#. trivial with ident 1 … ident n
-#. trivial with *
-#. trivial using lemma 1 , … , lemma n
-#. info_trivial
-#. [info_]trivial [using lemma 1 , … , lemma n ] [withident 1 … ident
-   n ]
+.. tacv:: auto with {+ @ident}
 
+  Uses the hint databases :n:`{+ @ident}` in addition to the database core. See
+  :ref:`TODO-8.9.1-thehintsdatabasesforautoandeauto` for the list of
+  pre-defined databases and the way to create or extend a database.
 
+.. tacv:: auto with *
+
+  Uses all existing hint databases. See
+  :ref:`TODO-8.9.1-thehintsdatabasesforautoandeauto`
+
+.. tacv:: auto using {+ @lemma}
+
+  Uses :n:`{+ @lemma}` in addition to hints (can be combined with the with
+  :n:`@ident` option).  If :n:`@lemma` is an inductive type, it is the
+  collection of its constructors which is added as hints.
+
+.. tacv:: info_auto
+
+   Behaves like auto but shows the tactics it uses to solve the goal. This
+   variant is very useful for getting a better understanding of automation, or
+   to know what lemmas/assumptions were used.
+
+.. tacv:: [info_]auto [@num] [using {+ @lemma}] [with {+ @ident}]
+
+  This is the most general form, combining the various options.
+
+.. tacv:: trivial
+
+   This tactic is a restriction of auto that is not recursive
+   and tries only hints that cost `0`. Typically it solves trivial
+   equalities like :g:`X=X`.
+
+.. tacv:: trivial with {+ @ident}
+.. tacv:: trivial with *
+.. tacv:: trivial using {+ @lemma}
+.. tacv:: info_trivial
+.. tacv:: [info_]trivial [using {+ @lemma}] [with {+ @ident}]
 
 .. note::
- auto either solves completely the goal or else leaves it
-intact. auto and trivial never fail.
+  :tacn:`auto` either solves completely the goal or else leaves it
+  intact. :tacn:`auto` and :tacn:`trivial` never fail.
 
-
-See also: Section 8.9.1
+See also: :ref:`TODO-8.9.1-thehintsdatabasesforautoandeauto`
 
 .. tacn:: eauto
    :name: eauto
 
-This tactic generalizes auto. While auto does not try resolution hints
-which would leave existential variables in the goal,eauto does try
-them (informally speaking, it usessimple eapply where auto uses simple
-apply). As a consequence, eauto can solve such a goal:
+This tactic generalizes :tacn:`auto`. While :tacn:`auto` does not try
+resolution hints which would leave existential variables in the goal,
+:tacn:`eauto` does try them (informally speaking, it usessimple :tacn:`eapply`
+where :tacn:`auto` uses simple :tacn:`apply`). As a consequence, :tacn:`eauto`
+can solve such a goal:
 
 .. example::
    .. coqtop:: all
@@ -3058,69 +3088,72 @@ apply). As a consequence, eauto can solve such a goal:
       Goal forall P:nat -> Prop, P 0 -> exists n, P n.
       eauto.
 
-Note that ex_intro should be declared as a hint.
+Note that :tacn:`ex_intro` should be declared as a hint.
 
 
-**Variants:**
+.. tacv:: [info_]eauto [@num] [using {+ @lemma}] [with {+ @ident}]
+
+  The various options for eauto are the same as for auto.
+
+See also: :ref:`TODO-8.9.1-thehintsdatabasesforautoandeauto`
 
 
-#. [info_]eauto [num] [using lemma 1 , … , lemma n ] [withident 1 …
-   ident n ]The various options for eauto are the same as for auto.
-
-See also: Section 8.9.1
+.. tacn:: autounfold with {+ @ident}
+   :name: autounfold
 
 
-8.8.3 autounfold with ident 1 … ident n
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-This tactic unfolds constants that were declared through a Hint Unfold
+This tactic unfolds constants that were declared through a ``Hint Unfold``
 in the given databases.
 
-**Variants:**
+.. tacv:: autounfold with {+ @ident} in clause
 
-#. autounfold with ident 1 … ident n in clausePerforms the unfolding
-   in the given clause.
-#. autounfold with *Uses the unfold hints declared in all the hint
-   databases.
+  Performs the unfolding in the given clause.
 
-8.8.4 autorewrite with ident 1 … ident n
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. tacv:: autounfold with *
 
-This tactic 4 carries out rewritings according the rewriting rule
-bases ident 1 …ident n .
+   Uses the unfold hints declared in all the hint databases.
 
-Each rewriting rule of a base ident i is applied to the main subgoal
-until it fails. Once all the rules have been processed, if the main
-subgoal has progressed (e.g., if it is distinct from the initial main
-goal) then the rules of this base are processed again. If the main
-subgoal has not progressed then the next base is processed. For the
-bases, the behavior is exactly similar to the processing of the
-rewriting rules.
+.. tacn:: autorewrite with {+ @ident}
+   :name: autorewrite
 
-The rewriting rule bases are built with the Hint Rewrite vernacular
+This tactic [4]_ carries out rewritings according the rewriting rule
+bases :n:`{+ @ident}`.
+
+Each rewriting rule of a base :n:`@ident` is applied to the main subgoal until
+it fails. Once all the rules have been processed, if the main subgoal has
+progressed (e.g., if it is distinct from the initial main goal) then the rules
+of this base are processed again. If the main subgoal has not progressed then
+the next base is processed. For the bases, the behavior is exactly similar to
+the processing of the rewriting rules.
+
+The rewriting rule bases are built with the ``Hint Rewrite vernacular``
 command.
 
-Warning: This tactic may loop if you build non @terminating rewriting
-systems.
+.. warn:: This tactic may loop if you build non terminating rewriting systems.
 
-Variant:
+.. tacv:: autorewrite with {+ @ident} using @tactic
 
-#. autorewrite with ident 1 … ident n using tacticPerforms, in the
-   same way, all the rewritings of the bases ident 1 … ident n applying
-   tactic to the main subgoal after each rewriting step.
-#. autorewrite with ident 1 … ident n in qualidPerforms all the
-   rewritings in hypothesis qualid.
-#. autorewrite with ident 1 … ident n in qualid using tacticPerforms
-   all the rewritings in hypothesis qualid applying tactic to the main
-   subgoal after each rewriting step.
-#. autorewrite with ident 1 … ident n in clausePerforms all the
-   rewriting in the clause clause. The clause argument must not contain
-   any type of nor value of.
+  Performs, in the same way, all the rewritings of the bases :n:`{+ @ident}`
+  applying tactic to the main subgoal after each rewriting step.
 
-See also: Section 8.9.5 for feeding the database of lemmas used by
-autorewrite.
+.. tacv:: autorewrite with {+ @ident} in @qualid
 
-See also: Section `10.2`_ for examples showing the use of this tactic.
+   Performs all the rewritings in hypothesis :n:`@qualid`.
+
+.. tacv:: autorewrite with {+ @ident} in @qualid using @tactic
+
+  Performs all the rewritings in hypothesis :n:`@qualid` applying :n:`@tactic`
+  to the main subgoal after each rewriting step.
+
+.. tacv:: autorewrite with {+ @ident} in @clause
+
+  Performs all the rewriting in the clause :n:`@clause`. The clause argument
+  must not contain any ``type of`` nor ``value of``.
+
+See also: :ref:`TODO-8.9.5-Hint-Rewrite` for feeding the database of lemmas used by
+:tacn:`autorewrite`.
+
+See also: :ref:`TODO-10.2-autorewrite` for examples showing the use of this tactic.
 
 Controlling automation
 --------------------------
@@ -3541,22 +3574,22 @@ Here is an example:
    The tactic ``exists (n // m)`` did not fail. The hole was solved
    by ``assumption`` so that it behaved as ``exists (quo n m H)``.
 
-8.10 Decision procedures
-------------------------
+.. _decisionprocedures:
+Decision procedures
+-------------------
 
+.. tacn:: tauto
+   :name: tauto
 
-8.10.1 tauto
-~~~~~~~~~~~~
+This tactic implements a decision procedure for intuitionistic propositional
+calculus based on the contraction-free sequent calculi LJT* of Roy Dyckhoff
+:cite:`Dyc92`. Note that :tacn:`tauto` succeeds on any instance of an
+intuitionistic tautological proposition. :tacn:`tauto` unfolds negations and
+logical equivalence but does not unfold any other definition.
 
+The following goal can be proved by :tacn:`tauto` whereas :tacn:`auto` would
+fail:
 
-
-This tactic implements a decision procedure for intuitionistic
-propositional calculus based on the contraction-free sequent calculi
-LJT* of Roy Dyckhoff [`56`_]. Note that tauto succeeds on any instance
-of an intuitionistic tautological proposition. tauto unfolds negations
-and logical equivalence but does not unfold any other definition.
-
-The following goal can be proved by tauto whereas auto would fail:
 Coq < Goal forall (x:nat) (P:nat -> Prop), x = 0 \/ P x -> x <> 0 -> P
 x.
 1 subgoal
@@ -3577,10 +3610,11 @@ P x
 Coq < tauto.
 No more subgoals.
 
-Moreover, if it has nothing else to do, tauto performs introductions.
-Therefore, the use of intros in the previous proof is unnecessary.
-tauto can for instance prove the following:
-Coq < (* auto would fail *)
+Moreover, if it has nothing else to do, :tacn:`tauto` performs introductions.
+Therefore, the use of :tacn:`intros` in the previous proof is unnecessary.
+:tacn:`tauto` can for instance for:
+
+Coq < (* auto would fail * )
 Goal forall (A:Prop) (P:nat -> Prop),
 A \/ (forall x:nat, ~ A -> P x) -> forall x:nat, ~ A -> P x.
 1 subgoal
@@ -3594,37 +3628,34 @@ No more subgoals.
 
 
 .. note::
- In contrast, tauto cannot solve the following goal
-Coq < Goal forall (A:Prop) (P:nat -> Prop),
-A \/ (forall x:nat, ~ A -> P x) -> forall x:nat, ~ ~ (A \/ P x).
+  In contrast, :tacn:`tauto` cannot solve the following goal
+  Coq < Goal forall (A:Prop) (P:nat -> Prop),
+  A \/ (forall x:nat, ~ A -> P x) -> forall x:nat, ~ ~ (A \/ P x).
 
-because `(forall x:nat, ~ A -> P x)` cannot be treated as atomic and
-an instantiation of `x` is necessary.
-
-
-**Variants:**
+  because :g:`(forall x:nat, ~ A -> P x)` cannot be treated as atomic and
+  an instantiation of `x` is necessary.
 
 
-#. dtautoWhile tauto recognizes inductively defined connectives
-   isomorphic to the standard connective and, prod, or, sum, False,
-   Empty_set, unit, True, dtauto recognizes also all inductive types with
-   one constructors and no indices, i.e. record-style connectives.
+.. tacv:: dtauto
 
-
-
-8.10.2 intuition tactic
-~~~~~~~~~~~~~~~~~~~~~~~
+  While :tacn:`tauto` recognizes inductively defined connectives isomorphic to
+  the standard connective ``and, prod, or, sum, False, Empty_set, unit, True``,
+  :tacn:`dtauto recognizes also all inductive types with one constructors and
+  no indices, i.e. record-style connectives.
 
 
 
-The tactic intuition takes advantage of the search-tree built by the
-decision procedure involved in the tactic tauto. It uses this
-information to generate a set of subgoals equivalent to the original
-one (but simpler than it) and applies the tactictactic to them
-[`113`_]. If this tactic fails on some goals thenintuition fails. In
-fact, tauto is simply intuition fail.
+.. tacn:: intuition @tactic
+   :name:
 
-For instance, the tactic intuition auto applied to the goal
+The tactic :tacn:`intuition` takes advantage of the search-tree built by the
+decision procedure involved in the tactic :tacn:`tauto`. It uses this
+information to generate a set of subgoals equivalent to the original one (but
+simpler than it) and applies the tactic :n:`@tactic` to them :cite:`Mun94`. If
+this tactic fails on some goals then :tacn:`intuition` fails. In fact,
+:tacn:`tauto` is simply :g:`intuition fail`.
+
+For instance, the tactic :g:`intuition auto` applied to the goal
 
 ::
 
@@ -3638,117 +3669,124 @@ internally replaces it by the equivalent one:
     (forall (x:nat), P x), B |- P O
 
 
-and then uses auto which completes the proof.
+and then uses :tacn:`auto` which completes the proof.
 
-Originally due to César Muñoz, these tactics (tauto and intuition)
-have been completely re-engineered by David Delahaye using mainly the
-tactic language (see Chapter `9`_). The code is now much shorter and a
-significant increase in performance has been noticed. The general
-behavior with respect to dependent types, unfolding and introductions
-has slightly changed to get clearer semantics. This may lead to some
-incompatibilities.
-
-
-**Variants:**
+Originally due to César Muñoz, these tactics (:tacn:`tauto` and
+:tacn:`intuition`) have been completely re-engineered by David Delahaye using
+mainly the tactic language (see :ref:`TODO-9-thetacticlanguage`). The code is
+now much shorter and a significant increase in performance has been noticed.
+The general behavior with respect to dependent types, unfolding and
+introductions has slightly changed to get clearer semantics. This may lead to
+some incompatibilities.
 
 
-#. intuitionIs equivalent to intuition auto with *.
-#. dintuitionWhile intuition recognizes inductively defined
-   connectives isomorphic to the standard connective and, prod, or, sum,
-   False, Empty_set, unit, True, dintuition recognizes also all inductive
-   types with one constructors and no indices, i.e. record-style
-   connectives.
+.. tacv:: intuition
+
+  Is equivalent to :g:`intuition auto with * `.
+
+.. tacv:: dintuition
+
+  While :tacn:`intuition` recognizes inductively defined connectives
+  isomorphic to the standard connective ``and, prod, or, sum, False,
+  Empty_set, unit, True``, :tacn:`dintuition` recognizes also all inductive
+  types with one constructors and no indices, i.e. record-style connectives.
 
 
-
-
-Some aspects of the tactic intuition can be controlled using options.
+Some aspects of the tactic :tacn:`intuition` can be controlled using options.
 To avoid that inner negations which do not need to be unfolded are
 unfolded, use:
-Unset Intuition Negation Unfolding
+
+``Unset Intuition Negation Unfolding``
+
+
 To do that all negations of the goal are unfolded even inner ones
 (this is the default), use:
-Set Intuition Negation Unfolding
+
+``Set Intuition Negation Unfolding``
+
+
 To avoid that inner occurrence of iff which do not need to be unfolded
 are unfolded (this is the default), use:
-Unset Intuition Iff Unfolding
+
+``Unset Intuition Iff Unfolding``
+
 To do that all negations of the goal are unfolded even inner ones
 (this is the default), use:
-Set Intuition Iff Unfolding
+
+``Set Intuition Iff Unfolding``
 
 
-8.10.3 rtauto
-~~~~~~~~~~~~~
+.. tacn:: rtauto
+   :name: rtauto
+
+  The :tacn:`rtauto` tactic solves propositional tautologies similarly to what
+  :tacn:`tauto` does. The main difference is that the proof term is built using a
+  reflection scheme applied to a sequent calculus proof of the goal.  The search
+  procedure is also implemented using a different technique.
+
+  Users should be aware that this difference may result in faster proof- search
+  but slower proof-checking, and :tacn:`rtauto` might not solve goals that
+  :tacn:`tauto` would be able to solve (e.g. goals involving universal
+  quantifiers).
 
 
+.. tacn:: firstorder
+   :name: firstorder
 
-The rtauto tactic solves propositional tautologies similarly to what
-tauto does. The main difference is that the proof @term is built using
-a reflection scheme applied to a sequent calculus proof of the goal.
-The search procedure is also implemented using a different technique.
+  The tactic :tacn:`firstorder` is an experimental extension of :tacn:`tauto` to
+  first- order reasoning, written by Pierre Corbineau. It is not restricted to
+  usual logical connectives but instead may reason about any first-order class
+  inductive definition.
 
-Users should be aware that this difference may result in faster proof-
-search but slower proof-checking, and rtauto might not solve goals
-that tauto would be able to solve (e.g. goals involving universal
-quantifiers).
-
-
-8.10.4 firstorder
-~~~~~~~~~~~~~~~~~
+  The default tactic used by :tacn:`firstorder` when no rule applies is :g:`auto
+  with \*`, it can be reset locally or globally using the ``Set Firstorder
+  Solver`` tactic vernacular command and printed using ``Print Firstorder
+  Solver``.
 
 
+.. tacv:: firstorder @tactic
 
-The tactic firstorder is an experimental extension oftauto to first-
-order reasoning, written by Pierre Corbineau. It is not restricted to
-usual logical connectives but instead may reason about any first-order
-class inductive definition.
+  Tries to solve the goal with :n:`@tactic` when no logical rule may apply.
 
-The default tactic used by firstorder when no rule applies is auto
-with *, it can be reset locally or globally using the Set Firstorder
-Solver tactic vernacular command and printed using Print Firstorder
-Solver.
+.. tacv:: firstorder using {+ @qualid}
 
+  Adds lemmas :n:`{+ @qualid}` to the proof-search environment. If :n:`@qualid`
+  refers to an inductive type, it is the collection of its constructors which are
+  added to the proof-search environment.
 
-**Variants:**
+.. tacv:: firstorder with {+ @ident}
 
+  Adds lemmas from :tacn:`auto` hint bases :n:`{+ @ident}` to the proof-search
+  environment.
 
-#. firstorder tacticTries to solve the goal with tactic when no
-   logical rule may apply.
-#. firstorder using qualid 1 , … , qualid n Adds lemmas qualid 1 …
-   qualid n to the proof-search environment. If qualid i refers to an
-   inductive type, it is the collection of its constructors which are
-   added to the proof-search environment.
-#. firstorder with ident 1 … ident n Adds lemmas from auto hint bases
-   ident 1 … ident n to the proof-search environment.
-#. firstorder tactic using qualid 1 , … , qualid n with ident 1 …
-   ident n This combines the effects of the different variants of
-   firstorder.
+.. tacv:: firstorder tactic using {+ @qualid} with {+ @ident}
+
+  This combines the effects of the different variants of :tacn:`firstorder`.
 
 
 Proof-search is bounded by a depth parameter which can be set by
-typing theSet Firstorder Depth n vernacular command.
+typing the ``Set Firstorder Depth n`` vernacular command.
 
 
-8.10.5 congruence
-~~~~~~~~~~~~~~~~~
+.. tacn:: congruence
+   :name: congruence
 
+  The tactic :tacn:`congruence`, by Pierre Corbineau, implements the standard
+  Nelson and Oppen congruence closure algorithm, which is a decision procedure
+  for ground equalities with uninterpreted symbols. It also include the
+  constructor theory (see :ref:`TODO-8.5.7-injection` and
+  :ref:`TODO-8.5.6-discriminate`). If the goal is a non-quantified equality,
+  congruence tries to prove it with non-quantified equalities in the context.
+  Otherwise it tries to infer a discriminable equality from those in the context.
+  Alternatively, congruence tries to prove that a hypothesis is equal to the goal
+  or to the negation of another hypothesis.
 
+  :tacn:`congruence` is also able to take advantage of hypotheses stating
+  quantified equalities, you have to provide a bound for the number of extra
+  equalities generated that way. Please note that one of the members of the
+  equality must contain all the quantified variables in order for congruence to
+  match against it.
 
-The tactic congruence, by Pierre Corbineau, implements the standard
-Nelson and Oppen congruence closure algorithm, which is a decision
-procedure for ground equalities with uninterpreted symbols. It also
-include the constructor theory (see 8.5.7 and 8.5.6). If the goal is a
-non-quantified equality, congruence tries to prove it with non-
-quantified equalities in the context. Otherwise it tries to infer a
-discriminable equality from those in the context. Alternatively,
-congruence tries to prove that a hypothesis is equal to the goal or to
-the negation of another hypothesis.
-
-congruence is also able to take advantage of hypotheses stating
-quantified equalities, you have to provide a bound for the number of
-extra equalities generated that way. Please note that one of the
-members of the equality must contain all the quantified variables in
-order for congruence to match against it.
 Coq < Theorem T:
 a=(f a) -> (g b (f a))=(f (f a)) -> (g a b)=(f (g b a)) -> (g a b)=a.
 1 subgoal
@@ -3785,35 +3823,33 @@ Coq < congruence.
 No more subgoals.
 
 
-**Variants:**
+.. tacv:: congruence n
+
+  Tries to add at most `n` instances of hypotheses stating quantified equalities
+  to the problem in order to solve it. A bigger value of `n` does not make
+  success slower, only failure. You might consider adding some lemmas as
+  hypotheses using assert in order for :tacn:`congruence` to use them.
+
+.. tacv:: congruence with {+ @term}
+
+  Adds :n:`{+ @term}` to the pool of terms used by :tacn:`congruence`. This helps
+  in case you have partially applied constructors in your goal.
 
 
-#. congruence nTries to add at most n instances of hypotheses stating
-   quantified equalities to the problem in order to solve it. A bigger
-   value of n does not make success slower, only failure. You might
-   consider adding some lemmas as hypotheses using assert in order for
-   congruence to use them.
-#. congruence with @term … @term n Adds @term … @term n to the pool of
-   @terms used bycongruence. This helps in case you have partially applied
-   constructors in your goal.
+.. exn:: I don’t know how to handle dependent equality
 
+  The decision procedure managed to find a proof of the goal or of a
+  discriminable equality but this proof could not be built in Coq because of
+  dependently-typed functions.
 
+.. exn:: Goal is solvable by congruence but some arguments are missing. Try
+   :g:`congruence with ...`, replacing metavariables by arbitrary terms.
 
-**Error messages:**
-
-
-#. I don’t know how to handle dependent equalityThe decision procedure
-   managed to find a proof of the goal or of a discriminable equality but
-   this proof could not be built in Coq because of dependently-typed
-   functions.
-#. Goal is solvable by congruence but some arguments are missing. Try
-   "congruence with …", replacing metavariables by arbitrary @terms.The
-   decision procedure could solve the goal with the provision that
-   additional arguments are supplied for some partially applied
-   constructors. Any @term of an appropriate type will allow the tactic to
-   successfully solve the goal. Those additional arguments can be given
-   to congruence by filling in the holes in the @terms given in the error
-   message, using the with variant described above.
+  The decision procedure could solve the goal with the provision that additional
+  arguments are supplied for some partially applied constructors. Any term of an
+  appropriate type will allow the tactic to successfully solve the goal. Those
+  additional arguments can be given to congruence by filling in the holes in the
+  terms given in the error message, using the with variant described above.
 
 
 
@@ -3870,64 +3906,53 @@ succeeds, and results in an error otherwise.
 
 .. exn:: Not a variable or hypothesis
 
-8.12 Equality
--------------
+
+Equality
+--------
 
 
-8.12.1 f_equal
-~~~~~~~~~~~~~~
+.. tacn:: f_equal
+   :name: f_equal
+
+  This tactic applies to a goal of the form :g:`f a`:sub:`1` :g:`... a`:sub:`n`
+  :g:`= f′a′`:sub:`1` :g:`... a′`:sub:`n`.  Using :tacn:`f_equal` on such a goal
+  leads to subgoals :g:`f=f′` and :g:`a`:sub:`1` = :g:`a′`:sub:`1` and so on up
+  to :g:`a`:sub:`n` :g:`= a′`:sub:`n`. Amongst these subgoals, the simple ones
+  (e.g. provable by :tacn:`reflexivity` or :tacn:`congruence`) are automatically
+  solved by :tacn:`f_equal`.
 
 
+.. tacn:: reflexivity
+   :name: reflexivity
 
-This tactic applies to a goal of the form f a 1 … a n = f′a′ 1 … a′ n
-. Using f_equal on such a goal leads to subgoals f=f′ and a 1 =a′ 1
-and so on up to a n =a′ n . Amongst these subgoals, the simple ones
-(e.g. provable by reflexivity or congruence) are automatically solved
-by f_equal.
+  This tactic applies to a goal that has the form :g:`t=u`. It checks that `t`
+  and `u` are convertible and then solves the goal. It is equivalent to apply
+  :tacn:`refl_equal`.
 
+.. exn:: The conclusion is not a substitutive equation
 
-8.12.2 reflexivity
-~~~~~~~~~~~~~~~~~~
-
-
-
-This tactic applies to a goal that has the form t=u. It checks that t
-and u are convertible and then solves the goal. It is equivalent to
-apply refl_equal.
+.. exn:: Unable to unify ... with ...
 
 
-**Error messages:**
+.. tacn:: symmetry
+   :name: symmetry
+
+  This tactic applies to a goal that has the form :g:`t=u` and changes it into
+  :g:`u=t`.
 
 
-#. The conclusion is not a substitutive equation
-#. Unable to unify … with …
+.. tacv:: symmetry in @ident
 
-
-
-8.12.3 symmetry
-~~~~~~~~~~~~~~~
-
-
-
-This tactic applies to a goal that has the form t=u and changes it
-into u=t.
-
-
-**Variants:**
-
-
-#. symmetry in ident If the statement of the hypothesis ident has the
-   form t=u, the tactic changes it to u=t.
+  If the statement of the hypothesis ident has the form :g:`t=u`, the tactic
+  changes it to :g:`u=t`.
 
 
 
-8.12.4 transitivity @term
-~~~~~~~~~~~~~~~~~~~~~~~~
+.. tacn:: transitivity @term
+   :name: transitivity
 
-
-
-This tactic applies to a goal that has the form t=u and transforms it
-into the two subgoalst=@term and @term=u.
+  This tactic applies to a goal that has the form :g:`t=u` and transforms it
+  into the two subgoals :n:`t=@term` and :n:`@term=u`.
 
 
 Equality and inductive sets
@@ -4008,74 +4033,60 @@ symbol :g:`=`.
    Analogous to :tacn:`dependent rewrite ->` but uses the equality from right to
    left.
 
-8.14 Inversion
---------------
+Inversion
+---------
+
+.. tacn:: functional inversion @ident
+   :name: functional inversion
+
+  :tacn:`functional inversion` is a tactic that performs inversion on hypothesis
+  :n:`@ident` of the form :n:`@qualid {+ @term} = @term` or :n:`@term = @qualid
+  {+ @term}` where :n:`@qualid` must have been defined using Function (see
+  :ref:`TODO-2.3-advanced-recursive-functions`). Note that this tactic is only
+  available after a ``Require Import FunInd``.
 
 
-8.14.1 functional inversion ident
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. exn:: Hypothesis @ident must contain at least one Function
+.. exn:: Cannot find inversion information for hypothesis @ident
+
+  This error may be raised when some inversion lemma failed to be generated by
+  Function.
 
 
+.. tacv:: functional inversion @num
 
-functional inversion is a tactic that performs inversion on hypothesis
-ident of the formqualid @term …@term n = @term or @term =qualid @term
-…@term n where qualid must have been defined using Function (see
-Section `2.3`_). Note that this tactic is only available after a
-Require Import FunInd.
+  This does the same thing as intros until num thenfunctional inversion ident
+  where ident is the identifier for the last introduced hypothesis.
 
+.. tacv:: functional inversion ident qualid
+.. tacv:: functional inversion num qualid
 
-**Error messages:**
+  If the hypothesis :n:`@ident` (or :n:`@num`) has a type of the form
+  :n:`@qualid`:sub:`1` :n:`@term`:sub:`1` ... :n:`@term`:sub:`n` :n:`=
+  @qualid`:sub:`2` :n:`@term`:sub:`n+1` ... :n:`@term`:sub:`n+m` where
+  :n:`@qualid`:sub:`1` and :n:`@qualid`:sub:`2` are valid candidates to
+  functional inversion, this variant allows choosing which :n:`@qualid` is
+  inverted.
 
+.. tacn:: quote @ident
+   :name: quote
 
-#. Hypothesis ident must contain at least one Function
-#. Cannot find inversion information for hypothesis identThis error
-   may be raised when some inversion lemma failed to be generated by
-   Function.
-
-
-
-**Variants:**
-
-
-#. functional inversion numThis does the same thing as intros until
-   num thenfunctional inversion ident where ident is the identifier for
-   the last introduced hypothesis.
-#. functional inversion ident qualid functional inversion num qualidIf
-   the hypothesis ident (or num) has a type of the formqualid 1 @term
-   …@term n = qualid 2 @term n+1 …@term n+m where qualid 1 and qualid 2 are
-   valid candidates to functional inversion, this variant allows choosing
-   which qualid is inverted.
+  This kind of inversion has nothing to do with the tactic :tacn:`inversion`
+  above. This tactic does :g:`change (@ident t)`, where `t` is a term built in
+  order to ensure the convertibility. In other words, it does inversion of the
+  function :n:`@ident`. This function must be a fixpoint on a simple recursive
+  datatype: see :ref:`TODO-10.3-quote` for the full details.
 
 
+.. exn:: quote: not a simple fixpoint
 
-8.14.2 quote ident
-~~~~~~~~~~~~~~~~~~
-
-
-
-This kind of inversion has nothing to do with the tacticinversion
-above. This tactic does change (ident t), where t is a @term built in
-order to ensure the convertibility. In other words, it does inversion
-of the functionident. This function must be a fixpoint on a simple
-recursive datatype: see `10.3`_ for the full details.
+  Happens when quote is not able to perform inversion properly.
 
 
-**Error messages:**
+.. tacv::  quote ident {* @ident}
 
-
-#. quote: not a simple fixpointHappens when quote is not able to
-   perform inversion properly.
-
-
-
-**Variants:**
-
-
-#. quote ident [ ident 1 …ident n ]All @terms that are built only with
-   ident 1 …ident n will be considered by quote as constants rather than
-   variables.
-
-
+  All terms that are built only with :n:`{* @ident}` will be considered by quote
+  as constants rather than variables.
 
 Classical tactics
 -----------------
@@ -4096,39 +4107,37 @@ using the ``Require Import`` command.
    Use ``classical_right`` to prove the right part of the disjunction with
    the assumption that the negation of left part holds.
 
-8.16 Automatizing
------------------
+Automatizing
+------------
 
 
-8.16.1 btauto
-~~~~~~~~~~~~~
+.. tacn:: btauto
+   :name: btauto
+
+  The tactic :tacn:`btauto` implements a reflexive solver for boolean
+  tautologies. It solves goals of the form :g:`t = u` where `t` and `u` are
+  constructed over the following grammar:
+
+  t ::= x ∣ true ∣ false∣ orb t 1 t 2 ∣ andb t 1 t 2 ∣xorb t 1 t 2 ∣negb
+  t ∣if t 1 then t 2 else t 3
+
+  Whenever the formula supplied is not a tautology, it also provides a
+  counter-example.
+
+  Internally, it uses a system very similar to the one of the ring
+  tactic.
 
 
+.. tacn:: omega
+   :name: omega
 
-The tactic btauto implements a reflexive solver for boolean
-tautologies. It solves goals of the form t = u where t and u are
-constructed over the following grammar:
-t ::= x ∣ true ∣ false∣ orb t 1 t 2 ∣ andb t 1 t 2 ∣xorb t 1 t 2 ∣negb
-t ∣if t 1 then t 2 else t 3
-Whenever the formula supplied is not a tautology, it also provides a
-counter-example.
-
-Internally, it uses a system very similar to the one of the ring
-tactic.
-
-
-8.16.2 omega
-~~~~~~~~~~~~
-
-
-
-The tactic omega, due to Pierre Crégut, is an automatic decision
+The tactic :tacn:`omega`, due to Pierre Crégut, is an automatic decision
 procedure for Presburger arithmetic. It solves quantifier-free
 formulas built with `~`, `\/`, `/\`, `->` on top of equalities,
-inequalities and disequalities on both the type nat of natural numbers
-and Z of binary integers. This tactic must be loaded by the command
-Require Import Omega. See the additional documentation about omega
-(see Chapter `21`_).
+inequalities and disequalities on both the type :g:`nat` of natural numbers
+and :g:`Z` of binary integers. This tactic must be loaded by the command
+``Require Import Omega``. See the additional documentation about omega
+(see Chapter :ref:`TODO-21-omega`).
 
 
 8.16.3 ring and ring_simplify @term … @term n
@@ -4199,14 +4208,12 @@ instantiation,
 theory theories/Reals for many examples of use of field.
 
 
-8.16.5 fourier
-~~~~~~~~~~~~~~
+.. tacn:: fourier
+   :name: fourier
 
-
-
-This tactic written by Loïc Pottier solves linear inequalities on real
-numbers using Fourier’s method [`65`_]. This tactic must be loaded by
-Require Import Fourier.
+  This tactic written by Loïc Pottier solves linear inequalities on real
+  numbers using Fourier’s method :cite:`Fourier`. This tactic must be loaded by
+  ``Require Import Fourier``.
 
 
 Example:
@@ -4331,11 +4338,11 @@ require it, you should put it outside of any section.
 
 Chapter `9`_ gives examples of more complex user-defined tactics.
 
-:1: Actually, only the second subgoal will be generated since the
+.. [1] Actually, only the second subgoal will be generated since the
   other one can be automatically checked.
-:2: This corresponds to the cut rule of sequent calculus.
-:3: Reminder: opaque constants will not be expanded by δ reductions.
-:4: The behavior of this tactic has much changed compared to the
+.. [2] This corresponds to the cut rule of sequent calculus.
+.. [3] Reminder: opaque constants will not be expanded by δ reductions.
+.. [4] The behavior of this tactic has much changed compared to the
   versions available in the previous distributions (V6). This may cause
   significant changes in your theories to obtain the same result. As a
   drawback of the re-engineering of the code, this tactic has also been
