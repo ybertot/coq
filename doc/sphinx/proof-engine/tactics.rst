@@ -1676,11 +1676,11 @@ analysis on inductive or co-inductive objects (see :ref:`TODO-4.5`).
    :n:`induction @ident; induction @ident` (or
    :n:`induction @ident ; destruct @ident` depending on the exact needs).
 
-.. tacv:: double induction @num @num
+.. tacv:: double induction num1 num2
 
    This tactic is deprecated and should be replaced by
-   :n:`induction @num; induction @num` where the latter :n:`@num` is the result
-   of :n:`@num - @num` (:ref:`TODO-FIXME` was num2 - num1 resp difference of two num args).
+   :n:`induction num1; induction num3` where :n:`num3` is the result
+   of :n:`num2 - num1`
 
 .. tacn:: dependent induction @ident
    :name: dependent induction
