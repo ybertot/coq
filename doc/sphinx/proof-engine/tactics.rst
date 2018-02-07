@@ -85,7 +85,7 @@ bindings_list`` where ``bindings_list`` may be of two different forms:
                    : `term` ... `term`
 
 + In a bindings list of the form :n:`{* (ref:= term)}`, :n:`ref` is either an
-  ``ident`` or a ``num``. The references are determined according to the type of
+  :n:`@ident` or a :n:`@num`. The references are determined according to the type of
   ``term``. If :n:`ref` is an identifier, this identifier has to be bound in the
   type of ``term`` and the binding provides the tactic with an instance for the
   parameter of this name. If :n:`ref` is some number ``n``, this number denotes
@@ -148,7 +148,7 @@ of term are selected in every hypothesis.
 In the first and second case, if ``*`` is mentioned on the right of ``|-``, the
 occurrences of the conclusion of the goal have to be selected. If some numbers
 are given, then only the occurrences denoted by these numbers are selected. If
-no numbers are given, all occurrences of `term` in the goal are selected.
+no numbers are given, all occurrences of :n:`@term` in the goal are selected.
 
 Finally, the last notation is an abbreviation for ``* |- *``. Note also
 that ``|-`` is optional in the first case when no ``*`` is given.
@@ -447,18 +447,18 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
    :name: apply ... in
 
    This tactic applies to any goal. The argument ``term`` is a term well-formed in
-   the local context and the argument ``ident`` is an hypothesis of the context.
+   the local context and the argument :n:`@ident` is an hypothesis of the context.
    The tactic ``apply term in ident`` tries to match the conclusion of the type
-   of ``ident`` against a non-dependent premise of the type of ``term``, trying
+   of :n:`@ident` against a non-dependent premise of the type of ``term``, trying
    them from right to left. If it succeeds, the statement of hypothesis
-   ``ident`` is replaced by the conclusion of the type of ``term``. The tactic
+   :n:`@ident` is replaced by the conclusion of the type of ``term``. The tactic
    also returns as many subgoals as the number of other non-dependent premises
    in the type of ``term`` and of the non-dependent premises of the type of
-   ``ident``. If the conclusion of the type of ``term`` does not match the goal
+   :n:`@ident`. If the conclusion of the type of ``term`` does not match the goal
    *and* the conclusion is an inductive type isomorphic to a tuple type, then
    the tuple is (recursively) decomposed and the first component of the tuple
    of which a non-dependent premise matches the conclusion of the type of
-   ``ident``. Tuples are decomposed in a width-first left-to-right order (for
+   :n:`@ident`. Tuples are decomposed in a width-first left-to-right order (for
    instance if the type of :g:`H1` is a :g:`A <-> B` statement, and the type of
    :g:`H2` is :g:`A` then ``apply H1 in H2`` transforms the type of :g:`H2`
    into :g:`B`). The tactic ``apply`` relies on first-order pattern-matching
@@ -470,12 +470,12 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
 
 .. exn:: Unable to apply.
 
-   This happens if the conclusion of ``ident`` does not match any of the non
+   This happens if the conclusion of :n:`@ident` does not match any of the non
    dependent premises of the type of ``term``.
 
 .. tacv:: apply {+, @term} in @ident
 
-   This applies each of ``term`` in sequence in ``ident``.
+   This applies each of ``term`` in sequence in :n:`@ident`.
 
 .. tacv:: apply {+, @term with @bindings_list} in @ident
 
@@ -492,7 +492,7 @@ sequence ``cut B. 2:apply H.`` where ``cut`` is described below.
    :name: apply ... in ... as
 
    This works as :tacn:`apply ... in` then applies the
-   :n:`@intro_pattern` to the hypothesis ``ident``.
+   :n:`@intro_pattern` to the hypothesis :n:`@ident`.
 
 .. tacv:: eapply {+, @term with @bindings_list} in @ident as @intro_pattern.
 
@@ -2373,16 +2373,16 @@ subgoals.
   Analogous to :n:`rewrite @term` but rewriting is done following clause
   (similarly to :ref:`performing computations <performingcomputations>`). For instance:
 
-      + :g:`rewrite H in H`:sub:`1` will rewrite `H` in the hypothesis
+      + :n:`rewrite H in H`:sub:`1` will rewrite `H` in the hypothesis
         `H`:sub:`1` instead of the current goal.
-      + :g:`rewrite H in H`:sub:`1` :g:`at 1, H`:sub:`2` :g:`at - 2 |- *` means
-        :g:`rewrite H; rewrite H in H`:sub:`1` :g:`at 1; rewrite H in H`:sub:`2` :g:`at - 2.`
+      + :n:`rewrite H in H`:sub:`1` :g:`at 1, H`:sub:`2` :g:`at - 2 |- *` means
+        :n:`rewrite H; rewrite H in H`:sub:`1` :g:`at 1; rewrite H in H`:sub:`2` :g:`at - 2.`
         In particular a failure will happen if any of these three simpler tactics
         fails.
-      + :g:`rewrite H in * |-` will do :g:`rewrite H in H`:sub:`i` for all hypothesis
+      + :n:`rewrite H in * |-` will do :n:`rewrite H in H`:sub:`i` for all hypothesis
         :g:`H`:sub:`i` :g:`<> H`. A success will happen as soon as at least one of these
         simpler tactics succeeds.
-      + :g:`rewrite H in *` is a combination of :g:`rewrite H` and :g:`rewrite H
+      + :n:`rewrite H in *` is a combination of :n:`rewrite H` and :n:`rewrite H
         in * |-` that succeeds if at least one of these two tactics succeeds.
      Orientation :g:`->` or :g:`<-` can be inserted before the :n:`@term` to rewrite.
 
@@ -2426,12 +2426,11 @@ subgoals.
 .. tacn:: replace @term with @term
    :name: replace
 
-
-This tactic applies to any goal. It replaces all free occurrences of :n:`@term`
-in the current goal with :n:`@term` and generates the equality :n:`@term =
-@term` as a subgoal. This equality is automatically solved if it occurs among
-the assumption, or if its symmetric form occurs. It is equivalent to :g:`cut`
-:n:`@term = @term` :g:`; [intro H`:sub:`n` :g:`; rewrite <- H`:sub:`n` :g:`; clear H`:sub:`n`:g:`|| assumption || symmetry; try assumption]`.
+   This tactic applies to any goal. It replaces all free occurrences of :n:`@term`
+   in the current goal with :n:`@term` and generates the equality :n:`@term =
+   @term` as a subgoal. This equality is automatically solved if it occurs among
+   the assumption, or if its symmetric form occurs. It is equivalent to
+   :n:`cut @term = @term; [intro H`:sub:`n` :n:`; rewrite <- H`:sub:`n` :n:`; clear H`:sub:`n`:n:`|| assumption || symmetry; try assumption]`.
 
 .. exn:: @terms do not have convertible types
 
