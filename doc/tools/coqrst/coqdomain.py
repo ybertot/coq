@@ -221,7 +221,7 @@ class ExceptionObject(NotationObject):
 class WarningObject(NotationObject):
     """An object to represent Coq warnings."""
     subdomain = "warn"
-    index_suffix = "(warn)"
+    index_suffix = "(warning)"
     annotation = "Warning"
 
     # Generate names automatically
@@ -593,10 +593,7 @@ class CoqGallinaIndex(CoqSubdomainsIndex):
     name, localname, shortname, subdomains = "thmindex", "Gallina Index", "theorems", ["thm"]
 
 class CoqExceptionIndex(CoqSubdomainsIndex):
-    name, localname, shortname, subdomains = "exnindex", "Error Index", "errors", ["exn"]
-
-class CoqWarningIndex(CoqSubdomainsIndex):
-    name, localname, shortname, subdomains = "warnindex", "Warning Index", "warnings", ["warn"]
+    name, localname, shortname, subdomains = "exnindex", "Errors and Warnings Index", "errors", ["exn", "warn"]
 
 class IndexXRefRole(XRefRole):
     """A link to one of our domain-specific indices."""
@@ -695,7 +692,7 @@ class CoqDomain(Domain):
         'l': LtacRole, #FIXME unused?
     }
 
-    indices = [CoqVernacIndex, CoqTacticIndex, CoqOptionIndex, CoqGallinaIndex, CoqExceptionIndex, CoqWarningIndex]
+    indices = [CoqVernacIndex, CoqTacticIndex, CoqOptionIndex, CoqGallinaIndex, CoqExceptionIndex]
 
     data_version = 1
     initial_data = {
@@ -799,6 +796,7 @@ def setup(app):
 
     # Add extra styles
     app.add_stylesheet("hint.min.css")
+    app.add_stylesheet("fonts.css")
     app.add_stylesheet("ansi.css")
     app.add_stylesheet("coqdoc.css")
     app.add_javascript("notations.js")
