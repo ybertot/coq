@@ -146,6 +146,9 @@ class CoqObject(ObjectDescription):
         """Create a target and an index entry for name"""
         if name:
             target = self._add_target(signode, name)
+            # remove trailing . , found in commands, but not ... (ellipsis)
+            if name[-1] == "." and not name[-3:] == "..." :
+                name = name[0:-1]
             self._add_index_entry(name, target)
             return target
 
@@ -164,19 +167,19 @@ class NotationObject(CoqObject):
 class TacticObject(PlainObject):
     """An object to represent Coq tactics"""
     subdomain = "tac"
-    index_suffix = "(tactic)"
+    index_suffix = "(tac)"
     annotation = None
 
 class GallinaObject(PlainObject):
     """An object to represent Coq theorems"""
     subdomain = "thm"
-    index_suffix = "(theorem)"
+    index_suffix = "(thm)"
     annotation = "Theorem"
 
 class VernacObject(NotationObject):
     """An object to represent Coq commands"""
     subdomain = "cmd"
-    index_suffix = "(command)"
+    index_suffix = "(cmd)"
     annotation = "Command"
 
     def _name_from_signature(self, signature):
@@ -184,24 +187,24 @@ class VernacObject(NotationObject):
 
 class VernacVariantObject(VernacObject):
     """An object to represent variants of Coq commands"""
-    index_suffix = "(command variant)"
+    index_suffix = "(cmdv)"
     annotation = "Variant"
 
 class TacticNotationObject(NotationObject):
     """An object to represent Coq tactic notations"""
     subdomain = "tacn"
-    index_suffix = "(tactic notation)"
+    index_suffix = "(tacn)"
     annotation = None
 
 class TacticNotationVariantObject(TacticNotationObject):
     """An object to represent variants of Coq tactic notations"""
-    index_suffix = "(tactic variant)"
+    index_suffix = "(tacnv)"
     annotation = "Variant"
 
 class OptionObject(NotationObject):
-    """An object to represent variants of Coq options"""
+    """An object to represent Coq options"""
     subdomain = "opt"
-    index_suffix = "(option)"
+    index_suffix = "(opt)"
     annotation = "Option"
 
     def _name_from_signature(self, signature):
@@ -210,7 +213,7 @@ class OptionObject(NotationObject):
 class ExceptionObject(NotationObject):
     """An object to represent Coq errors."""
     subdomain = "exn"
-    index_suffix = "(error)"
+    index_suffix = "(err)"
     annotation = "Error"
     # Uses “exn” since “err” already is a CSS class added by “writer_aux”.
 
@@ -221,7 +224,7 @@ class ExceptionObject(NotationObject):
 class WarningObject(NotationObject):
     """An object to represent Coq warnings."""
     subdomain = "warn"
-    index_suffix = "(warning)"
+    index_suffix = "(warn)"
     annotation = "Warning"
 
     # Generate names automatically
@@ -653,7 +656,7 @@ class CoqDomain(Domain):
         'opt': ObjType('opt', 'opt'),
         'thm': ObjType('thm', 'thm'),
         'exn': ObjType('exn', 'exn'),
-        'warn': ObjType('warn', 'warn'),
+        'warn': ObjType('warn', 'exn'),
         'index': ObjType('index', 'index', searchprio=-1)
     }
 

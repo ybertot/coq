@@ -5,6 +5,7 @@ Introduction
 ===========================================
 
 .. include:: preamble.rst
+.. include:: replaces.rst
 
 .. contents::
    :local:
@@ -13,29 +14,29 @@ Introduction
 Introduction
 ------------------------
 
-This document is the Reference Manual of version of the Coq  proof
-assistant. A companion volume, the Coq Tutorial, is provided for the
+This document is the Reference Manual of version of the |Coq|  proof
+assistant. A companion volume, the |Coq| Tutorial, is provided for the
 beginners. It is advised to read the Tutorial first. A
-book :raw-latex:`\cite{CoqArt}` on practical uses of the Coq system was
+book :cite:`CoqArt` on practical uses of the |Coq| system was
 published in 2004 and is a good support for both the beginner and the
 advanced user.
 
-The Coq system is designed to develop mathematical proofs, and
+The |Coq| system is designed to develop mathematical proofs, and
 especially to write formal specifications, programs and to verify that
 programs are correct with respect to their specification. It provides a
-specification language named Gallina. Terms of Gallina can represent
+specification language named |Gallina|. Terms of |Gallina| can represent
 programs as well as properties of these programs and proofs of these
 properties. Using the so-called *Curry-Howard isomorphism*, programs,
 properties and proofs are formalized in the same language called
 *Calculus of Inductive Constructions*, that is a
 :math:`\lambda`-calculus with a rich type system. All logical judgments
-in Coq are typing judgments. The very heart of the Coq system is the
+in |Coq| are typing judgments. The very heart of the |Coq| system is the
 type-checking algorithm that checks the correctness of proofs, in other
-words that checks that a program complies to its specification. Coq also
+words that checks that a program complies to its specification. |Coq| also
 provides an interactive proof assistant to build proofs using specific
 programs called *tactics*.
 
-All services of the Coq proof assistant are accessible by interpretation
+All services of the |Coq| proof assistant are accessible by interpretation
 of a command language called *the vernacular*.
 
 Coq has an interactive mode in which commands are interpreted as the
@@ -44,24 +45,24 @@ are processed from a file.
 
 -  The interactive mode may be used as a debugging mode in which the
    user can develop his theories and proofs step by step, backtracking
-   if needed and so on. The interactive mode is run with the coqtop
+   if needed and so on. The interactive mode is run with the `coqtop` 
    command from the operating system (which we shall assume to be some
    variety of UNIX in the rest of this document).
 
 -  The compiled mode acts as a proof checker taking a file containing a
    whole development in order to ensure its correctness. Moreover,
-   Coq\ ’s compiler provides an output file containing a compact
-   representation of its input. The compiled mode is run with the coqc
+   |Coq|’s compiler provides an output file containing a compact
+   representation of its input. The compiled mode is run with the `coqc`
    command from the operating system.
 
-These two modes are documented in Chapter [Addoc-coqc].
+These two modes are documented in Chapter :ref:`thecoqcommands`.
 
-Other modes of interaction with Coq are possible: through an emacs shell
+Other modes of interaction with |Coq| are possible: through an emacs shell
 window, an emacs generic user-interface for proof assistant (Proof
-General :raw-latex:`\cite{ProofGeneral}`) or through a customized
-interface (PCoq :raw-latex:`\cite{Pcoq}`). These facilities are not
-documented here. There is also a Coq Integrated Development Environment
-described in Chapter [Addoc-coqide].
+General :cite:`ProofGeneral`) or through a customized
+interface (PCoq :cite:`Pcoq`). These facilities are not
+documented here. There is also a |Coq| Integrated Development Environment
+described in :ref:`coqintegrateddevelopmentenvironment`.
 
 How to read this book
 =====================
@@ -70,35 +71,35 @@ This is a Reference Manual, not a User Manual, then it is not made for a
 continuous reading. However, it has some structure that is explained
 below.
 
--  The first part describes the specification language, Gallina.
-   Chapters [Gallina] and [Gallina-extension] describe the concrete
+-  The first part describes the specification language, |Gallina|.
+   Chapters :ref:`thegallinaspecificationlanguage` and :ref:`extensionsofgallina` describe the concrete
    syntax as well as the meaning of programs, theorems and proofs in the
-   Calculus of Inductive Constructions. Chapter [Theories] describes the
-   standard library of Coq. Chapter [Cic] is a mathematical description
-   of the formalism. Chapter [chapter:Modules] describes the module
+   Calculus of Inductive Constructions. Chapter :ref:`thecoqlibrary` describes the
+   standard library of |Coq|. Chapter :ref:`calculusofinductiveconstructions` is a mathematical description
+   of the formalism. Chapter :ref:`themodulesystem` describes the module
    system.
 
 -  The second part describes the proof engine. It is divided in five
-   chapters. Chapter [Vernacular-commands] presents all commands (we
+   chapters. Chapter :ref:`vernacularcommands` presents all commands (we
    call them *vernacular commands*) that are not directly related to
    interactive proving: requests to the environment, complete or partial
    evaluation, loading and compiling files. How to start and stop
    proofs, do multiple proofs in parallel is explained in
-   Chapter [Proof-handling]. In Chapter [Tactics], all commands that
+   Chapter :ref:`proofhandling`. In Chapter :ref:`tactics`, all commands that
    realize one or more steps of the proof are presented: we call them
    *tactics*. The language to combine these tactics into complex proof
-   strategies is given in Chapter [TacticLanguage]. Examples of tactics
-   are described in Chapter [Tactics-examples].
+   strategies is given in Chapter :ref:`thetacticlanguage`. Examples of tactics
+   are described in Chapter :ref:`detailedexamplesoftactics`.
 
--  The third part describes how to extend the syntax of Coq. It
-   corresponds to the Chapter [Addoc-syntax].
+-  The third part describes how to extend the syntax of |Coq|. It
+   corresponds to the Chapter :ref:`syntaxextensionsandinterpretationscopes`.
 
 -  In the fourth part more practical tools are documented. First in
-   Chapter [Addoc-coqc], the usage of ``coqc`` (batch mode) and
-   ``coqtop`` (interactive mode) with their options is described. Then,
-   in Chapter [Utilities], various utilities that come with the
-   Coq distribution are presented. Finally, Chapter [Addoc-coqide]
-   describes the Coq integrated development environment.
+   Chapter :ref:`thecoqcommands`, the usage of `coqc` (batch mode) and
+   `coqtop` (interactive mode) with their options is described. Then,
+   in Chapter :ref:`utilities`, various utilities that come with the
+   |Coq| distribution are presented. Finally, Chapter :ref:`coqintegrateddevelopmentenvironment` 
+   describes the |Coq| integrated development environment.
 
 At the end of the document, after the global index, the user can find
 specific indexes for tactics, vernacular commands, and error messages.
@@ -107,14 +108,14 @@ List of additional documentation
 ================================
 
 This manual does not contain all the documentation the user may need
-about Coq. Various informations can be found in the following documents:
+about |Coq|. Various informations can be found in the following documents:
 
 Tutorial
-    A companion volume to this reference manual, the Coq Tutorial, is
-    aimed at gently introducing new users to developing proofs in Coq
+    A companion volume to this reference manual, the |Coq| Tutorial, is
+    aimed at gently introducing new users to developing proofs in |Coq|
     without assuming prior knowledge of type theory. In a second step,
     the user can read also the tutorial on recursive types (document
-    RecTutorial.ps).
+    `RecTutorial.ps`).
 
 Addendum
     The fifth part (the Addendum) of the Reference Manual is distributed
@@ -126,14 +127,13 @@ Addendum
     refers to the Addendum.
 
 Installation
-    A text file INSTALL that comes with the sources explains how to
-    install Coq.
+    A text file `INSTALL` that comes with the sources explains how to
+    install |Coq|.
 
-The Coq standard library
-    A commented version of sources of the Coq standard library
+The |Coq| standard library
+    A commented version of sources of the |Coq| standard library
     (including only the specifications, the proofs are removed) is given
-    in the additional document Library.ps.
-
+    in the additional document `Library.ps`.
 
 -------------------------------------------
 Credits
@@ -149,7 +149,7 @@ verified mathematical proofs, and the *program extractor* which
 synthesizes computer programs obeying their formal specifications,
 written as logical assertions in the language.
 
-The logical language used by Coq is a variety of type theory, called the
+The logical language used by |Coq| is a variety of type theory, called the
 *Calculus of Inductive Constructions*. Without going back to Leibniz and
 Boole, we can date the creation of what is now called mathematical logic
 to the work of Frege and Peano at the turn of the century. The discovery
@@ -240,7 +240,7 @@ modules, automatically generated from a consistency proof of their
 formal specifications. We are however still far from being able to use
 this methodology in a smooth interaction with the standard tools from
 software engineering, i.e. compilers, linkers, run-time systems taking
-advantage of special hardware, debuggers, and the like. We hope that Coq
+advantage of special hardware, debuggers, and the like. We hope that |Coq|
 can be of use to researchers interested in experimenting with this new
 methodology.
 
@@ -273,7 +273,7 @@ manipulation of windows, menus, mouse-sensitive buttons, and other
 widgets. This system (Version 5.6) was released in 1991.
 
 Coq was ported to the new implementation Caml-light of X. Leroy and D.
-Doligez by D. de Rauglaudre (Version 5.7) in 1992. A new version of Coq
+Doligez by D. de Rauglaudre (Version 5.7) in 1992. A new version of |Coq|
 was then coordinated by C. Murthy, with new tools designed by C. Parent
 to prove properties of ML programs (this methodology is dual to program
 extraction) and a new user-interaction loop. This system (Version 5.8)
@@ -282,9 +282,9 @@ by Y. Bertot from the Croap project from INRIA-Sophia-Antipolis.
 
 In parallel, G. Dowek and H. Herbelin developed a new proof engine,
 allowing the general manipulation of existential variables consistently
-with dependent types in an experimental version of Coq (V5.9).
+with dependent types in an experimental version of |Coq| (V5.9).
 
-The version V5.10 of Coq is based on a generic system for manipulating
+The version V5.10 of |Coq| is based on a generic system for manipulating
 terms with binding operators due to Chet Murthy. A new proof engine
 allows the parallel development of partial proofs for independent
 subgoals. The structure of these proof trees is a mixed representation
@@ -329,14 +329,14 @@ definitions of “inversion predicates”.
 Credits: addendum for version 6.1
 =================================
 
-The present version 6.1 of Coq is based on the V5.10 architecture. It
+The present version 6.1 of |Coq| is based on the V5.10 architecture. It
 was ported to the new language Objective Caml by Bruno Barras. The
 underlying framework has slightly changed and allows more conversions
 between sorts.
 
 The new version provides powerful tools for easier developments.
 
-Cristina Cornes designed an extension of the Coq syntax to allow
+Cristina Cornes designed an extension of the |Coq| syntax to allow
 definition of terms using a powerful pattern-matching analysis in the
 style of ML programs.
 
@@ -349,13 +349,13 @@ written.
 Yann Coscoy designed a command which explains a proof term using natural
 language. Pierre Crégut built a new tactic which solves problems in
 quantifier-free Presburger Arithmetic. Both functionalities have been
-integrated to the Coq system by Hugo Herbelin.
+integrated to the |Coq| system by Hugo Herbelin.
 
 Samuel Boutin designed a tactic for simplification of commutative rings
 using a canonical set of rewriting rules and equality modulo
 associativity and commutativity.
 
-Finally the organisation of the Coq distribution has been supervised by
+Finally the organisation of the |Coq| distribution has been supervised by
 Jean-Christophe Filliâtre with the help of Judicaël Courant and Bruno
 Barras.
 
@@ -366,21 +366,21 @@ Barras.
 Credits: addendum for version 6.2
 =================================
 
-In version 6.2 of Coq, the parsing is done using camlp4, a preprocessor
+In version 6.2 of |Coq|, the parsing is done using camlp4, a preprocessor
 and pretty-printer for CAML designed by Daniel de Rauglaudre at INRIA.
-Daniel de Rauglaudre made the first adaptation of Coq for camlp4, this
-work was continued by Bruno Barras who also changed the structure of Coq
+Daniel de Rauglaudre made the first adaptation of |Coq| for camlp4, this
+work was continued by Bruno Barras who also changed the structure of |Coq|
 abstract syntax trees and the primitives to manipulate them. The result
 of these changes is a faster parsing procedure with greatly improved
 syntax-error messages. The user-interface to introduce grammar or
 pretty-printing rules has also changed.
 
 Eduardo Giménez redesigned the internal tactic libraries, giving uniform
-names to Caml functions corresponding to Coq tactic names.
+names to Caml functions corresponding to |Coq| tactic names.
 
 Bruno Barras wrote new more efficient reductions functions.
 
-Hugo Herbelin introduced more uniform notations in the Coq specification
+Hugo Herbelin introduced more uniform notations in the |Coq| specification
 language: the definitions by fixpoints and pattern-matching have a more
 readable syntax. Patrick Loiseleur introduced user-friendly notations
 for arithmetic expressions.
@@ -396,10 +396,10 @@ a proof term with holes as a proof scheme.
 David Delahaye designed the tool to search an object in the library
 given its type (up to isomorphism).
 
-Henri Laulhère produced the Coq distribution for the Windows
+Henri Laulhère produced the |Coq| distribution for the Windows
 environment.
 
-Finally, Hugo Herbelin was the main coordinator of the Coq documentation
+Finally, Hugo Herbelin was the main coordinator of the |Coq| documentation
 with principal contributions by Bruno Barras, David Delahaye,
 Jean-Christophe Filliâtre, Eduardo Giménez, Hugo Herbelin and Patrick
 Loiseleur.
@@ -446,7 +446,7 @@ Credits: versions 7
 
 The version V7 is a new implementation started in September 1999 by
 Jean-Christophe Filliâtre. This is a major revision with respect to the
-internal architecture of the system. The Coq version 7.0 was distributed
+internal architecture of the system. The |Coq| version 7.0 was distributed
 in March 2001, version 7.1 in September 2001, version 7.2 in January
 2002, version 7.3 in May 2002 and version 7.4 in February 2003.
 
@@ -460,13 +460,13 @@ Hugo Herbelin introduced a new structure of terms with local
 definitions. He introduced “qualified” names, wrote a new
 pattern-matching compilation algorithm and designed a more compact
 algorithm for checking the logical consistency of universes. He
-contributed to the simplification of Coq internal structures and the
+contributed to the simplification of |Coq| internal structures and the
 optimisation of the system. He added basic tactics for forward reasoning
 and coercions in patterns.
 
 David Delahaye introduced a new language for tactics. General tactics
 using pattern-matching on goals and context can directly be written from
-the Coq toplevel. He also provided primitives for the design of
+the |Coq| toplevel. He also provided primitives for the design of
 user-defined tactics in Caml.
 
 Micaela Mayero contributed the library on real numbers. Olivier
@@ -475,16 +475,16 @@ square, square roots, finite sums, Chasles property and basic plane
 geometry.
 
 Jean-Christophe Filliâtre and Pierre Letouzey redesigned a new
-extraction procedure from Coq terms to Caml or Haskell programs. This
+extraction procedure from |Coq| terms to Caml or Haskell programs. This
 new extraction procedure, unlike the one implemented in previous version
-of Coq is able to handle all terms in the Calculus of Inductive
+of |Coq| is able to handle all terms in the Calculus of Inductive
 Constructions, even involving universes and strong elimination. P.
 Letouzey adapted user contributions to extract ML programs when it was
 sensible. Jean-Christophe Filliâtre wrote ``coqdoc``, a documentation
-tool for Coq libraries usable from version 7.2.
+tool for |Coq| libraries usable from version 7.2.
 
 Bruno Barras improved the reduction algorithms efficiency and the
-confidence level in the correctness of Coq critical type-checking
+confidence level in the correctness of |Coq| critical type-checking
 algorithm.
 
 Yves Bertot designed the ``SearchPattern`` and ``SearchRewrite`` tools
@@ -503,7 +503,7 @@ real numbers.
 Pierre Crégut developed a new version based on reflexion of the Omega
 decision tactic.
 
-Claudio Sacerdoti Coen designed an XML output for the Coq modules to be
+Claudio Sacerdoti Coen designed an XML output for the |Coq| modules to be
 used in the Hypertextual Electronic Library of Mathematics (HELM cf
 http://www.cs.unibo.it/helm).
 
@@ -513,13 +513,13 @@ contributed by Jean Goubault was integrated in the basic theories.
 Pierre Courtieu developed a command and a tactic to reason on the
 inductive structure of recursively defined functions.
 
-Jacek Chrzszcz designed and implemented the module system of Coq whose
+Jacek Chrzszcz designed and implemented the module system of |Coq| whose
 foundations are in Judicaël Courant’s PhD thesis.
 
 The development was coordinated by C. Paulin.
 
 Many discussions within the Démons team and the LogiCal project
-influenced significantly the design of Coq especially with J. Courant,
+influenced significantly the design of |Coq| especially with J. Courant,
 J. Duprat, J. Goubault, A. Miquel, C. Marché, B. Monate and B. Werner.
 
 Intensive users suggested improvements of the system : Y. Bertot, L.
@@ -533,7 +533,7 @@ J.-F. Monin from France Telecom R & D.
 Credits: version 8.0
 ====================
 
-Coq version 8 is a major revision of the Coq proof assistant. First, the
+Coq version 8 is a major revision of the |Coq| proof assistant. First, the
 underlying logic is slightly different. The so-called *impredicativity*
 of the sort Set has been dropped. The main reason is that it is
 inconsistent with the principle of description which is quite a useful
@@ -562,7 +562,7 @@ main motivations were
 Together with the revision of the concrete syntax, a new mechanism of
 *interpretation scopes* permits to reuse the same symbols (typically +,
 -, \*, /, <, <=) in various mathematical theories without any
-ambiguities for Coq, leading to a largely improved readability of Coq
+ambiguities for |Coq|, leading to a largely improved readability of |Coq|
 scripts. New commands to easily add new symbols are also provided.
 
 Coming with the new syntax of terms, a slight reform of the tactic
@@ -572,29 +572,29 @@ easier to use and to remember.
 
 Thirdly, a restructuration and uniformisation of the standard library of
 Coq has been performed. There is now just one Leibniz’ equality usable
-for all the different kinds of Coq objects. Also, the set of real
+for all the different kinds of |Coq| objects. Also, the set of real
 numbers now lies at the same level as the sets of natural and integer
 numbers. Finally, the names of the standard properties of numbers now
 follow a standard pattern and the symbolic notations for the standard
 definitions as well.
 
-The fourth point is the release of CoqIDE, a new graphical gtk2-based
-interface fully integrated to Coq. Close in style from the Proof General
-Emacs interface, it is faster and its integration with Coq makes
+The fourth point is the release of |CoqIDE|, a new graphical gtk2-based
+interface fully integrated to |Coq|. Close in style from the Proof General
+Emacs interface, it is faster and its integration with |Coq| makes
 interactive developments more friendly. All mathematical Unicode symbols
-are usable within CoqIDE.
+are usable within |CoqIDE|.
 
-Finally, the module system of Coq completes the picture of Coq version
+Finally, the module system of |Coq| completes the picture of |Coq| version
 8.0. Though released with an experimental status in the previous version
 7.4, it should be considered as a salient feature of the new version.
 
-Besides, Coq comes with its load of novelties and improvements: new or
+Besides, |Coq| comes with its load of novelties and improvements: new or
 improved tactics (including a new tactic for solving first-order
 statements), new management commands, extended libraries.
 
 Bruno Barras and Hugo Herbelin have been the main contributors of the
 reflexion and the implementation of the new syntax. The smart automatic
-translator from old to new syntax released with Coq is also their work
+translator from old to new syntax released with |Coq| is also their work
 with contributions by Olivier Desmettre.
 
 Hugo Herbelin is the main designer and implementor of the notion of
@@ -608,21 +608,21 @@ Pierre Corbineau is the main designer and implementor of the new tactic
 for solving first-order statements in presence of inductive types. He is
 also the maintainer of the non-domain specific automation tactics.
 
-Benjamin Monate is the developer of the CoqIDE graphical interface with
+Benjamin Monate is the developer of the |CoqIDE| graphical interface with
 contributions by Jean-Christophe Filliâtre, Pierre Letouzey, Claude
 Marché and Bruno Barras.
 
-Claude Marché coordinated the edition of the Reference Manual for Coq
+Claude Marché coordinated the edition of the Reference Manual for |Coq|
 V8.0.
 
 Pierre Letouzey and Jacek Chrzszcz respectively maintained the
-extraction tool and module system of Coq.
+extraction tool and module system of |Coq|.
 
 Jean-Christophe Filliâtre, Pierre Letouzey, Hugo Herbelin ando
 contributors from Sophia-Antipolis and Nijmegen participated to the
 extension of the library.
 
-Julien Narboux built a NSIS-based automatic Coq installation tool for
+Julien Narboux built a NSIS-based automatic |Coq| installation tool for
 the Windows platform.
 
 Hugo Herbelin and Christine Paulin coordinated the development which was
@@ -639,7 +639,7 @@ Credits: version 8.1
 Coq version 8.1 adds various new functionalities.
 
 Benjamin Grégoire implemented an alternative algorithm to check the
-convertibility of terms in the Coq type-checker. This alternative
+convertibility of terms in the |Coq| type-checker. This alternative
 algorithm works by compilation to an efficient bytecode that is
 interpreted in an abstract machine similar to Xavier Leroy’s ZINC
 machine. Convertibility is performed by comparing the normal forms. This
@@ -669,7 +669,7 @@ Claudio Sacerdoti Coen added new tactic features.
 
 Hugo Herbelin implemented matching on disjunctive patterns.
 
-New mechanisms made easier the communication between Coq and external
+New mechanisms made easier the communication between |Coq| and external
 provers. Nicolas Ayache and Jean-Christophe Filliâtre implemented
 connections with the provers cvcl, Simplify and zenon. Hugo Herbelin
 implemented an experimental protocol for calling external tools from the
@@ -683,7 +683,7 @@ unresolved implicit has been implemented by Hugo Herbelin.
 
 Laurent Théry’s contribution on strings and Pierre Letouzey and
 Jean-Christophe Filliâtre’s contribution on finite maps have been
-integrated to the Coq standard library. Pierre Letouzey developed a
+integrated to the |Coq| standard library. Pierre Letouzey developed a
 library about finite sets “à la Objective Caml”. With Jean-Marc Notin,
 he extended the library on lists. Pierre Letouzey’s contribution on
 rational numbers has been integrated and extended..
@@ -695,7 +695,7 @@ Pierre Courtieu, Julien Forest and Yves Bertot added extra support to
 reason on the inductive structure of recursively defined functions.
 
 Jean-Marc Notin significantly contributed to the general maintenance of
-the system. He also took care of .
+the system. He also took care of `coqdoc`.
 
 Pierre Castéran contributed to the documentation of (co-)inductive types
 and suggested improvements to the libraries.
@@ -718,16 +718,16 @@ Credits: version 8.2
 Coq version 8.2 adds new features, new libraries and improves on many
 various aspects.
 
-Regarding the language of Coq, the main novelty is the introduction by
+Regarding the language of |Coq|, the main novelty is the introduction by
 Matthieu Sozeau of a package of commands providing Haskell-style type
 classes. Type classes, that come with a few convenient features such as
 type-based resolution of implicit arguments, plays a new role of
-landmark in the architecture of Coq with respect to automatization. For
+landmark in the architecture of |Coq| with respect to automatization. For
 instance, thanks to type classes support, Matthieu Sozeau could
 implement a new resolution-based version of the tactics dedicated to
 rewriting on arbitrary transitive relations.
 
-Another major improvement of Coq 8.2 is the evolution of the arithmetic
+Another major improvement of |Coq| 8.2 is the evolution of the arithmetic
 libraries and of the tools associated to them. Benjamin Grégoire and
 Laurent Théry contributed a modular library for building arbitrarily
 large integers from bounded integers while Evgeny Makarov contributed a
@@ -751,7 +751,7 @@ Arnaud Spiwack developed a library of 31-bits machine integers and,
 relying on Benjamin Grégoire and Laurent Théry’s library, delivered a
 library of unbounded integers in base :math:`2^{31}`. As importantly, he
 developed a notion of “retro-knowledge” so as to safely extend the
-kernel-located bytecode-based efficient evaluation algorithm of Coq
+kernel-located bytecode-based efficient evaluation algorithm of |Coq|
 version 8.1 to use 31-bits machine arithmetics for efficiently computing
 with the library of integers he developed.
 
@@ -780,19 +780,19 @@ improvements, Jean-Marc Notin provided help in debugging, general
 maintenance and coqdoc support, Vincent Siles contributed extensions of
 the Scheme command and of injection.
 
-Bruno Barras implemented the coqchk tool: this is a stand-alone
+Bruno Barras implemented the `coqchk` tool: this is a stand-alone
 type-checker that can be used to certify .vo files. Especially, as this
 verifier runs in a separate process, it is granted not to be “hijacked”
-by virtually malicious extensions added to Coq.
+by virtually malicious extensions added to |Coq|.
 
 Yves Bertot, Jean-Christophe Filliâtre, Pierre Courtieu and Julien
 Forest acted as maintainers of features they implemented in previous
-versions of Coq.
+versions of |Coq|.
 
-Julien Narboux contributed to CoqIDE. Nicolas Tabareau made the
+Julien Narboux contributed to |CoqIDE|. Nicolas Tabareau made the
 adaptation of the interface of the old “setoid rewrite” tactic to the
-new version. Lionel Mamane worked on the interaction between Coq and its
-external interfaces. With Samuel Mimram, he also helped making Coq
+new version. Lionel Mamane worked on the interaction between |Coq| and its
+external interfaces. With Samuel Mimram, he also helped making |Coq|
 compatible with recent software tools. Russell O’Connor, Cezary
 Kaliscyk, Milad Niqui contributed to improved the libraries of integers,
 rational, and real numbers. We also thank many users and partners for
@@ -862,8 +862,8 @@ more robust basis.
 
 Though invisible from outside, Arnaud Spiwack improved the general
 process of management of existential variables. Pierre Letouzey and
-Stéphane Glondu improved the compilation scheme of the Coq archive.
-Vincent Gross provided support to CoqIDE. Jean-Marc Notin provided
+Stéphane Glondu improved the compilation scheme of the |Coq| archive.
+Vincent Gross provided support to |CoqIDE|. Jean-Marc Notin provided
 support for benchmarking and archiving.
 
 Many users helped by reporting problems, providing patches, suggesting
@@ -885,7 +885,7 @@ Credits: version 8.4
 
 Coq version 8.4 contains the result of three long-term projects: a new
 modular library of arithmetic by Pierre Letouzey, a new proof engine by
-Arnaud Spiwack and a new communication protocol for CoqIDE by Vincent
+Arnaud Spiwack and a new communication protocol for |CoqIDE| by Vincent
 Gross.
 
 The new modular library of arithmetic extends, generalizes and unifies
@@ -907,14 +907,14 @@ goals simultaneously, for reordering goals, all features which are
 planned for the next release. The new proof engine forced to reimplement
 info and Show Script differently, what was done by Pierre Letouzey.
 
-Before version 8.4, CoqIDE was linked to Coq with the graphical
-interface living in a separate thread. From version 8.4, CoqIDE is a
-separate process communicating with Coq through a textual channel. This
-allows for a more robust interfacing, the ability to interrupt Coq
+Before version 8.4, |CoqIDE| was linked to |Coq| with the graphical
+interface living in a separate thread. From version 8.4, |CoqIDE| is a
+separate process communicating with |Coq| through a textual channel. This
+allows for a more robust interfacing, the ability to interrupt |Coq|
 without interrupting the interface, and the ability to manage several
 sessions in parallel. Relying on the infrastructure work made by Vincent
 Gross, Pierre Letouzey, Pierre Boutillier and Pierre-Marie Pédrot
-contributed many various refinements of CoqIDE.
+contributed many various refinements of |CoqIDE|.
 
 Coq 8.4 also comes with a bunch of many various smaller-scale changes
 and improvements regarding the different components of the system.
@@ -924,8 +924,8 @@ thanks to Hugo Herbelin, Stéphane Glondu and Benjamin Grégoire. The
 addition of :math:`\eta`-conversion is justified by the confidence that
 the formulation of the Calculus of Inductive Constructions based on
 typed equality (such as the one considered in Lee and Werner to build a
-set-theoretic model of CIC :raw-latex:`\cite{LeeWerner11}`) is
-applicable to the concrete implementation of Coq.
+set-theoretic model of CIC :cite:`LeeWerner11`) is
+applicable to the concrete implementation of |Coq|.
 
 The underlying logic benefited also from a refinement of the guard
 condition for fixpoints by Pierre Boutillier, the point being that it is
@@ -998,7 +998,7 @@ Coq related tools have been upgraded too. In particular, coq\_makefile
 has been largely revised by Pierre Boutillier. Also, patches from Adam
 Chlipala for coqdoc have been integrated by Pierre Boutillier.
 
-Bruno Barras and Pierre Letouzey maintained the coqchk checker.
+Bruno Barras and Pierre Letouzey maintained the `coqchk` checker.
 
 Pierre Courtieu and Arnaud Spiwack contributed new features for using
 Coq through Proof General.
@@ -1006,7 +1006,7 @@ Coq through Proof General.
 The Dp plugin has been removed. Use the plugin provided with Why 3
 instead (http://why3.lri.fr).
 
-Under the hood, the Coq architecture benefited from improvements in
+Under the hood, the |Coq| architecture benefited from improvements in
 terms of efficiency and robustness, especially regarding universes
 management and existential variables management, thanks to Pierre
 Letouzey and Yann Régis-Gianas with contributions from Stéphane Glondu
@@ -1070,7 +1070,7 @@ the backtracking behavior of tactics. Multiple goal handling paves the
 way for smarter automation tactics. It is currently used for simple goal
 manipulation such as goal reordering.
 
-The way Coq processes a document in batch and interactive mode has been
+The way |Coq| processes a document in batch and interactive mode has been
 redesigned by Enrico Tassi with help from Bruno Barras. Opaque proofs,
 the text between Proof and Qed, can be processed asynchronously,
 decoupling the checking of definitions and statements from the checking
@@ -1083,12 +1083,12 @@ already Required. All .vio files can be turned into complete .vo files
 in parallel. The same infrastructure also allows terminating tactics to
 be run in parallel on a set of goals via the ``par:`` goal selector.
 
-CoqIDE was modified to cope with asynchronous checking of the document.
-Its source code was also made separate from that of Coq, so that CoqIDE
+|CoqIDE| was modified to cope with asynchronous checking of the document.
+Its source code was also made separate from that of |Coq|, so that |CoqIDE|
 no longer has a special status among user interfaces, paving the way for
-decoupling its release cycle from that of Coq in the future.
+decoupling its release cycle from that of |Coq| in the future.
 
-Carst Tankink developed a Coq back-end for user interfaces built on
+Carst Tankink developed a |Coq| back-end for user interfaces built on
 Makarius Wenzel’s Prover IDE framework (PIDE), like PIDE/jEdit (with
 help from Makarius Wenzel) or PIDE/Coqoon (with help from Alexander
 Faithfull and Jesper Bengtson). The development of such features was
@@ -1122,7 +1122,7 @@ principles such as propositional extensionality and univalence, thanks
 to Maxime Dénès and Bruno Barras. To ensure compatibility with the
 univalence axiom, a new flag “-indices-matter” has been implemented,
 taking into account the universe levels of indices when computing the
-levels of inductive types. This supports using Coq as a tool to explore
+levels of inductive types. This supports using |Coq| as a tool to explore
 the relations between homotopy theory and type theory.
 
 Maxime Dénès and Benjamin Grégoire developed an implementation of
@@ -1152,13 +1152,13 @@ Matthieu Sozeau. Error messages for unification and type inference
 failures have been improved by Hugo Herbelin, Pierre-Marie Pédrot and
 Arnaud Spiwack.
 
-Pierre Courtieu contributed new features for using Coq through Proof
+Pierre Courtieu contributed new features for using |Coq| through Proof
 General and for better interactive experience (bullets, Search, etc).
 
 The efficiency of the whole system has been significantly improved
 thanks to contributions from Pierre-Marie Pédrot.
 
-A distribution channel for Coq packages using the OPAM tool has been
+A distribution channel for |Coq| packages using the OPAM tool has been
 initiated by Thomas Braibant and developed by Guillaume Claret, with
 contributions by Enrico Tassi and feedback from Hugo Herbelin.
 
@@ -1175,7 +1175,7 @@ Jonathan Leivent, Greg Malecha, Clément Pit-Claudel, Marc Lasson, Lionel
 Rieg. It would however be impossible to mention with precision all names
 of people who to some extent influenced the development.
 
-Version 8.5 is one of the most important release of Coq. Its development
+Version 8.5 is one of the most important releases of |Coq|. Its development
 spanned over about 3 years and a half with about one year of
 beta-testing. General maintenance during part or whole of this period
 has been done by Pierre Boutillier, Pierre Courtieu, Maxime Dénès, Hugo
@@ -1187,7 +1187,7 @@ Mahboubi, Jean-Marc Notin, Yann Régis-Gianas, François Ripault, Carst
 Tankink. Maxime Dénès coordinated the release process.
 
 | Paris, January 2015, revised December 2015,
-| Hugo Herbelin, Matthieu Sozeau and the Coq development team
+| Hugo Herbelin, Matthieu Sozeau and the |Coq| development team
 |
 
 Credits: version 8.6
@@ -1201,9 +1201,9 @@ over 100 contributions integrated. The main user visible changes are:
 -  A new, faster state-of-the-art universe constraint checker, by
    Jacques-Henri Jourdan.
 
--  In CoqIDE and other asynchronous interfaces, more fine-grained
+-  In |CoqIDE| and other asynchronous interfaces, more fine-grained
    asynchronous processing and error reporting by Enrico Tassi, making
-   Coq capable of recovering from errors and continue processing the
+   |Coq| capable of recovering from errors and continue processing the
    document.
 
 -  More access to the proof engine features from Ltac: goal management
@@ -1250,7 +1250,7 @@ Matthieu Sozeau. The minimization algorithm has been improved by
 Matthieu Sozeau.
 
 The unifier has been improved by Hugo Herbelin and Matthieu Sozeau,
-fixing some incompatibilities introduced in Coq 8.5. Unification
+fixing some incompatibilities introduced in |Coq| 8.5. Unification
 constraints can now be left floating around and be seen by the user
 thanks to a new option. The Keyed Unification mode has been improved by
 Matthieu Sozeau.
@@ -1273,19 +1273,19 @@ the pretty-printing and user interface communication components.
 
 Frédéric Besson maintained the micromega tactic.
 
-The OPAM repository for Coq packages has been maintained by Guillaume
+The OPAM repository for |Coq| packages has been maintained by Guillaume
 Claret, Guillaume Melquiond, Matthieu Sozeau, Enrico Tassi and others. A
 list of packages is now available at https://coq.inria.fr/opam/www/.
 
 Packaging tools and software development kits were prepared by Michael
 Soegtrop with the help of Maxime Dénès and Enrico Tassi for Windows, and
 Maxime Dénès and Matthieu Sozeau for MacOS X. Packages are now regularly
-built on the continuous integration server. Coq now comes with a META
+built on the continuous integration server. |Coq| now comes with a META
 file usable with ocamlfind, contributed by Emilio Jesús Gallego Arias,
 Gregory Malecha, and Matthieu Sozeau.
 
 Matej Košík maintained and greatly improved the continuous integration
-setup and the testing of Coq contributions. He also contributed many API
+setup and the testing of |Coq| contributions. He also contributed many API
 improvement and code cleanups throughout the system.
 
 The contributors for this version are Bruno Barras, C.J. Bell, Yves
@@ -1302,7 +1302,7 @@ coordinated by Hugo Herbelin and Matthieu Sozeau with the help of Maxime
 Dénès, who was also in charge of the release process.
 
 Many power users helped to improve the design of the new features via
-the bug tracker, the pull request system, the Coq development mailing
+the bug tracker, the pull request system, the |Coq| development mailing
 list or the coq-club mailing list. Special thanks to the users who
 contributed patches and intensive brain-storming and code reviews,
 starting with Cyril Cohen, Jason Gross, Robbert Krebbers, Jonathan
@@ -1311,28 +1311,29 @@ Scherer and Beta Ziliani. It would however be impossible to mention
 exhaustively the names of everybody who to some extent influenced the
 development.
 
-Version 8.6 is the first release of Coq developed on a time-based
+Version 8.6 is the first release of |Coq| developed on a time-based
 development cycle. Its development spanned 10 months from the release of
 Coq 8.5 and was based on a public roadmap. To date, it contains more
-external contributions than any previous Coq system. Code reviews were
+external contributions than any previous |Coq| system. Code reviews were
 systematically done before integration of new features, with an
 important focus given to compatibility and performance issues, resulting
-in a hopefully more robust release than Coq 8.5.
+in a hopefully more robust release than |Coq| 8.5.
 
 Coq Enhancement Proposals (CEPs for short) were introduced by Enrico
 Tassi to provide more visibility and a discussion period on new
 features, they are publicly available https://github.com/coq/ceps.
 
 Started during this period, an effort is led by Yves Bertot and Maxime
-Dénès to put together a Coq consortium.
+Dénès to put together a |Coq| consortium.
 
 | Paris, November 2016,
-| Matthieu Sozeau and the Coq development team
+| Matthieu Sozeau and the |Coq| development team
 |
 
 
+------------------
 Table of contents
-=================
+------------------
 
 .. toctree::
    :caption: The language
@@ -1401,11 +1402,11 @@ Table of contents
    porting/tactics
    porting/tricky-bits
 
-
 There's also an work-in-progress version of a `PDF manual <http://web.mit.edu/cpitcla/www/coq-rst/Coq85.pdf>`_.
 
-Indices and tables
-==================
+--------
+Indexes
+--------
 
 * :ref:`genindex`
 * :index:`cmdindex`

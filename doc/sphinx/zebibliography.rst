@@ -5,5 +5,6 @@ Bibliography
 ============
 
 .. bibliography:: biblio.bib
-		  :labelprefix:
+		  :all:
+                  :labelprefix:
 		  :notcited:
