@@ -17,5 +17,5 @@ LGROUP: '{' [+*?];
 LBRACE: '{';
 RBRACE: '}';
 ATOM: ~[@{} ]+;
-ID: '@' [a-zA-Z0-9_]+;
+ID: '@' '@'? [a-zA-Z0-9_]+;
 WHITESPACE: ' '+;
