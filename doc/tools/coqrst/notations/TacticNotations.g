@@ -16,6 +16,6 @@ hole: ID;
 LGROUP: '{' [+*?];
 LBRACE: '{';
 RBRACE: '}';
-ATOM: ~[@{} ]+;
-ID: '@' '@'? [a-zA-Z0-9_]+;
+ATOM: '@' | ~[@{} ]+;
+ID: '@' [a-zA-Z0-9_]+;
 WHITESPACE: ' '+;
