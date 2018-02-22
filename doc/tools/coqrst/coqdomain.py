@@ -210,6 +210,12 @@ class OptionObject(NotationObject):
     def _name_from_signature(self, signature):
         return stringify_with_ellipses(signature)
 
+class ProductionObject(NotationObject):
+    """An object to represent grammar productions"""
+    subdomain = "prodn"
+    index_suffix = None
+    annotation = None
+
 class ExceptionObject(NotationObject):
     """An object to represent Coq errors."""
     subdomain = "exn"
@@ -595,6 +601,11 @@ class CoqOptionIndex(CoqSubdomainsIndex):
 class CoqGallinaIndex(CoqSubdomainsIndex):
     name, localname, shortname, subdomains = "thmindex", "Gallina Index", "theorems", ["thm"]
 
+# we specify an index to make productions fit into the framework of notations
+# but not likely to include a link to this index
+class CoqProductionIndex(CoqSubdomainsIndex):
+    name, localname, shortname, subdomains = "prodnindex", "Production Index", "productions", ["prodn"]
+
 class CoqExceptionIndex(CoqSubdomainsIndex):
     name, localname, shortname, subdomains = "exnindex", "Errors and Warnings Index", "errors", ["exn", "warn"]
 
@@ -655,6 +666,7 @@ class CoqDomain(Domain):
         'tacv': ObjType('tacv', 'tacn'),
         'opt': ObjType('opt', 'opt'),
         'thm': ObjType('thm', 'thm'),
+        'prodn': ObjType('prodn', 'prodn'),
         'exn': ObjType('exn', 'exn'),
         'warn': ObjType('warn', 'exn'),
         'index': ObjType('index', 'index', searchprio=-1)
@@ -671,6 +683,7 @@ class CoqDomain(Domain):
         'tacv': TacticNotationVariantObject,
         'opt': OptionObject,
         'thm': GallinaObject,
+        'prodn' : ProductionObject,
         'exn': ExceptionObject,
         'warn': WarningObject,
     }
@@ -682,6 +695,7 @@ class CoqDomain(Domain):
         'tacn': XRefRole(),
         'opt': XRefRole(),
         'thm': XRefRole(),
+        'prodn' : XRefRole(),
         'exn': XRefRole(),
         'warn': XRefRole(),
         # This one is special
@@ -695,7 +709,7 @@ class CoqDomain(Domain):
         'l': LtacRole, #FIXME unused?
     }
 
-    indices = [CoqVernacIndex, CoqTacticIndex, CoqOptionIndex, CoqGallinaIndex, CoqExceptionIndex]
+    indices = [CoqVernacIndex, CoqTacticIndex, CoqOptionIndex, CoqGallinaIndex, CoqProductionIndex, CoqExceptionIndex]
 
     data_version = 1
     initial_data = {
@@ -707,6 +721,7 @@ class CoqDomain(Domain):
             'tacn': {},
             'opt': {},
             'thm': {},
+            'prodn' : {},
             'exn': {},
             'warn': {},
         }
