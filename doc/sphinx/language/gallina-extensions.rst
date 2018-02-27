@@ -240,7 +240,7 @@ flag. Another compatibility printing can be activated thanks to the
 printing of pattern-matching over primitive records.
 
 Primitive Record Types
-~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++
 
 When the ``Set Primitive Projections`` option is on, definitions of
 record types change meaning. When a type is declared with primitive
@@ -271,7 +271,7 @@ There are currently two ways to introduce primitive records types:
    can be defined.
 
 Reduction
-~~~~~~~~~
++++++++++
 
 The basic reduction rule of a primitive projection is
 |p_i| ``(Build_``\ `R` |t_1| … |t_n|\ ``)`` :math:`{\rightarrow_{\iota}}` |t_i|.
@@ -287,7 +287,7 @@ to display unfolded primitive projections as matches and distinguish them from f
 
 
 Compatibility Projections and :g:`match`
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+++++++++++++++++++++++++++++++++++++++++
 
 To ease compatibility with ordinary record types, each primitive
 projection is also defined as a ordinary constant taking parameters and
@@ -379,7 +379,7 @@ constructions. There are two variants of them.
 
 
 First destructuring let syntax
-``````````````````````````````
+++++++++++++++++++++++++++++++
 
 The expression :g:`let (`\ |ident_1|:g:`, … ,` |ident_n|\ :g:`) :=` |term_0|\ :g:`in` |term_1| performs
 case analysis on |term_0| which must be in an inductive type with one
@@ -424,7 +424,7 @@ and
 
 
 Second destructuring let syntax
-```````````````````````````````
++++++++++++++++++++++++++++++++
 
 Another destructuring let syntax is available for inductive types with
 one constructor by giving an arbitrary pattern instead of just a tuple
@@ -463,7 +463,7 @@ The following commands give some control over the pretty-printing
 of :g:`match` expressions.
 
 Printing nested patterns
-````````````````````````
++++++++++++++++++++++++++
 
 The Calculus of Inductive Constructions knows pattern-matching only
 over simple patterns. It is however convenient to re-factorize nested
@@ -486,7 +486,7 @@ This tells if the printing matching mode is on or off. The default is
 on.
 
 Printing of wildcard patterns
-`````````````````````````````
+++++++++++++++++++++++++++++++
 
 Some variables in a pattern may not occur in the right-hand side of
 the pattern-matching clause. There are options to control the display
@@ -511,7 +511,7 @@ to print wildcard for useless variables.
 
 
 Printing of the elimination predicate
-`````````````````````````````````````
++++++++++++++++++++++++++++++++++++++
 
 In most of the cases, the type of the result of a matched term is
 mechanically synthesizable. Especially, if the result type does not
@@ -533,7 +533,7 @@ The default is to not print synthesizable types.
 
 
 Printing matching on irrefutable patterns
-`````````````````````````````````````````
+++++++++++++++++++++++++++++++++++++++++++
 
 If an inductive type has just one constructor, pattern-matching can be
 written using the first destructuring let syntax.
@@ -565,7 +565,7 @@ written using the first destructuring let syntax.
 
 
 Printing matching on booleans
-`````````````````````````````
++++++++++++++++++++++++++++++
 
 If an inductive type is isomorphic to the boolean type, pattern-matching
 can be written using ``if`` … ``then`` … ``else`` …:
@@ -1533,7 +1533,7 @@ this, *a priori* and *a posteriori*.
 
 
 Implicit Argument Binders
-`````````````````````````
++++++++++++++++++++++++++
 
 In the first setting, one wants to explicitly give the implicit
 arguments of a declared object as part of its definition. To do this,
@@ -1575,7 +1575,7 @@ usual implicit arguments disambiguation syntax.
 
 
 Declaring Implicit Arguments
-````````````````````````````
+++++++++++++++++++++++++++++
 
 To set implicit arguments *a posteriori*, one can use the command:
 
@@ -2013,7 +2013,7 @@ See also: more examples in user contribution category (Rocq/ALGEBRA).
 
 
 Print Canonical Projections.
-````````````````````````````
+++++++++++++++++++++++++++++
 
 This displays the list of global names that are components of some
 canonical structure. For each of them, the canonical structure of
