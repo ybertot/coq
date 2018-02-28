@@ -12,10 +12,10 @@ Authors : Assia Mahboubi and Enrico Tassi
 
 This chapter explains the basics of Canonical Structure and how they
 can be used to overload notations and build a hierarchy of algebraic
-structures. The examples are taken from :ref:`TODO-ITP2013-CANONICAL`. We invite the
+structures. The examples are taken from [CSwcu]_. We invite the
 interested reader to refer to this paper for all the details that are
 omitted here for brevity. The interested reader shall also find in
-:ref:`TODO-SIGPLAN-2011-ADHOC` a detailed description of another, complementary, use of
+[CSlessadhoc]_ a detailed description of another, complementary, use of
 Canonical Structures: advanced proof search. This latter papers also
 presents many techniques one can employ to tune the inference of
 Canonical Structures.
@@ -390,7 +390,7 @@ with message "T is not an EQ.type"”.
 
 The other utilities are used to ask |Coq| to solve a specific
 unification problem, that will in turn require the inference of some
-canonical structures. They are explained in mode details in :ref:`TODO-ITP2013-CANONICAL`.
+canonical structures. They are explained in mode details in [CSwcu]_.
 
 We now have all we need to create a compact “packager” to declare
 instances of the ``LEQ`` class.
@@ -420,7 +420,7 @@ declaration. It will be type checked when it is used, an in that case ``T``
 is going to be a concrete type. The odd arguments ``_`` and ``id`` we pass to
 the packager represent respectively the classes to be inferred (like
 ``e``, ``o``, etc) and a token (``id``) to force their inference. Again, for all
-the details the reader can refer to  :ref:`TODO-ITP2013-CANONICAL`.
+the details the reader can refer to [CSwcu]_.
 
 The declaration of canonical instances can now be way more compact:
 
