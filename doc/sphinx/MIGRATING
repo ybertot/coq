@@ -164,6 +164,12 @@ placeholder .rst files for each chapter.
 
   Similarly, there are some LaTeX macros in preamble.rst that can be useful.
 
+  NOTE: replaces.rst and preamble.tst are alphabetized in order to help avoid duplicates
+  and to minimize merge conflicts. They are alphabetized first in a case-insensitive
+  way by the term being defined, and if there are two terms with same case-insensitive
+  spelling, then by the ascii case-sensitive order. If you insert new items please
+  put them in the correct order.
+
   Conventions:
 
     - Keywords and other literal text is double-backquoted (e.g. ``Module``, ``Section``, ``(``, ``,``).
