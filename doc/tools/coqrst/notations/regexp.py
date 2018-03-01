@@ -1,4 +1,4 @@
-"""An experimental visitor for ANDTLR notation ASTs, producing regular expressions."""
+"""An experimental visitor for ANTLR notation ASTs, producing regular expressions."""
 
 import re
 from io import StringIO
@@ -37,6 +37,9 @@ class TacticNotationsToRegexpVisitor(TacticNotationsVisitor):
 
     def visitHole(self, ctx:TacticNotationsParser.HoleContext):
         self.buffer.write("([^();. \n]+)") # FIXME could allow more things
+
+    def visitMeta(self, ctx:TacticNotationsParser.MetaContext):
+        self.buffer.write(re.escape(ctx.METACHAR().getText()[1:]))
 
     def visitWhitespace(self, ctx:TacticNotationsParser.WhitespaceContext):
         self.buffer.write(r"\s+")
