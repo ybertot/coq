@@ -1232,7 +1232,7 @@ name of the variable (here :g:`n`) is chosen based on :g:`T`.
 
 .. tacv:: generalize {+ @term}
 
-   This is equivalent to :n:`generalize @term; ... ; generalize @term}`.
+   This is equivalent to :n:`generalize @term; ... ; generalize @term`.
    Note that the sequence of term :sub:`i` 's are processed from n to 1.
 
 .. tacv:: generalize @term at {+ @num}
