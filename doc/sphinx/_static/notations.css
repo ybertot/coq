@@ -166,3 +166,9 @@ code span.error {
 .rst-content tt.literal, .rst-content tt.literal, .rst-content code.literal {
     color: inherit !important;
 }
+
+/* meta-level syntax */
+span.notation span.meta {
+    color: #0043f3;
+    font-weight: bolder;
+}

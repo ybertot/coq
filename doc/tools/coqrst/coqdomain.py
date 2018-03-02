@@ -21,6 +21,7 @@ from sphinx.roles import XRefRole
 from sphinx.util.nodes import set_source_info, set_role_source_info, make_refnode
 from sphinx.directives import ObjectDescription
 from sphinx.domains import Domain, ObjType, Index
+from sphinx.domains.std import token_xrefs
 from sphinx.ext.mathbase import MathDirective, displaymath
 
 from . import coqdoc
@@ -215,6 +216,27 @@ class ProductionObject(NotationObject):
     subdomain = "prodn"
     index_suffix = None
     annotation = None
+
+    # override to create link targets for production left-hand sides
+    def run(self):
+        env = self.state.document.settings.env
+        objects = env.domaindata['std']['objects']
+        [idx, node] = super().run()
+        # find LHS of production
+        inline_lhs = node[0][0][0][0]  # may be fragile !!!
+        lhs = inline_lhs[0]
+        # register link target
+        subnode = addnodes.production()
+        subnode['tokenname'] = lhs
+        idname = 'grammar-token-%s' % subnode['tokenname']
+        if idname not in self.state.document.ids:
+            subnode['ids'].append(idname)
+        self.state.document.note_implicit_target(subnode, subnode)
+        objects['token', subnode['tokenname']] = env.docname, idname
+        subnode.extend(token_xrefs(lhs))
+        # patch in link target
+        inline_lhs['ids'].append(idname)
+        return [idx, node]
 
 class ExceptionObject(NotationObject):
     """An object to represent Coq errors."""
