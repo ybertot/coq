@@ -191,6 +191,11 @@ placeholder .rst files for each chapter.
       .. exn:: Something's not right.
       .. warn:: You shouldn't do that.
 
+    - As an alternative to "productionlist" for grammars, you can also use the "prodn" directive,
+      which allows to write a single production, which appears with a blue background in the same
+      way that "cmd" and "tacn" appear. You can use the "{*; foo}" syntax that's used for
+      with those directives.
+
     - Use the "example" directive for examples
 
     - Use the "g" role for inline Gallina, like :g:`fun x => x`
@@ -204,6 +209,30 @@ placeholder .rst files for each chapter.
 ::
 
         your other code here
+
+  Section hierarchy:
+
+    Sections, subsections, and so on, are indicated by underlining phrases. The characters
+    used need to be distinct at each level, though it appears to be not so important what
+    those characters are. For consistency in this project, the suggested characters are:
+
+    Chapter title    HTML H1
+    =============
+
+    Section          HTML H2
+    -------
+
+    Subsection       HTML H3
+    ~~~~~~~~~~
+
+    Subsubsection    HTML H4
+    +++++++++++++
+
+    We shouldn't need to go deeper. Why these particular characters, in this order? They're
+    the first 4 section underline characters mentioned in the default value of
+    "rst-preferred-adornments" in Emacs "ReST mode" (the mode supporting editing of ReStructuredText,
+    the format that Sphinx is based on). It's also possible to use under-and-overlining, which we
+    won't use.
 
 # Making changes to the text
 
