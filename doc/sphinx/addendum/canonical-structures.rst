@@ -12,10 +12,10 @@ Authors : Assia Mahboubi and Enrico Tassi
 
 This chapter explains the basics of Canonical Structure and how they
 can be used to overload notations and build a hierarchy of algebraic
-structures. The examples are taken from :ref:`TODO-ITP2013-CANONICAL`. We invite the
+structures. The examples are taken from [CSwcu]_. We invite the
 interested reader to refer to this paper for all the details that are
 omitted here for brevity. The interested reader shall also find in
-:ref:`TODO-SIGPLAN-2011-ADHOC` a detailed description of another, complementary, use of
+[CSlessadhoc]_ a detailed description of another, complementary, use of
 Canonical Structures: advanced proof search. This latter papers also
 presents many techniques one can employ to tune the inference of
 Canonical Structures.
@@ -68,7 +68,7 @@ Still, no concrete type is in the ``EQ`` class.
 
 .. coqtop:: all
 
-  Check 3 == 3.
+  Fail Check 3 == 3.
 
 We amend that by equipping ``nat`` with a comparison relation.
 
@@ -105,7 +105,7 @@ example work:
 
 .. coqtop:: all
 
-  Check forall (e : EQ.type) (a b : EQ.obj e), (a, b) == (a, b).
+  Fail Check forall (e : EQ.type) (a b : EQ.obj e), (a, b) == (a, b).
 
 The error message is telling that |Coq| has no idea on how to compare
 pairs of objects. The following construction is telling Coq exactly
@@ -196,9 +196,9 @@ over the types that are equipped with both relations.
 
   Check 2 <= 3 /\ 2 == 2.
 
-  Check forall (e : EQ.type) (x y : EQ.obj e), x <= y -> y <= x -> x == y.
+  Fail Check forall (e : EQ.type) (x y : EQ.obj e), x <= y -> y <= x -> x == y.
 
-  Check forall (e : LE.type) (x y : LE.obj e), x <= y -> y <= x -> x == y.
+  Fail Check forall (e : LE.type) (x y : LE.obj e), x <= y -> y <= x -> x == y.
 
 We need to define a new class that inherits from both ``EQ`` and ``LE`.
 
@@ -232,7 +232,7 @@ theory of this new class.
 
     Module theory.
 
-    Check forall (le : type) (n m : obj le), n <= m -> n <= m -> n == m.
+    Fail Check forall (le : type) (n m : obj le), n <= m -> n <= m -> n == m.
 
 
 The problem is that the two classes ``LE`` and ``LEQ`` are not yet related by
@@ -283,14 +283,14 @@ setting to any concrete instate of the algebraic structure.
 
   Example test_algebraic (n m : nat) : n <= m -> m <= n -> n == m.
 
-  apply (lele_eq n m). 
+  Fail apply (lele_eq n m). 
 
-   Abort.
+  Abort.
 
   Example test_algebraic2 (l1 l2 : LEQ.type) (n m : LEQ.obj l1 * LEQ.obj l2) :
        n <= m -> m <= n -> n == m.
 
-  apply (lele_eq n m). 
+  Fail apply (lele_eq n m). 
 
   Abort.
 
@@ -390,7 +390,7 @@ with message "T is not an EQ.type"”.
 
 The other utilities are used to ask |Coq| to solve a specific
 unification problem, that will in turn require the inference of some
-canonical structures. They are explained in mode details in :ref:`TODO-ITP2013-CANONICAL`.
+canonical structures. They are explained in mode details in [CSwcu]_.
 
 We now have all we need to create a compact “packager” to declare
 instances of the ``LEQ`` class.
@@ -420,16 +420,14 @@ declaration. It will be type checked when it is used, an in that case ``T``
 is going to be a concrete type. The odd arguments ``_`` and ``id`` we pass to
 the packager represent respectively the classes to be inferred (like
 ``e``, ``o``, etc) and a token (``id``) to force their inference. Again, for all
-the details the reader can refer to  :ref:`TODO-ITP2013-CANONICAL`.
+the details the reader can refer to [CSwcu]_.
 
 The declaration of canonical instances can now be way more compact:
 
-
-Coq < Canonical Structure nat_LEQty := Eval hnf in Pack nat nat_LEQmx.
-nat_LEQty is defined
-
 .. coqtop:: all
 
+  Canonical Structure nat_LEQty := Eval hnf in Pack nat nat_LEQmx.
+  
   Canonical Structure pair_LEQty (l1 l2 : LEQ.type) :=
      Eval hnf in Pack (LEQ.obj l1 * LEQ.obj l2) (pair_LEQmx l1 l2).
 
@@ -438,5 +436,5 @@ the message).
 
 .. coqtop:: all
 
-  Canonical Structure err := Eval hnf in Pack bool nat_LEQmx.
+  Fail Canonical Structure err := Eval hnf in Pack bool nat_LEQmx.
 
