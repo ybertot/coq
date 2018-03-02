@@ -200,7 +200,7 @@ over the types that are equipped with both relations.
 
   Fail Check forall (e : LE.type) (x y : LE.obj e), x <= y -> y <= x -> x == y.
 
-We need to define a new class that inherits from both ``EQ`` and ``LE`.
+We need to define a new class that inherits from both ``EQ`` and ``LE``.
 
 
 .. coqtop:: all
@@ -222,7 +222,7 @@ We need to define a new class that inherits from both ``EQ`` and ``LE`.
     Arguments Class {T} _ _ _.
 
 The mixin component of the ``LEQ`` class contains all the extra content we
-are adding to ``EQ and ``LE``. In particular it contains the requirement
+are adding to ``EQ`` and ``LE``. In particular it contains the requirement
 that the two relations we are combining are compatible.
 
 Unfortunately there is still an obstacle to developing the algebraic
@@ -294,7 +294,7 @@ setting to any concrete instate of the algebraic structure.
 
   Abort.
 
-Again one has to tell |Coq| that the type ``nat`` is in the ``LEQ` class, and
+Again one has to tell |Coq| that the type ``nat`` is in the ``LEQ`` class, and
 how the type constructor ``*`` interacts with the ``LEQ`` class. In the
 following proofs are omitted for brevity.
 
