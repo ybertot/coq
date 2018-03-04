@@ -200,7 +200,7 @@ consequently represent the type of proofs of the formula “:math:`∀ x. P(x`)�
 
 .. _Typing-rules:
 
-**Typing rules**
+Typing rules
 ----------------
 
 As objects of type theory, terms are subjected to *type discipline*.
@@ -756,7 +756,7 @@ which corresponds to the result of the |Coq| declaration:
 The declaration for a mutual inductive definition of even and odd is:
 
 .. math::
-   \ind{~}{\left[\begin{array}{rcl}\even&:&\nat → \Prop \\
+   \ind{1}{\left[\begin{array}{rcl}\even&:&\nat → \Prop \\
                                    \odd&:&\nat → \Prop \end{array}\right]}
     {\left[\begin{array}{rcl}
              \evenO &:& \even~0\\
@@ -917,7 +917,12 @@ For instance, if one considers the type
      
 ::
 
-    [TODO Note: This commentary does not seem to correspond to the preceding example.]    
+    [TODO Note: This commentary does not seem to correspond to the
+     preceding example.  Instead it is referring to the first example
+     in Inductive Definitions section.  It seems we should either
+     delete the preceding example and refer the the example above of
+     type `list A`, or else we should rewrite the commentary below.]
+     
     Then every instantiated constructor of list A satisfies the nested positivity
     condition for list
       │
@@ -1798,7 +1803,7 @@ The Calculus of Inductive Construction with impredicative Set
 
 |Coq| can be used as a type-checker for the Calculus of Inductive
 Constructions with an impredicative sort :math:`\Set` by using the compiler
-option ``-impredicative-set``. For example, using the ordinary coqtop
+option ``-impredicative-set``. For example, using the ordinary `coqtop`
 command, the following is rejected,
 
 .. example::
@@ -1806,7 +1811,7 @@ command, the following is rejected,
 
       Fail Definition id: Set := forall X:Set,X->X.
 
-while it will type-check, if one uses instead the coqtop
+while it will type-check, if one uses instead the `coqtop`
 ``-impredicative-set`` option..
 
 The major change in the theory concerns the rule for product formation
