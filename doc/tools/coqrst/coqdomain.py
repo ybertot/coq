@@ -19,6 +19,7 @@ from docutils.parsers.rst.directives.admonitions import BaseAdmonition
 from sphinx import addnodes
 from sphinx.roles import XRefRole
 from sphinx.util.nodes import set_source_info, set_role_source_info, make_refnode
+from sphinx.util.logging import getLogger
 from sphinx.directives import ObjectDescription
 from sphinx.domains import Domain, ObjType, Index
 from sphinx.domains.std import token_xrefs
@@ -221,21 +222,33 @@ class ProductionObject(NotationObject):
     def run(self):
         env = self.state.document.settings.env
         objects = env.domaindata['std']['objects']
+
+        class ProdnError(Exception):
+            """Exception for ill-formed prodn"""
+            pass
+
         [idx, node] = super().run()
-        # find LHS of production
-        inline_lhs = node[0][0][0][0]  # may be fragile !!!
-        lhs = inline_lhs[0]
-        # register link target
-        subnode = addnodes.production()
-        subnode['tokenname'] = lhs
-        idname = 'grammar-token-%s' % subnode['tokenname']
-        if idname not in self.state.document.ids:
-            subnode['ids'].append(idname)
-        self.state.document.note_implicit_target(subnode, subnode)
-        objects['token', subnode['tokenname']] = env.docname, idname
-        subnode.extend(token_xrefs(lhs))
-        # patch in link target
-        inline_lhs['ids'].append(idname)
+        try:
+            # find LHS of production
+            inline_lhs = node[0][0][0][0]  # may be fragile !!!
+            lhs_str = str(inline_lhs)
+            if lhs_str[0:7] != "<inline":
+                raise ProdnError("Expected atom on LHS")
+            lhs = inline_lhs[0]
+            # register link target
+            subnode = addnodes.production()
+            subnode['tokenname'] = lhs
+            idname = 'grammar-token-%s' % subnode['tokenname']
+            if idname not in self.state.document.ids:
+                subnode['ids'].append(idname)
+            self.state.document.note_implicit_target(subnode, subnode)
+            objects['token', subnode['tokenname']] = env.docname, idname
+            subnode.extend(token_xrefs(lhs))
+            # patch in link target
+            inline_lhs['ids'].append(idname)
+        except ProdnError as err:
+            getLogger(__name__).warning("Could not create link target for prodn: " + str(err) +
+                                        "\nSphinx represents the prodn as: " + str(node) + "\n")
         return [idx, node]
 
 class ExceptionObject(NotationObject):
