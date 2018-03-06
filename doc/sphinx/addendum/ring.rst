@@ -3,15 +3,18 @@
 
 .. _theringandfieldtacticfamilies:
 
-------------------------------------
- The ring and field tactic families
-------------------------------------
+The ring and field tactic families
+====================================
+
+:Author: Bruno Barras, Benjamin Grégoire, Assia Mahboubi, Laurent Théry [#f1]_
 
 :Source: https://coq.inria.fr/distrib/current/refman/ring.html
 :Converted by: Laurent Théry
 
-Authors : Bruno Barras, Benjamin Grégoire, Assia Mahboubi, Laurent Théry [#f1]_
-
+.. contents::
+   :local:
+   :depth: 1
+----
 
 This chapter presents the tactics dedicated to deal with ring and
 field equations.

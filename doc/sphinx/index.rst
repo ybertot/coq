@@ -1337,7 +1337,7 @@ Table of contents
 
 .. toctree::
    :caption: The language
-   :maxdepth: 10
+   :titlesonly:
 
    language/gallina-specification-language
    language/gallina-extensions
@@ -1347,7 +1347,7 @@ Table of contents
 
 .. toctree::
    :caption: The proof engine
-   :maxdepth: 10
+   :titlesonly:
 
    proof-engine/vernacular-commands
    proof-engine/proof-handling
@@ -1358,14 +1358,14 @@ Table of contents
 
 .. toctree::
    :caption: User extensions
-   :maxdepth: 10
+   :titlesonly:
 
    user-extensions/syntax-extensions
    user-extensions/proof-schemes
 
 .. toctree::
    :caption: Practical tools
-   :maxdepth: 10
+   :titlesonly:
 
    practical-tools/coq-commands
    practical-tools/utilities
@@ -1373,7 +1373,7 @@ Table of contents
 
 .. toctree::
    :caption: Addendum
-   :maxdepth: 10
+   :titlesonly:
 
    addendum/extended-pattern-matching
    addendum/implicit-coercions
@@ -1392,7 +1392,7 @@ Table of contents
 
 .. toctree::
    :caption: Reference
-   :maxdepth: 10
+   :titlesonly:
 	     
    glossary
 
@@ -1400,7 +1400,7 @@ Table of contents
 
 .. toctree::
    :caption: Indexes
-   :maxdepth: 10
+   :titlesonly:
 	     
    genindex
    coq-cmdindex

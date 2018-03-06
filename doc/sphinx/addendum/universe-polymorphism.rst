@@ -2,19 +2,21 @@
 
 .. _polymorphicuniverses:
 
-==================================
- Polymorphic Universes
-==================================
+Polymorphic Universes
+======================
 
 :Author: Matthieu Sozeau
+
 :Converted by: Clément Pit-Claudel
 :Source: https://coq.inria.fr/distrib/current/refman/universes.html
 
 .. contents::
    :local:
+   :depth: 1
+----
 
 General Presentation
-====================
+---------------------
 
 .. warning::
 
@@ -122,7 +124,7 @@ As one can see from the constraints, this monoid is “large”, it lives
 in a universe strictly higher than :g:`Set`.
 
 Polymorphic, Monomorphic
-========================
+-------------------------
 
 .. cmd:: Polymorphic @definition
 
@@ -161,7 +163,7 @@ Many other commands support the ``Polymorphic`` flag, including:
 
 
 Global and local universes
-==========================
+---------------------------
 
 Each universe is declared in a global or local environment before it
 can be used. To ensure compatibility, every *global* universe is set
@@ -171,7 +173,7 @@ greater or equal to :g:`Set`.
 
 
 Conversion and unification
-==========================
+---------------------------
 
 The semantics of conversion and unification have to be modified a
 little to account for the new universe instance arguments to
@@ -193,7 +195,7 @@ the same development with universe polymorphism switched on or off.
 
 
 Minimization
-============
+-------------
 
 Universe polymorphism with cumulativity tends to generate many useless
 inclusion constraints in general. Typically at each application of a
@@ -225,7 +227,7 @@ it is an atomic universe (i.e. not an algebraic max() universe).
 
 
 Explicit Universes
-==================
+-------------------
 
 The syntax has been extended to allow users to explicitly bind names
 to universes and explicitly instantiate polymorphic definitions.
@@ -252,7 +254,7 @@ to universes and explicitly instantiate polymorphic definitions.
 
 
 Polymorphic definitions
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 
 For polymorphic definitions, the declaration of (all) universe levels
 introduced by a definition uses the following syntax:

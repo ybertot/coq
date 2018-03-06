@@ -2,16 +2,18 @@
 
 .. _extendedpatternmatching:
 
-==================================================
- Extended pattern-matching (full text)
-==================================================
+Extended pattern-matching
+=========================
+
+:Authors: Cristina Cornes and Hugo Herbelin
 
 :Source: https://coq.inria.fr/distrib/current/refman/cases.html
-:Authors: Cristina Cornes and Hugo Herbelin
 :Converted by: Clément Pit-Claudel
 
 .. contents::
    :local:
+   :depth: 1
+----
 
 .. TODO links to figures
 
@@ -20,7 +22,7 @@ This section describes the full form of pattern-matching in |Coq| terms.
 .. |rhs| replace:: right hand side
 
 Patterns
-========
+--------
 
 The full syntax of match is presented in Figures 1.1 and 1.2.
 Identifiers in patterns are either constructor names or variables. Any
@@ -231,10 +233,10 @@ Here is another example using disjunctive subpatterns.
      end.
 
 About patterns of parametric types
-==================================
+----------------------------------
 
 Parameters in patterns
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 When matching objects of a parametric type, parameters do not bind in
 patterns. They must be substituted by “``_``”. Consider for example the
@@ -298,7 +300,7 @@ explicitations (as for terms 2.7.11).
 
 
 Matching objects of dependent types
-===================================
+-----------------------------------
 
 The previous examples illustrate pattern matching on objects of non-
 dependent types, but we can also use the expansion strategy to
@@ -313,7 +315,7 @@ lists of a certain length:
 
 
 Understanding dependencies in patterns
-======================================
+--------------------------------------
 
 We can define the function length over :g:`listn` by:
 
@@ -337,10 +339,10 @@ notions of usual pattern matching.
 
 
 When the elimination predicate must be provided
-===============================================
+-----------------------------------------------
 
 Dependent pattern matching
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The examples given so far do not need an explicit elimination
 predicate because all the |rhs| have the same type and the strategy
@@ -370,7 +372,7 @@ in the property :g:`Q` in the return clause. The parameters of the
 inductive definitions should not be mentioned and are replaced by ``_``.
 
 Multiple dependent pattern matching
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Recall that a list of patterns is also a pattern. So, when we
 destructure several terms at the same time and the branches have
@@ -408,7 +410,7 @@ I have a copy of :g:`b` in type :g:`listn 0` resp :g:`listn (S n')`.
 
 
 Patterns in ``in``
-------------------
+~~~~~~~~~~~~~~~~~~
 
 If the type of the matched term is more precise than an inductive
 applied to variables, arguments of the inductive in the ``in`` branch can
@@ -432,7 +434,7 @@ To be concrete: the tail function can be written:
 and :g:`tail n v` will be subterm of :g:`v`.
 
 Using pattern matching to write proofs
-======================================
+--------------------------------------
 
 In all the previous examples the elimination predicate does not depend
 on the object(s) matched. But it may depend and the typical case is
@@ -485,7 +487,7 @@ construction.
 
 
 Pattern-matching on inductive objects involving local definitions
-=================================================================
+-----------------------------------------------------------------
 
 If local definitions occur in the type of a constructor, then there
 are two ways to match on this constructor. Either the local
@@ -532,7 +534,7 @@ can also be caught in the matching.
           there is no mention of it in error messages.
 
 Pattern-matching and coercions
-==============================
+------------------------------
 
 If a mismatch occurs between the expected type of a pattern and its
 actual type, a coercion made from constructors is sought. If such a
@@ -557,8 +559,8 @@ pattern.
                       end).
 
 
-When does the expansion strategy fail ?
-=======================================
+When does the expansion strategy fail?
+--------------------------------------
 
 The strategy works very like in ML languages when treating patterns of
 non-dependent type. But there are new cases of failure that are due to

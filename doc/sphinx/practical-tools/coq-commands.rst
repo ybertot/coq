@@ -2,12 +2,16 @@
 
 .. _thecoqcommands:
 
--------------------
- The |Coq| commands
--------------------
+The |Coq| commands
+====================
 
 :Source: https://coq.inria.fr/distrib/current/refman/commands.html
 :Converted by: Paul Steckler
+
+.. contents::
+   :local:
+   :depth: 1
+------------
 
 There are three |Coq| commands:
 
@@ -68,8 +72,8 @@ directories to the load path of |Coq|. It is possible to skip the
 loading of the resource file with the option `-q`.
 
 
-14.3.2 By environment variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+By environment variables
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Load path can be specified to the |Coq| system by setting up `$COQPATH`
 environment variable. It is a list of directories separated by

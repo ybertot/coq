@@ -2,16 +2,18 @@
 
 .. include:: ../replaces.rst
 
--------------------------------------------
 Extraction of programs in OCaml and Haskell
--------------------------------------------
+============================================
 
-:Author: Jean-Christophe Filliâtre and Pierre Letouzey
+:Authors: Jean-Christophe Filliâtre and Pierre Letouzey
+
 :Source: https://coq.inria.fr/distrib/current/refman/extraction.html
 :Converted by: Pierre Letouzey
 
 .. contents::
    :local:
+   :depth: 1
+----
 
 We present here the |Coq| extraction commands, used to build certified
 and relatively efficient functional programs, extracting them from
@@ -31,9 +33,8 @@ directly available without any preliminary ``Require``.
 
    Require Extraction.
 
-
 Generating ML Code
-==================
+-------------------
 
 .. note::
 
@@ -103,10 +104,10 @@ in the |Coq| sources.
    if the current target language of the extraction is not OCaml.
 
 Extraction Options
-==================
+-------------------
 
 Setting the target language
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The ability to fix target language is the first and more important
 of the extraction options. Default is ``Ocaml``.
@@ -116,7 +117,7 @@ of the extraction options. Default is ``Ocaml``.
 .. cmd:: Extraction Language Scheme.
 
 Inlining and optimizations
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Since OCaml is a strict language, the extracted code has to
 be optimized in order to be efficient (for instance, when using
@@ -213,7 +214,7 @@ reasons, there are two cases:
     declared in the produced file. 
 
 Extra elimination of useless arguments
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The following command provides some extra manual control on the
 code elimination performed during extraction, in a way which
@@ -246,7 +247,7 @@ This behavior can be relaxed via the following option:
    depending of the use of these remaining implicited variables.
 
 Realizing axioms
-----------------
+~~~~~~~~~~~~~~~~
 
 Extraction will fail if it encounters an informative axiom not realized. 
 A warning will be issued if it encounters a logical axiom, to remind the
@@ -313,7 +314,7 @@ search these exceptions inside the extracted file and replace them by
 real code.
 
 Realizing inductive types
--------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The system also provides a mechanism to specify ML terms for inductive
 types and constructors. For instance, the user may want to use the ML
@@ -390,7 +391,7 @@ As an example of translation to a non-inductive datatype, let's turn
    Extract Inductive nat => int [ "0" "succ" ] "(fun fO fS n -> if n=0 then fO () else fS (n-1))".
 
 Avoiding conflicts with existing filenames
-------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When using ``Extraction Library``, the names of the extracted files
 directly depends from the names of the |Coq| files. It may happen that
@@ -417,7 +418,7 @@ For OCaml, a typical use of these commands is
 ``Extraction Blacklist String List``.
 
 Differences between |Coq| and ML type systems
-=============================================
+----------------------------------------------
 
 Due to differences between |Coq| and ML type systems, 
 some extracted programs are not directly typable in ML. 
@@ -477,7 +478,7 @@ problems do not occur. For example all the programs of Coq library are
 accepted by Caml type-checker without any ``Obj.magic`` (see examples below).
 
 Some examples
-=============
+-------------
 
 We present here two examples of extractions, taken from the 
 |Coq| Standard Library. We choose OCaml as target language, 
@@ -485,7 +486,7 @@ but all can be done in the other dialects with slight modifications.
 We then indicate where to find other examples and tests of extraction.
 
 A detailed example: Euclidean division
---------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The file ``Euclid`` contains the proof of Euclidean division.
 The natural numbers used there are unary integers of type ``nat``,
@@ -553,13 +554,13 @@ adding these functions to the list of functions to extract. This file
 are meant to help building concrete program via extraction.
 
 Extraction's horror museum
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Some pathological examples of extraction are grouped in the file
 ``test-suite/success/extraction.v`` of the sources of \Coq.
 
 Users' Contributions
---------------------
+~~~~~~~~~~~~~~~~~~~~
 
 Several of the |Coq| Users' Contributions use extraction to produce
 certified programs. In particular the following ones have an automatic

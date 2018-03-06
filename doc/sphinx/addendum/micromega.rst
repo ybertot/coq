@@ -1,17 +1,20 @@
 .. _ micromega:
 
---------------------------------------------------------------------
- Micromega: tactics for solving arithmetic goals over ordered rings
---------------------------------------------------------------------
+Micromega: tactics for solving arithmetic goals over ordered rings
+=======
+
+:Authors: Frédéric Besson and Evgeny Makarov
 
 :Source: https://coq.inria.fr/distrib/current/refman/micromega.html
 :Converted by: Paul Steckler
 
-Authors: Frédéric Besson and Evgeny Makarov
-
+.. contents::
+   :local:
+   :depth: 1
+----
 
 Short description of the tactics
--------------------------------------
+--------------------------------
 
 The Psatz module (``Require Import Psatz.``) gives access to several
 tactics for solving arithmetic goals over :math:`\mathbb{Z}`, :math:`\mathbb{Q}`, and :math:`\mathbb{R}` [#]_.
@@ -61,7 +64,7 @@ This includes integer constants written using the decimal notation, *i.e.*, c%R.
 
 
 *Positivstellensatz* refutations
--------------------------------------
+--------------------------------
 
 The name `psatz` is an abbreviation for *positivstellensatz* – literally
 "positivity theorem" – which generalizes Hilbert’s *nullstellensatz*. It
@@ -99,7 +102,7 @@ and checked to be :math:`-1`.
 .. _lra:
 
 `lra`: a decision procedure for linear real and rational arithmetic
-----------------------------------------------------------------------
+-------------------------------------------------------------------
 
 The `lra` tactic is searching for *linear* refutations using Fourier
 elimination [#]_. As a result, this tactic explores a subset of the *Cone*
@@ -115,7 +118,7 @@ tactic *e.g.*, :math:`x = 10 * x / 10` is solved by `lra`.
 .. _lia:
 
 `lia`: a tactic for linear integer arithmetic
-------------------------------------------------
+---------------------------------------------
 
 The tactic lia offers an alternative to the omega and romega tactic
 (see :ref:`omega`). Roughly speaking, the deductive power of lia is
@@ -133,7 +136,7 @@ The estimation of the relative efficiency of `lia` *vs* `omega` and `romega`
 is under evaluation.
 
 High level view of `lia`
-++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Over :math:`\mathbb{R}`, *positivstellensatz* refutations are a complete proof
 principle [#]_. However, this is not the case over :math:`\mathbb{Z}`. Actually,
@@ -147,7 +150,7 @@ weakness, the `lia` tactic is using recursively a combination of:
 + case split.
   
 Cutting plane proofs
-+++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~
 
 are a way to take into account the discreteness of :math:`\mathbb{Z}` by rounding up
 (rational) constants up-to the closest integer.
@@ -171,7 +174,7 @@ Cutting plane proofs and linear *positivstellensatz* refutations are a
 complete proof principle for integer linear arithmetic.
 
 Case split
-++++++++++++
+~~~~~~~~~~~
 
 enumerates over the possible values of an expression.
 
@@ -190,7 +193,7 @@ a proof.
 .. _nra:
 
 `nra`: a proof procedure for non-linear arithmetic
------------------------------------------------------
+--------------------------------------------------
 
 The `nra` tactic is an *experimental* proof procedure for non-linear
 arithmetic. The tactic performs a limited amount of non-linear
@@ -210,7 +213,7 @@ proof by abstracting monomials by variables.
 .. _nia:
 
 `nia`: a proof procedure for non-linear integer arithmetic
--------------------------------------------------------------
+----------------------------------------------------------
 
 The `nia` tactic is a proof procedure for non-linear integer arithmetic.
 It performs a pre-processing similar to `nra`. The obtained goal is
@@ -219,7 +222,7 @@ solved using the linear integer prover `lia`.
 .. _psatz:
 
 `psatz`: a proof procedure for non-linear arithmetic
--------------------------------------------------------
+----------------------------------------------------
 
 The `psatz` tactic explores the :math:`\mathit{Cone}` by increasing degrees – hence the
 depth parameter :math:`n`. In theory, such a proof search is complete – if the

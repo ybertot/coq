@@ -6,6 +6,11 @@ Detailed examples of tactics
 :Source: https://coq.inria.fr/distrib/current/refman/tactic-examples.html
 :Converted by: Calvin Beck
 
+.. contents::
+   :local:
+   :depth: 1
+----
+
 This chapter presents detailed examples of certain tactics, to
 illustrate their behavior.
 
