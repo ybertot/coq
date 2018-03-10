@@ -1,14 +1,18 @@
 .. include:: ../replaces.rst
 .. _canonicalstructures:
 
------------------------
- Canonical Structures
------------------------
+Canonical Structures
+======================
+
+:Authors: Assia Mahboubi and Enrico Tassi
 
 :Source: https://coq.inria.fr/distrib/current/refman/canonical-structures.html
 :Converted by: Laurent Théry
 
-Authors : Assia Mahboubi and Enrico Tassi
+.. contents::
+   :local:
+   :depth: 1
+----
 
 This chapter explains the basics of Canonical Structure and how they
 can be used to overload notations and build a hierarchy of algebraic
@@ -21,7 +25,7 @@ presents many techniques one can employ to tune the inference of
 Canonical Structures.
 
 
-19.1 Notation overloading
+Notation overloading
 -------------------------
 
 We build an infix notation == for a comparison predicate. Such
@@ -95,7 +99,7 @@ Similarly, we could equip any other type with a comparison relation,
 and use the ``==`` notation on terms of this type.
 
 
-19.1.1 Derived Canonical Structures
+Derived Canonical Structures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We know how to use ``== `` on base types, like ``nat``, ``bool``, ``Z``. Here we show
@@ -132,7 +136,7 @@ for each component of the pair. The declaration associates to the key ``*``
 relation ``pair_eq`` whenever the type constructor ``*`` is applied to two
 types being themselves in the ``EQ`` class.
 
-19.2 Hierarchy of structures
+Hierarchy of structures
 ----------------------------
 
 To get to an interesting example we need another base class to be
@@ -352,7 +356,7 @@ pair constructor preserves this property. The combination of these two
 facts is a simple form of proof search that |Coq| performs automatically
 while inferring canonical structures.
 
-19.2.1 Compact declaration of Canonical Structures
+Compact declaration of Canonical Structures
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We need some infrastructure for that.

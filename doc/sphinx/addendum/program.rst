@@ -5,16 +5,18 @@
 
 .. _programs:
 
-----------
 Program
-----------
+========
 
 :Author: Matthieu Sozeau
+
 :Converted by: Matthieu Sozeau
 :Source: https://coq.inria.fr/distrib/current/refman/program.html
 
 .. contents::
    :local:
+   :depth: 1
+----
 
 We present here the |Program| tactic commands, used to build
 certified |Coq| programs, elaborating them from their algorithmic
@@ -42,7 +44,7 @@ obligations which need to be resolved to create the final term.
 .. _elaborating-programs:
 
 Elaborating programs
-====================
+---------------------
 
 The main difference from |Coq| is that an object in a type T : Set can
 be considered as an object of type { x : T | P} for any wellformed P :
@@ -276,7 +278,7 @@ Program Lemma
 .. _solving_obligations:
 
 Solving obligations
-===================
+--------------------
 
 The following commands are available to manipulate obligations. The
 optional identifier is used when multiple functions have unsolved
@@ -353,7 +355,7 @@ adds some useful notations, as documented in the file itself.
 .. _program-faq:
 
 Frequently Asked Questions
-==========================
+---------------------------
 
 
 .. exn:: Ill-formed recursive definition

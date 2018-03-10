@@ -1,11 +1,15 @@
 .. _syntaxextensionsandinterpretationscopes:
 
-========================================================
- Syntax extensions and interpretation scopes
+Syntax extensions and interpretation scopes
 ========================================================
 
 :Source: https://coq.inria.fr/distrib/current/refman/syntax-extensions.html
 :Converted by: Clément Pit-Claudel
+
+.. contents::
+   :local:
+   :depth: 1
+----
 
 In this chapter, we introduce advanced commands to modify the way Coq
 parses and prints objects, i.e. the translations between the concrete
@@ -26,10 +30,10 @@ interpretation scope. This is described in Section 12.2.
    Set Printing Depth 50.
 
 Notations
-=========
+---------
 
 Basic notations
----------------
+~~~~~~~~~~~~~~~
 
 A *notation* is a symbolic abbreviation denoting some term or term
 pattern.
@@ -68,7 +72,7 @@ have to be given.
 
 
 Precedences and associativity
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Mixing different symbolic notations in a same text may cause serious
 parsing ambiguity. To deal with the ambiguity of notations, Coq uses
@@ -120,7 +124,7 @@ Figure 3.1.
 .. TODO I don't find it obvious -- CPC
 
 Complex notations
------------------
+~~~~~~~~~~~~~~~~~
 
 Notations can be made from arbitrarily complex symbols. One can for
 instance define prefix notations.
@@ -162,7 +166,7 @@ correct definition is
 See the next section for more about factorization.
 
 Simple factorization rules
---------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Coq extensible parsing is performed by *Camlp5* which is essentially a
 LL1 parser. Hence, some care has to be taken not to hide already
@@ -202,7 +206,7 @@ predefined notations can be found in Chapter 3.
 
 
 Displaying symbolic notations
------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The command ``Notation`` has an effect both on the Coq parser and on the
 Coq printer. For example:
@@ -293,7 +297,7 @@ at the time of use of the notation.
           of ``Notation``.
 
 The Infix command
------------------
+~~~~~~~~~~~~~~~~~~
 
 The ``Infix`` command is a shortening for declaring notations of infix
 symbols.
@@ -312,7 +316,7 @@ symbols.
       Infix "/\" := and (at level 80, right associativity).
 
 Reserving notations
--------------------
+~~~~~~~~~~~~~~~~~~~
 
 A given notation may be used in different contexts. Coq expects all
 uses of the notation to be defined at the same precedence and with the
@@ -332,7 +336,7 @@ inductive type or a recursive constant and a notation for it.
           their precedence and associativity cannot be changed.
 
 Simultaneous definition of terms and notations
-----------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Thanks to reserved notations, the inductive, co-inductive, recursive
 and corecursive definitions can benefit of customized notations. To do
@@ -354,7 +358,7 @@ on Figure 12.1. Here are examples:
    where "n + m" := (plus n m).
 
 Displaying informations about notations
----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. opt:: Printing Notations
 
@@ -370,7 +374,7 @@ Displaying informations about notations
       To disable other elements in addition to notations.
 
 Locating notations
-------------------
+~~~~~~~~~~~~~~~~~~
 
 .. cmd:: Locate @symbol
 
@@ -388,7 +392,7 @@ Locating notations
    .. todo:: See also: Section 6.3.10.
 
 Notations and simple binders
-----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Notations can be defined for binders as in the example:
 
@@ -425,7 +429,7 @@ the next command fails because p does not bind in the instance of n.
 
 
 Notations with recursive patterns
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 A mechanism is provided for declaring elementary notations with
 recursive patterns. The basic example is:
@@ -479,7 +483,7 @@ section 12.2).
 
 
 Notations with recursive patterns involving binders
----------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Recursive notations can also be used with binders. The basic example
 is:
@@ -522,7 +526,7 @@ example of recursive notation with closed binders:
      (x closed binder, y closed binder, at level 200, right associativity).
 
 Summary
--------
+~~~~~~~
 
 Syntax of notations
 ~~~~~~~~~~~~~~~~~~~
@@ -584,7 +588,7 @@ Notations do not survive the end of sections.
    of ``Notation``.
 
 Interpretation scopes
-=====================
+----------------------
 
 An *interpretation scope* is a set of notations for terms with their
 interpretation. Interpretation scopes provides with a weak, purely
@@ -608,7 +612,7 @@ declares the notation for conjunction in the scope ``type_scope``.
           notation.
 
 Global interpretation rules for notations
------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 At any time, the interpretation of a notation for term is done within
 a *stack* of interpretation scopes and lonely notations. In case a
@@ -658,13 +662,13 @@ lonely notations. These scopes, in opening order, are ``core_scope``,
    not inside a section.
 
 Local interpretation rules for notations
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In addition to the global rules of interpretation of notations, some
 ways to change the interpretation of subterms are available.
 
 Local opening of an interpretation scope
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++++++++++
 
 It is possible to locally extend the interpretation scope stack using the syntax
 :g:`(term)%key` (or simply :g:`term%key` for atomic terms), where key is a
@@ -684,7 +688,7 @@ interpreted in the scope stack extended with the scope bound tokey.
    :n:`Undelimit Scope @scope`
 
 Binding arguments of a constant to an interpretation scope
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. cmd:: Arguments @qualid {+ @name%@scope}
 
@@ -742,7 +746,7 @@ Binding arguments of a constant to an interpretation scope
      function is described in Section 2.
 
 Binding types of arguments to an interpretation scope
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .. cmd:: Bind Scope @scope with @qualid
 
@@ -788,7 +792,7 @@ Binding types of arguments to an interpretation scope
      function is described in Section 2.
 
 The ``type_scope`` interpretation scope
----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The scope ``type_scope`` has a special status. It is a primitive
 interpretation scope which is temporarily activated each time a
@@ -798,7 +802,7 @@ codomain of products, and more generally any type argument of a
 declared or defined constant.
 
 Interpretation scopes used in the standard library of Coq
----------------------------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We give an overview of the scopes used in the standard library of Coq.
 For a complete list of notations in each scope, use the commands Print
@@ -885,7 +889,7 @@ Scopes or Print Scope scope.
 
 
 Displaying informations about scopes
-------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. cmd:: Print Visibility
 
@@ -915,7 +919,7 @@ Displaying informations about scopes
    lonely notations.
 
 Abbreviations
-=============
+--------------
 
 .. cmd:: {? Local} Notation @ident {+ @ident} := @term {? (only parsing)}.
 
@@ -977,7 +981,7 @@ Abbreviations
    done only at the time of use of the abbreviation.
 
 Tactic Notations
-================
+-----------------
 
 Tactic notations allow to customize the syntax of the tactics of the
 tactic language [#tacn]_. Tactic notations obey the following syntax:

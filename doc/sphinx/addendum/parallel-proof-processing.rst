@@ -2,14 +2,18 @@
 
 .. _asynchronousandparallelproofprocessing:
 
+Asynchronous and Parallel Proof Processing
+==========================================
+
+:Author: Enrico Tassi
+
 :Source: https://coq.inria.fr/distrib/current/refman/async-proofs.html
 :Converted by: Paul Steckler
 
-------------------------------------------
-Asynchronous and Parallel Proof Processing
-------------------------------------------
-
-Author: Enrico Tassi
+.. contents::
+   :local:
+   :depth: 1
+----
 
 This chapter explains how proofs can be asynchronously processed by
 |Coq|. This feature improves the reactivity of the system when used in

@@ -2,16 +2,21 @@
 
 .. include:: ../replaces.rst
 
----------------------
- Implicit Coercions
----------------------
+Implicit Coercions
+====================
 
 :Author: Amokrane Saïbi
+
 :Source: https://coq.inria.fr/distrib/current/refman/coercions.html
 :Converted by: Pierre Letouzey
 
+.. contents::
+   :local:
+   :depth: 1
+----
+
 General Presentation
-====================
+---------------------
 
 This section describes the inheritance mechanism of |Coq|. In |Coq| with
 inheritance, we are not interested in adding any expressive power to
@@ -28,7 +33,7 @@ typed modulo insertion of appropriate coercions. We allow to write:
 
 
 Classes
-=======
+-------
 
 A class with `n` parameters is any defined name with a type
 :g:`forall (x₁:A₁)..(xₙ:Aₙ),s` where ``s`` is a sort.  Thus a class with
@@ -50,7 +55,7 @@ Formally, the syntax of a classes is defined as:
 
 
 Coercions
-=========
+---------
 
 A name ``f`` can be declared as a coercion between a source user-class
 ``C`` with `n` parameters and a target class ``D`` if one of these
@@ -75,7 +80,7 @@ then an object of ``D``.
 
 
 Identity Coercions
-==================
+-------------------
 
 Identity coercions are special cases of coercions used to go around
 the uniform inheritance condition. Let ``C`` and ``D`` be two classes
@@ -103,7 +108,7 @@ it becomes :g:`C uₙ'..uₖ'` where each ``uᵢ'`` is the result of the
 substitution in ``uᵢ`` of the variables ``xⱼ`` by ``tⱼ``.
 
 Inheritance Graph
-=================
+------------------
 
 Coercions form an inheritance graph with classes as nodes.  We call
 *coercion path* an ordered list of coercions between two nodes of
@@ -123,7 +128,7 @@ term consists of the successive application of its coercions.
 
 
 Declaration of Coercions
-========================
+-------------------------
 
 .. cmd:: Coercion @qualid : @class >-> @class.
 
@@ -234,7 +239,7 @@ declaration, this constructor is declared as a coercion.
 
 
 Displaying Available Coercions
-==============================
+-------------------------------
 
 .. cmd:: Print Classes.
 
@@ -253,7 +258,7 @@ Displaying Available Coercions
   Print the list of valid coercion paths between the two given classes.
 
 Activating the Printing of Coercions
-====================================
+-------------------------------------
 
 .. cmd:: Set Printing Coercions.
 
@@ -269,7 +274,7 @@ Activating the Printing of Coercions
 
 
 Classes as Records
-==================
+------------------
 
 We allow the definition of *Structures with Inheritance* (or
 classes as records) by extending the existing ``Record`` macro
@@ -299,7 +304,7 @@ FIXME: \comindex{Structure}
 
 
 Coercions and Sections
-======================
+----------------------
 
 The inheritance mechanism is compatible with the section
 mechanism. The global classes and coercions defined inside a section
@@ -311,7 +316,7 @@ coercions which do not verify the uniform inheritance condition any longer
 are also forgotten.
 
 Coercions and Modules
-=====================
+--------------------=
 
 From |Coq| version 8.3, the coercions present in a module are activated
 only when the module is explicitly imported. Formerly, the coercions
@@ -327,12 +332,12 @@ To cancel the effect of the option, use instead ``Unset Automatic Coercions Impo
 
 
 Examples
-========
+--------
 
 There are three situations:
 
 Coercion at function application
---------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :g:`f a` is ill-typed where :g:`f:forall x:A,B` and :g:`a:A'`. If there is a
 coercion path between ``A'`` and ``A``, then :g:`f a` is transformed into
@@ -417,7 +422,7 @@ previous example.
 
 
 Coercion to a type
-------------------
+~~~~~~~~~~~~~~~~~~
 
 An assumption ``x:A`` when ``A`` is not a type, is ill-typed.  It is
 replaced by ``x:A'`` where ``A'`` is the result of the application to
@@ -444,7 +449,7 @@ to ``B`` also if necessary.
 
 
 Coercion to a function
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 ``f a`` is ill-typed because ``f:A`` is not a function. The term
 ``f`` is replaced by the term obtained by applying to ``f`` the

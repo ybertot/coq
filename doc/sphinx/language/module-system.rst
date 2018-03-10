@@ -4,15 +4,15 @@
 .. _themodulesystem:
 
 The Module System
-===========================
+=================
 
 :Source: https://coq.inria.fr/distrib/current/refman/modules.html
 :Converted by: Richard L. Ford
 
 .. contents::
    :local:
-   :depth: 2
-
+   :depth: 1
+----
 
 The module system extends the Calculus of Inductive Constructions
 providing a convenient way to structure large developments as well as
@@ -21,7 +21,6 @@ a means of massive abstraction.
 
 Modules and module types
 ----------------------------
-
 
 **Access path.** An access path is denoted by :math:`p` and can be
 either a module variable :math:`X` or, if :math:`p′` is an access path

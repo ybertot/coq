@@ -2,14 +2,18 @@
 
 .. _nsatz:
 
------------------------------------------------------------
- Nsatz: tactics for proving equalities in integral domains
------------------------------------------------------------
+Nsatz: tactics for proving equalities in integral domains
+===========================================================
+
+:Author: Loïc Pottier
 
 :Source: https://coq.inria.fr/distrib/current/refman/nsatz.html
 :Converted by: Paul Steckler
 
-Author: Loïc Pottier
+.. contents::
+   :local:
+   :depth: 1
+----
 
 The tactic `nsatz` proves goals of the form
 

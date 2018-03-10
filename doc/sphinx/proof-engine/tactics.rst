@@ -4,10 +4,15 @@
 .. _tactics:
 
 Tactics
-==============================
+=======
 
 :Source: https://coq.inria.fr/distrib/current/refman/tactics.html
 :Converted by: Heiko Becker and Nikita Zyuzin
+
+.. contents::
+   :local:
+   :depth: 1
+----
 
 A deduction rule is a link between some (unique) formula, that we call
 the *conclusion* and (several) formulas that we call the *premises*. A

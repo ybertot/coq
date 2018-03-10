@@ -1,11 +1,15 @@
 .. _proofschemes:
 
--------------------
- Proof schemes
--------------------
+Proof schemes
+===============
 
 :Source: https://coq.inria.fr/distrib/current/refman/schemes.html
 :Converted by: Paul Steckler
+
+.. contents::
+   :local:
+   :depth: 1
+----
 
 Generation of induction principles with ``Scheme``
 --------------------------------------------------------
@@ -163,8 +167,8 @@ concluded by the conjunction of their conclusions.
 
     Check tree_forest_mutind.
 
-Generation of induction principles with Functional Scheme
-----------------------------------------------------------
+Generation of induction principles with ``Functional`` ``Scheme``
+-----------------------------------------------------------------
 
 The ``Functional Scheme`` command is a high-level experimental tool for
 generating automatically induction principles corresponding to
@@ -306,10 +310,10 @@ definition written by the user.
 
     Check tree_size_ind2.
      
-Generation of inversion principles with ``Derive Inversion``
---------------------------------------------------------------
+Generation of inversion principles with ``Derive`` ``Inversion``
+-----------------------------------------------------------------
 
-The syntax of ``Derive Inversion`` follows the schema:
+The syntax of ``Derive`` ``Inversion`` follows the schema:
 
 .. cmd:: Derive Inversion ident with forall (x : T), I t Sort sort
 

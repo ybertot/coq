@@ -8,6 +8,11 @@ Extensions of |Gallina|
 :Source: https://coq.inria.fr/distrib/current/refman/gallina-ext.html
 :Converted by: Paul Steckler
 
+.. contents::
+   :local:
+   :depth: 1
+----
+
 |Gallina| is the kernel language of |Coq|. We describe here extensions of
 |Gallina|’s syntax.
 

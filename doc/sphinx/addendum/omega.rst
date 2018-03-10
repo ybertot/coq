@@ -1,15 +1,20 @@
 .. _omega:
 
------------------------------------------------------------------------
- Omega: a solver for quantifier-free problems in Presburger Arithmetic
------------------------------------------------------------------------
+Omega: a solver for quantifier-free problems in Presburger Arithmetic
+=======
 
 :Author: Pierre Crégut
+
 :Source: https://coq.inria.fr/distrib/current/refman/omega.html
 :Converted by: Pierre Letouzey
 
+.. contents::
+   :local:
+   :depth: 1
+----
+
 Description of ``omega``
-========================
+------------------------
 
 This tactic does not need any parameter:
 
@@ -87,7 +92,7 @@ is generated:
 
 
 Using ``omega``
-===============
+---------------
 
 The ``omega`` tactic does not belong to the core system. It should be
 loaded by
@@ -114,10 +119,10 @@ loaded by
 
 
 Technical data
-==============
+--------------
 
 Overview of the tactic
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
  * The goal is negated twice and the first negation is introduced as an hypothesis.
  * Hypothesis are decomposed in simple equations or inequations. Multiple
@@ -129,7 +134,7 @@ Overview of the tactic
  * The script of the solution is replayed.
 
 Overview of the OMEGA decision procedure
-----------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The OMEGA decision procedure involved in the ``omega`` tactic uses
 a small subset of the decision procedure presented in :cite:`TheOmegaPaper`
@@ -156,7 +161,7 @@ steps of the Omega procedure (dark shadow) are not implemented, so the
 decision procedure is only partial.
 
 Bugs
-====
+----
 
  * The simplification procedure is very dumb and this results in
    many redundant cases to explore.

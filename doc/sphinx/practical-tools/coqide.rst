@@ -2,12 +2,16 @@
 
 .. _coqintegrateddevelopmentenvironment:
 
-----------------------------------------
 |Coq| Integrated Development Environment
-----------------------------------------
+========================================
 
 :Source: https://coq.inria.fr/distrib/current/refman/coqide.html
 :Converted by: Paul Steckler
+
+.. contents::
+   :local:
+   :depth: 1
+----
 
 The Coq Integrated Development Environment is a graphical tool, to be
 used as a user-friendly replacement to `coqtop`. Its main purpose is to
