@@ -3,6 +3,9 @@
 
 .. _themodulesystem:
 
+The Module System
+===========================
+
 :Source: https://coq.inria.fr/distrib/current/refman/modules.html
 :Converted by: Richard L. Ford
 
@@ -10,9 +13,6 @@
    :local:
    :depth: 2
 
-
-The Module System
-===========================
 
 The module system extends the Calculus of Inductive Constructions
 providing a convenient way to structure large developments as well as
@@ -430,7 +430,7 @@ Component access rules
    --------------------------
    E[Γ] ⊢ p.c : T
 
-Notice that the following rule extends the delta rule defined in section :ref:`TODO-4.3`
+Notice that the following rule extends the delta rule defined in section :ref:`Conversion-rules`
   
 .. inference:: ACC-DELTA
 

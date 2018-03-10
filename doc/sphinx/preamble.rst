@@ -17,8 +17,8 @@
    \newcommand{\endkw}{\kw{end}}
    \newcommand{\EqSt}{\textsf{EqSt}}
    \newcommand{\even}{\textsf{even}}
-   \newcommand{\evenO}{\textsf{even\_O}}
-   \newcommand{\evenS}{\textsf{even\_S}}
+   \newcommand{\evenO}{\textsf{even_O}}
+   \newcommand{\evenS}{\textsf{even_S}}
    \newcommand{\false}{\textsf{false}}
    \newcommand{\filter}{\textsf{filter}}
    \newcommand{\Fix}{\kw{Fix}}
@@ -30,7 +30,7 @@
    \newcommand{\haslength}{\textsf{has\_length}}
    \newcommand{\hd}{\textsf{hd}}
    \newcommand{\ident}{\textsf{ident}}
-   \newcommand{\in}{\kw{in}}
+   \newcommand{\In}{\kw{in}}
    \newcommand{\Ind}[4]{\kw{Ind}[#2](#3:=#4)}
    \newcommand{\ind}[3]{\kw{Ind}~[#1]\left(#2\mathrm{~:=~}#3\right)}
    \newcommand{\Indp}[5]{\kw{Ind}_{#5}(#1)[#2](#3:=#4)}
@@ -56,7 +56,7 @@
    \newcommand{\node}{\textsf{node}}
    \newcommand{\nS}{\textsf{S}}
    \newcommand{\odd}{\textsf{odd}}
-   \newcommand{\oddS}{\textsf{odd\_S}}
+   \newcommand{\oddS}{\textsf{odd_S}}
    \newcommand{\ovl}[1]{\overline{#1}}
    \newcommand{\Pair}{\textsf{pair}}
    \newcommand{\Prod}{\textsf{prod}}
