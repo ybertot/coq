@@ -429,7 +429,7 @@ Component access rules
    --------------------------
    E[Γ] ⊢ p.c : T
 
-Notice that the following rule extends the delta rule defined in section :ref:`TODO-4.3`
+Notice that the following rule extends the delta rule defined in section :ref:`Conversion-rules`
   
 .. inference:: ACC-DELTA
 

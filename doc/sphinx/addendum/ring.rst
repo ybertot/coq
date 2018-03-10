@@ -195,7 +195,7 @@ carrier set, an equality, and ring operations: ``Ring_theory.ring_theory``
 and ``Ring_theory.semi_ring_theory``) satisfies the ring axioms. Semi-
 rings (rings without + inverse) are also supported. The equality can
 be either Leibniz equality, or any relation declared as a setoid (see
-:ref:`TODO-setoidtactics`). The definition of ring and semi-rings (see module
+:ref:`tactics-enabled-on-user-provided-relations`). The definition of ring and semi-rings (see module
 ``Ring_theory``) is:
 
 .. coqtop:: in
@@ -395,7 +395,7 @@ Error messages:
 .. exn:: ring operation should be declared as a morphism
 
   A setoid associated to the carrier of the ring structure has been found, 
-  but the ring operation should be declared as morphism. See :ref:`TODO-setoidtactics`.
+  but the ring operation should be declared as morphism. See :ref:`tactics-enabled-on-user-provided-relations`.
 
 How does it work?
 ----------------------
@@ -596,7 +596,7 @@ carrier set, an equality, and field operations:
 ``Field_theory.field_theory`` and ``Field_theory.semi_field_theory``)
 satisfies the field axioms. Semi-fields (fields without + inverse) are
 also supported. The equality can be either Leibniz equality, or any
-relation declared as a setoid (see :ref:`TODO-setoidtactics`). The definition of
+relation declared as a setoid (see :ref:`tactics-enabled-on-user-provided-relations`). The definition of
 fields and semi-fields is:
 
 .. coqtop:: in
