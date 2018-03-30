@@ -26,7 +26,8 @@ Error messages:
 
 
 .. exn:: @qualid not a defined object
-
+.. exn:: Universe instance should have length n
+.. exn:: This object does not support universe names.
 
 
 Variants:
@@ -44,7 +45,11 @@ denoted by :n:`@qualid`: its kind (module, constant, assumption, inductive,
 constructor, abbreviation, …), long name, type, implicit arguments and
 argument scopes. It does not print the body of definitions or proofs.
 
+.. cmdv:: Print @qualid\@@name
 
+This locally renames the polymorphic universes of :n:`@qualid`.
+An underscore means the raw universe is printed.
+This form can be used with ``Print Term`` and ``About``.
 
 .. cmd:: Print All.
 
@@ -80,7 +85,7 @@ Section :ref:`TODO-2.9-printing-full`), options (e.g. ``Set Printing Widthintege
 letter). The general commands handling flags, options and tables are
 given below.
 
-TODO : flag is not a syntax entry
+.. TODO : flag is not a syntax entry
 
 .. cmd:: Set @flag.
 
@@ -138,7 +143,7 @@ restored when the current module ends.
 
 Variants:
 
-TODO : option and value are not syntax entries
+.. TODO : option and value are not syntax entries
 
 .. cmdv:: Local Set @option @value.
 
@@ -182,7 +187,7 @@ default value when the file is `Require`-d.
 This command prints the current value of :n:`@option`.
 
 
-TODO : table is not a syntax entry
+.. TODO : table is not a syntax entry
 
 .. cmd:: Add @table @value.
 .. cmd:: Remove @table @value.
@@ -218,14 +223,14 @@ term is checked in the local context of the current subgoal.
 
 Variants:
 
-TODO : selector is not a syntax entry
+.. TODO : selector is not a syntax entry
 
 .. cmdv:: @selector: Check @term.
 
 specifies on which subgoal to perform typing
 (see Section :ref:`TODO-8.1-invocation-of-tactics`).
 
-TODO : convtactic is not a syntax entry
+.. TODO : convtactic is not a syntax entry
 
 .. cmd:: Eval @convtactic in @term.
 
@@ -289,11 +294,11 @@ the assumptions.
 .. cmdv:: Print Transparent Dependencies @qualid.
 
 Displays the set of
-transparent constants qualid relies on in addition to the assumptions.
+transparent constants :n:`@qualid` relies on in addition to the assumptions.
 
-.. cmdv:: Print All Dependencies qualid.
+.. cmdv:: Print All Dependencies @qualid.
 
-Displays all assumptions and constants qualid relies on.
+Displays all assumptions and constants :n:`@qualid` relies on.
 
 
 
@@ -301,7 +306,7 @@ Displays all assumptions and constants qualid relies on.
 
 This command displays the name and type of all objects (hypothesis of
 the current goal, theorems, axioms, etc) of the current context whose
-statement contains qualid. This command is useful to remind the user
+statement contains :n:`@qualid`. This command is useful to remind the user
 of the name of library lemmas.
 
 
@@ -586,6 +591,8 @@ This command loads the file named :n:`ident`.v, searching successively in
 each of the directories specified in the *loadpath*. (see Section
 :ref:`TODO-2.6.3-libraries-and-filesystem`)
 
+Files loaded this way cannot leave proofs open, and the ``Load``
+command cannot be used inside a proof either.
 
 Variants:
 
@@ -608,6 +615,8 @@ the loaded file See also: Section :ref:`TODO-6.9.1-silent`.
 Error messages:
 
 .. exn:: Can’t find file @ident on loadpath
+.. exn:: Load is not supported inside proofs
+.. exn:: Files processed by Load cannot leave open proofs
 
 
 .. _compiled-files:
@@ -737,8 +746,8 @@ with names given by the :n:`@string` sequence
 (dynamic link). It is mainly used to load tactics dynamically. The
 files are searched into the current Objective Caml loadpath (see the
 command ``Add ML Path`` in Section :ref:`TODO-2.6.3-libraries-and-filesystem`). Loading of Objective
-Caml files is only possible under the bytecode version of coqtop (i.e.
-coqtop.byte, see chapter :ref:`TODO-14-coq-commands`), or when Coq has been compiled with a
+Caml files is only possible under the bytecode version of ``coqtop`` (i.e.
+``coqtop`` called with option ``-byte``, see chapter :ref:`TODO-14-coq-commands`), or when Coq has been compiled with a
 version of Objective Caml that supports native Dynlink (≥ 3.11).
 
 
@@ -801,7 +810,7 @@ Is equivalent to Pwd.
 .. cmd:: Add LoadPath @string as @dirpath.
 
 This command is equivalent to the command line option
-``-Q`` :n:`@string` :n:`@dirpath`. It adds the physical directory string to the current
+``-Q`` :n:`@dirpath` :n:`@string`. It adds the physical directory string to the current
 Coq loadpath and maps it to the logical directory dirpath.
 
 
@@ -818,7 +827,7 @@ for the empty directory path.
 .. cmd:: Add Rec LoadPath @string as @dirpath.
 
 This command is equivalent to the command line option
-``-R`` :n:`@string` :n:`@dirpath`. It adds the physical directory string and all its
+``-R`` :n:`@dirpath` :n:`@string`. It adds the physical directory string and all its
 subdirectories to the current Coq loadpath.
 
 
@@ -867,8 +876,9 @@ in Section :ref:`TODO-6.5-compiled-files`).
 .. cmd:: Print ML Path @string.
 
 This command displays the current Objective Caml loadpath. This
-command makes sense only under the bytecode version of coqtop, i.e.
-coqtop.byte (see the command Declare ML Module in Section :ref:`TODO-6.5-compiled-files`).
+command makes sense only under the bytecode version of ``coqtop``, i.e.
+using option ``-byte``
+(see the command Declare ML Module in Section :ref:`TODO-6.5-compiled-files`).
 
 
 .. cmd:: Locate File @string.
@@ -1037,7 +1047,7 @@ Warnings:
 
 
 
-TODO : command is not a syntax entry
+.. TODO : command is not a syntax entry
 
 .. cmd:: Time @command.
 
@@ -1070,10 +1080,25 @@ were passed to a Timeout command. Commands already starting by a
 
 This command turns off the use of a default timeout.
 
-
 .. cmd:: Test Default Timeout.
 
-This command displays whether some default timeout has be set or not.
+This command displays whether some default timeout has been set or not.
+
+.. TODO : command_or_tactic is not a syntax entry and command should probably
+  be used instead
+
+.. cmd:: Fail @command_or_tactic.
+For debugging scripts, sometimes it is desirable to know
+whether a command or a tactic fails. If the given :n:`@command_or_tactic`
+fails, the ``Fail`` statement succeeds, without changing the proof
+state, and in interactive mode, the system
+prints a message confirming the failure.
+If the command or tactic succeeds, the statement is an error, and
+it prints a message indicating that the failure did not occur.
+
+Error messages:
+
+.. exn:: The command has not failed!
 
 
 .. _controlling-display:
