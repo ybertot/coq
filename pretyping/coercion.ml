@@ -526,17 +526,44 @@ let reapply_coercions_body sigma trace body =
     let body = reapply_coercions sigma trace body in
     start_app_body sigma body
 
+type hook = env -> evar_map -> flags:Evarconv.unify_flags -> constr ->
+  inferred:types -> expected:types -> (evar_map * constr) option
+
+let all_hooks = ref (CString.Map.empty : hook CString.Map.t)
+
+let register_hook ~name ?(override=false) h =
+  if not override && CString.Map.mem name !all_hooks then
+    CErrors.anomaly ~label:"Coercion.register_hook"
+      Pp.(str "Hook already registered: \"" ++ str name ++ str "\".");
+  all_hooks := CString.Map.add name h !all_hooks
+
+let active_hooks = Summary.ref ~name:"coercion_hooks" ([] : string list)
+
+let deactivate_hook ~name =
+  active_hooks := List.filter (fun s -> not (String.equal s name)) !active_hooks
+
+let activate_hook ~name =
+  assert (CString.Map.mem name !all_hooks);
+  deactivate_hook ~name;
+  active_hooks := name :: !active_hooks
+
+let active_hooks () =
+  List.map (fun name -> CString.Map.get name !all_hooks) !active_hooks
+
+let default_flags_of env =
+  default_flags_of TransparentState.full
+
 (* Try to coerce to a funclass; raise NoCoercion if not possible *)
 let inh_app_fun_core ~program_mode ?(use_coercions=true) env sigma body typ =
   match unify_product env sigma typ with
-  | Inl sigma -> sigma, body, typ, IdCoe
+  | Inl sigma -> sigma, body, Some typ, IdCoe
   | Inr t ->
     try
       if not use_coercions then raise NoCoercion;
       let p = lookup_path_to_fun_from env sigma typ in
       let body = force_app_body body in
       let sigma, body, typ, trace = apply_coercion env sigma p body typ in
-      sigma, start_app_body sigma body, typ, trace
+      sigma, start_app_body sigma body, Some typ, trace
     with (Not_found | NoCoercion) as exn ->
       let _, info = Exninfo.capture exn in
       if program_mode then
@@ -544,20 +571,31 @@ let inh_app_fun_core ~program_mode ?(use_coercions=true) env sigma body typ =
           let sigma, (coercef, t, trace) = mu env sigma t in
           let j = {uj_val=force_app_body body; uj_type = typ} in
           let sigma, uj_val = app_opt env sigma coercef j.uj_val in
-          (sigma, start_app_body sigma uj_val, t, trace)
+          (sigma, start_app_body sigma uj_val, Some t, trace)
         with NoSubtacCoercion | NoCoercion ->
-          (sigma,body,typ,IdCoe)
+          (sigma,body,Some typ,IdCoe)
       else Exninfo.iraise (NoCoercion,info)
 
 (* Try to coerce to a funclass; returns [j] if no coercion is applicable *)
-let inh_app_fun ~program_mode ~resolve_tc ?use_coercions env sigma body typ =
-  try inh_app_fun_core ~program_mode ?use_coercions env sigma body typ
+let inh_app_fun ~program_mode ~resolve_tc ?use_coercions env sigma ?(flags=default_flags_of env) body typ =
+  try
+    try inh_app_fun_core ~program_mode ?use_coercions env sigma body typ
+    with
+    | NoCoercion when resolve_tc
+      && (get_use_typeclasses_for_conversion ()) ->
+        inh_app_fun_core ~program_mode ?use_coercions env (saturate_evd env sigma) body typ
   with
-  | NoCoercion when not resolve_tc
-    || not (get_use_typeclasses_for_conversion ()) -> (sigma, body, typ, IdCoe)
-  | NoCoercion ->
-    try inh_app_fun_core ~program_mode ?use_coercions env (saturate_evd env sigma) body typ
-    with NoCoercion -> (sigma, body, typ, IdCoe)
+  | NoCoercion -> let hook_res =
+      List.fold_left
+        (fun r h ->
+          if r <> None then r else
+            let (sigma, (source, _)) = Evarutil.new_type_evar env sigma Evd.univ_flexible in
+            let (sigma, (target, _)) = let env = EConstr.push_rel (Context.Rel.Declaration.LocalAssum (Context.annotR (Names.Name (Names.Id.of_string "__whatever")) , source)) env in Evarutil.new_type_evar env sigma Evd.univ_flexible in
+            h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:(mkProd (Context.annotR (Names.Name (Names.Id.of_string "__whateverx")), source, target)))
+        None (active_hooks ()) in
+    match hook_res with
+    | Some (sigma, r) -> (sigma, start_app_body sigma r, None, ReplaceCoe r)
+    | None -> (sigma, body, Some typ, IdCoe)
 
 let type_judgment env sigma j =
   match EConstr.kind sigma (whd_all env sigma j.uj_type) with
@@ -570,8 +608,18 @@ let inh_tosort_force ?loc env sigma ({ uj_val; uj_type } as j) =
     let sigma, uj_val, uj_type,_trace = apply_coercion env sigma p uj_val uj_type in
     let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val ; uj_type } in
       (sigma, type_judgment env sigma j2)
-  with Not_found | NoCoercion ->
-    error_not_a_type ?loc env sigma j
+  with Not_found | NoCoercion -> let hook_res =
+      List.fold_left
+        (fun r h ->
+          if r <> None then r else
+            let (sigma, target) = Evarutil.new_Type sigma in
+            h env sigma ~flags:(default_flags_of env) uj_val ~inferred:uj_type ~expected:target)
+        None (active_hooks ()) in
+    match hook_res with
+    | Some (sigma, r) -> let t = Retyping.get_type_of env sigma r in
+      let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val = r ; uj_type = t } in
+      (sigma, type_judgment env sigma j2)
+    | None -> error_not_a_type ?loc env sigma j
 
 let inh_coerce_to_sort ?loc ?(use_coercions=true) env sigma j =
   let typ = whd_all env sigma j.uj_type in
@@ -626,30 +674,6 @@ let lookup_reversible_path_to_common_point env sigma ~src_expected ~src_inferred
   in
     aux r
 
-type hook = env -> evar_map -> flags:Evarconv.unify_flags -> constr ->
-  inferred:types -> expected:types -> (evar_map * constr) option
-
-let all_hooks = ref (CString.Map.empty : hook CString.Map.t)
-
-let register_hook ~name ?(override=false) h =
-  if not override && CString.Map.mem name !all_hooks then
-    CErrors.anomaly ~label:"Coercion.register_hook"
-      Pp.(str "Hook already registered: \"" ++ str name ++ str "\".");
-  all_hooks := CString.Map.add name h !all_hooks
-
-let active_hooks = Summary.ref ~name:"coercion_hooks" ([] : string list)
-
-let deactivate_hook ~name =
-  active_hooks := List.filter (fun s -> not (String.equal s name)) !active_hooks
-
-let activate_hook ~name =
-  assert (CString.Map.mem name !all_hooks);
-  deactivate_hook ~name;
-  active_hooks := name :: !active_hooks
-
-let active_hooks () =
-  List.map (fun name -> CString.Map.get name !all_hooks) !active_hooks
-
 let add_reverse_coercion env sigma v'_ty v_ty v' v =
   match Coqlib.lib_ref_opt "core.coercion.reverse_coercion" with
   | None -> sigma, v'
@@ -701,9 +725,6 @@ let inh_coerce_to_fail ?(use_coercions=true) flags env sigma rigidonly v v_ty ta
       match hook_res with
       | Some (sigma, r) -> (sigma, r, ReplaceCoe r)
       | None -> Exninfo.iraise (NoCoercion,info)
-
-let default_flags_of env =
-  default_flags_of TransparentState.full
 
 let rec inh_conv_coerce_to_fail ?loc ?use_coercions env sigma ?(flags=default_flags_of env) rigidonly v t c1 =
   try (unify_leq_delay ~flags env sigma t c1, v, IdCoe)

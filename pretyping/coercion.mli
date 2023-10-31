@@ -94,4 +94,4 @@ val reapply_coercions_body : evar_map -> coercion_trace -> delayed_app_body -> d
     resolve_tc=false disables resolving type classes (as the last
     resort before failing) *)
 val inh_app_fun : program_mode:bool -> resolve_tc:bool -> ?use_coercions:bool ->
-  env -> evar_map -> delayed_app_body -> types -> evar_map * delayed_app_body * types * coercion_trace
+  env -> evar_map -> ?flags:Evarconv.unify_flags -> delayed_app_body -> types -> evar_map * delayed_app_body * types option * coercion_trace
