@@ -529,7 +529,7 @@ let reapply_coercions_body sigma trace body =
 type expected = Type of types | Sort | Product
 
 type hook = env -> evar_map -> flags:Evarconv.unify_flags -> constr ->
-  inferred:types -> expected:expected -> (evar_map * constr) option
+  inferred:types -> expected:expected -> (evar_map * constr * constr) option
 
 let all_hooks = ref (CString.Map.empty : hook CString.Map.t)
 
@@ -558,14 +558,14 @@ let default_flags_of env =
 (* Try to coerce to a funclass; raise NoCoercion if not possible *)
 let inh_app_fun_core ~program_mode ?(use_coercions=true) env sigma body typ =
   match unify_product env sigma typ with
-  | Inl sigma -> sigma, body, Some typ, IdCoe
+  | Inl sigma -> sigma, body, typ, IdCoe
   | Inr t ->
     try
       if not use_coercions then raise NoCoercion;
       let p = lookup_path_to_fun_from env sigma typ in
       let body = force_app_body body in
       let sigma, body, typ, trace = apply_coercion env sigma p body typ in
-      sigma, start_app_body sigma body, Some typ, trace
+      sigma, start_app_body sigma body, typ, trace
     with (Not_found | NoCoercion) as exn ->
       let _, info = Exninfo.capture exn in
       if program_mode then
@@ -573,9 +573,9 @@ let inh_app_fun_core ~program_mode ?(use_coercions=true) env sigma body typ =
           let sigma, (coercef, t, trace) = mu env sigma t in
           let j = {uj_val=force_app_body body; uj_type = typ} in
           let sigma, uj_val = app_opt env sigma coercef j.uj_val in
-          (sigma, start_app_body sigma uj_val, Some t, trace)
+          (sigma, start_app_body sigma uj_val, t, trace)
         with NoSubtacCoercion | NoCoercion ->
-          (sigma,body,Some typ,IdCoe)
+          (sigma,body,typ,IdCoe)
       else Exninfo.iraise (NoCoercion,info)
 
 (* Try to coerce to a funclass; returns [j] if no coercion is applicable *)
@@ -592,8 +592,8 @@ let inh_app_fun ~program_mode ~resolve_tc ?use_coercions env sigma ?(flags=defau
         (fun h -> h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:Product)
         (active_hooks ()) in
     match hook_res with
-    | Some (sigma, r) -> (sigma, start_app_body sigma r, None, ReplaceCoe r)
-    | None -> (sigma, body, Some typ, IdCoe)
+    | Some (sigma, r, typ) -> (sigma, start_app_body sigma r, typ, ReplaceCoe r)
+    | None -> (sigma, body, typ, IdCoe)
 
 let type_judgment env sigma j =
   match EConstr.kind sigma (whd_all env sigma j.uj_type) with
@@ -611,8 +611,7 @@ let inh_tosort_force ?loc env sigma ?(flags=default_flags_of env) ({ uj_val; uj_
         (fun h -> h env sigma ~flags uj_val ~inferred:uj_type ~expected:Sort)
         (active_hooks ()) in
     match hook_res with
-    | Some (sigma, r) -> let t = Retyping.get_type_of env sigma r in
-      let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val = r ; uj_type = t } in
+    | Some (sigma, r, typ) -> let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val = r ; uj_type = typ } in
       (sigma, type_judgment env sigma j2)
     | None -> error_not_a_type ?loc env sigma j
 
@@ -716,7 +715,7 @@ let inh_coerce_to_fail ?(use_coercions=true) flags env sigma rigidonly v v_ty ta
           (fun h -> h env sigma ~flags v ~inferred:v_ty ~expected:(Type target_type))
           (active_hooks ()) in
       match hook_res with
-      | Some (sigma, r) -> (sigma, r, ReplaceCoe r)
+      | Some (sigma, r, _) -> (sigma, r, ReplaceCoe r)
       | None -> Exninfo.iraise (NoCoercion,info)
 
 let rec inh_conv_coerce_to_fail ?loc ?use_coercions env sigma ?(flags=default_flags_of env) rigidonly v t c1 =

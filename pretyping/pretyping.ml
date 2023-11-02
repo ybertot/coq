@@ -910,7 +910,6 @@ struct
         | _ ->
           let typ = Vars.esubst Vars.lift_substituend subs typ in
           let sigma, body, typ, trace = Coercion.inh_app_fun ~program_mode:flags.program_mode ~resolve_tc:flags.resolve_tc ~use_coercions:flags.use_coercions !!env sigma body typ in
-          let typ = match typ with | Some x -> x | None -> Retyping.get_type_of !!env sigma (Coercion.force_app_body body) in
           let resty = whd_all !!env sigma typ in
           let na, c1, c2 = match EConstr.kind sigma resty with
           | Prod (na, c1, c2) -> (na, c1, c2)
