@@ -549,8 +549,8 @@ let activate_hook ~name =
   deactivate_hook ~name;
   active_hooks := name :: !active_hooks
 
-let active_hooks () =
-  List.map (fun name -> CString.Map.get name !all_hooks) !active_hooks
+let apply_hooks env sigma ~flags body ~inferred ~expected =
+  List.find_map (fun name -> CString.Map.get name !all_hooks env sigma ~flags body ~inferred ~expected) !active_hooks
 
 let default_flags_of env =
   default_flags_of TransparentState.full
@@ -587,11 +587,7 @@ let inh_app_fun ~program_mode ~resolve_tc ?use_coercions env sigma ?(flags=defau
       && (get_use_typeclasses_for_conversion ()) ->
         inh_app_fun_core ~program_mode ?use_coercions env (saturate_evd env sigma) body typ
   with
-  | NoCoercion -> let hook_res =
-      List.find_map
-        (fun h -> h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:Product)
-        (active_hooks ()) in
-    match hook_res with
+  | NoCoercion -> match apply_hooks env sigma ~flags (force_app_body body) ~inferred:typ ~expected:Product with
     | Some (sigma, r, typ) -> (sigma, start_app_body sigma r, typ, ReplaceCoe r)
     | None -> (sigma, body, typ, IdCoe)
 
@@ -606,11 +602,7 @@ let inh_tosort_force ?loc env sigma ?(flags=default_flags_of env) ({ uj_val; uj_
     let sigma, uj_val, uj_type,_trace = apply_coercion env sigma p uj_val uj_type in
     let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val ; uj_type } in
       (sigma, type_judgment env sigma j2)
-  with Not_found | NoCoercion -> let hook_res =
-      List.find_map
-        (fun h -> h env sigma ~flags uj_val ~inferred:uj_type ~expected:Sort)
-        (active_hooks ()) in
-    match hook_res with
+  with Not_found | NoCoercion -> match apply_hooks env sigma ~flags uj_val ~inferred:uj_type ~expected:Sort with
     | Some (sigma, r, typ) -> let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val = r ; uj_type = typ } in
       (sigma, type_judgment env sigma j2)
     | None -> error_not_a_type ?loc env sigma j
@@ -710,11 +702,7 @@ let inh_coerce_to_fail ?(use_coercions=true) flags env sigma rigidonly v v_ty ta
     with (Evarconv.UnableToUnify _ | Not_found) as exn ->
       let _, info = Exninfo.capture exn in
       (* 3 if none of the above works, try hook *)
-      let hook_res =
-        List.find_map
-          (fun h -> h env sigma ~flags v ~inferred:v_ty ~expected:(Type target_type))
-          (active_hooks ()) in
-      match hook_res with
+      match apply_hooks env sigma ~flags v ~inferred:v_ty ~expected:(Type target_type) with
       | Some (sigma, r, _) -> (sigma, r, ReplaceCoe r)
       | None -> Exninfo.iraise (NoCoercion,info)
 
