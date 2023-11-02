@@ -526,8 +526,10 @@ let reapply_coercions_body sigma trace body =
     let body = reapply_coercions sigma trace body in
     start_app_body sigma body
 
+type expected = Type of types | Sort | Product
+
 type hook = env -> evar_map -> flags:Evarconv.unify_flags -> constr ->
-  inferred:types -> expected:types -> (evar_map * constr) option
+  inferred:types -> expected:expected -> (evar_map * constr) option
 
 let all_hooks = ref (CString.Map.empty : hook CString.Map.t)
 
@@ -588,10 +590,7 @@ let inh_app_fun ~program_mode ~resolve_tc ?use_coercions env sigma ?(flags=defau
   | NoCoercion -> let hook_res =
       List.fold_left
         (fun r h ->
-          if r <> None then r else
-            let (sigma, (source, _)) = Evarutil.new_type_evar env sigma Evd.univ_flexible in
-            let (sigma, (target, _)) = let env = EConstr.push_rel (Context.Rel.Declaration.LocalAssum (Context.annotR (Names.Name (Names.Id.of_string "__whatever")) , source)) env in Evarutil.new_type_evar env sigma Evd.univ_flexible in
-            h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:(mkProd (Context.annotR (Names.Name (Names.Id.of_string "__whateverx")), source, target)))
+          if r <> None then r else h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:Product)
         None (active_hooks ()) in
     match hook_res with
     | Some (sigma, r) -> (sigma, start_app_body sigma r, None, ReplaceCoe r)
@@ -602,7 +601,7 @@ let type_judgment env sigma j =
     | Sort s -> {utj_val = j.uj_val; utj_type = s }
     | _ -> error_not_a_type env sigma j
 
-let inh_tosort_force ?loc env sigma ({ uj_val; uj_type } as j) =
+let inh_tosort_force ?loc env sigma ?(flags=default_flags_of env) ({ uj_val; uj_type } as j) =
   try
     let p = lookup_path_to_sort_from env sigma uj_type in
     let sigma, uj_val, uj_type,_trace = apply_coercion env sigma p uj_val uj_type in
@@ -611,9 +610,7 @@ let inh_tosort_force ?loc env sigma ({ uj_val; uj_type } as j) =
   with Not_found | NoCoercion -> let hook_res =
       List.fold_left
         (fun r h ->
-          if r <> None then r else
-            let (sigma, target) = Evarutil.new_Type sigma in
-            h env sigma ~flags:(default_flags_of env) uj_val ~inferred:uj_type ~expected:target)
+          if r <> None then r else h env sigma ~flags uj_val ~inferred:uj_type ~expected:Sort)
         None (active_hooks ()) in
     match hook_res with
     | Some (sigma, r) -> let t = Retyping.get_type_of env sigma r in
@@ -720,7 +717,7 @@ let inh_coerce_to_fail ?(use_coercions=true) flags env sigma rigidonly v v_ty ta
         List.fold_left
           (fun r h ->
             if r <> None then r else
-              h env sigma ~flags v ~inferred:v_ty ~expected:target_type)
+              h env sigma ~flags v ~inferred:v_ty ~expected:(Type target_type))
           None (active_hooks ()) in
       match hook_res with
       | Some (sigma, r) -> (sigma, r, ReplaceCoe r)

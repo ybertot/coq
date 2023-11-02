@@ -58,8 +58,10 @@ val inh_conv_coerce_rigid_to : ?loc:Loc.t -> program_mode:bool -> resolve_tc:boo
 val inh_pattern_coerce_to :
   ?loc:Loc.t -> env -> cases_pattern -> inductive -> inductive -> cases_pattern
 
+type expected = Type of types | Sort | Product
+
 type hook = env -> evar_map -> flags:Evarconv.unify_flags -> constr ->
-  inferred:types -> expected:types -> (evar_map * constr) option
+  inferred:types -> expected:expected -> (evar_map * constr) option
 
 (** A plugin can override the coercion mechanism by registering a hook here.
     Note that these hooks will only be trigerred when no direct or reversible
