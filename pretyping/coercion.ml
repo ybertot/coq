@@ -588,10 +588,9 @@ let inh_app_fun ~program_mode ~resolve_tc ?use_coercions env sigma ?(flags=defau
         inh_app_fun_core ~program_mode ?use_coercions env (saturate_evd env sigma) body typ
   with
   | NoCoercion -> let hook_res =
-      List.fold_left
-        (fun r h ->
-          if r <> None then r else h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:Product)
-        None (active_hooks ()) in
+      List.find_map
+        (fun h -> h env sigma ~flags (force_app_body body) ~inferred:typ ~expected:Product)
+        (active_hooks ()) in
     match hook_res with
     | Some (sigma, r) -> (sigma, start_app_body sigma r, None, ReplaceCoe r)
     | None -> (sigma, body, Some typ, IdCoe)
@@ -608,10 +607,9 @@ let inh_tosort_force ?loc env sigma ?(flags=default_flags_of env) ({ uj_val; uj_
     let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val ; uj_type } in
       (sigma, type_judgment env sigma j2)
   with Not_found | NoCoercion -> let hook_res =
-      List.fold_left
-        (fun r h ->
-          if r <> None then r else h env sigma ~flags uj_val ~inferred:uj_type ~expected:Sort)
-        None (active_hooks ()) in
+      List.find_map
+        (fun h -> h env sigma ~flags uj_val ~inferred:uj_type ~expected:Sort)
+        (active_hooks ()) in
     match hook_res with
     | Some (sigma, r) -> let t = Retyping.get_type_of env sigma r in
       let j2 = Environ.on_judgment_type (whd_evar sigma) { uj_val = r ; uj_type = t } in
@@ -714,11 +712,9 @@ let inh_coerce_to_fail ?(use_coercions=true) flags env sigma rigidonly v v_ty ta
       let _, info = Exninfo.capture exn in
       (* 3 if none of the above works, try hook *)
       let hook_res =
-        List.fold_left
-          (fun r h ->
-            if r <> None then r else
-              h env sigma ~flags v ~inferred:v_ty ~expected:(Type target_type))
-          None (active_hooks ()) in
+        List.find_map
+          (fun h -> h env sigma ~flags v ~inferred:v_ty ~expected:(Type target_type))
+          (active_hooks ()) in
       match hook_res with
       | Some (sigma, r) -> (sigma, r, ReplaceCoe r)
       | None -> Exninfo.iraise (NoCoercion,info)
