@@ -74,6 +74,28 @@ val solve_unif_constraints_with_heuristics :
 
 val check_problems_are_solved : env -> evar_map -> unit
 
+type hook = Environ.env -> Evd.evar_map -> EConstr.t -> EConstr.t -> Evd.evar_map option
+
+(** A plugin can override the canonical structure mechanism by registering a
+    hook here.
+    Note that these hooks will only be trigerred when no solution has been found.
+    Newly registered hooks are not active by default, see [activate_hook] below.
+    The same hook cannot be registered twice, except if [override] is [true].
+    Beware that this addition is not persistent, it is up to the plugin to use
+    libobject if needed. *)
+val register_hook : name:string -> ?override:bool -> hook -> unit
+
+(** Activate a previously registered hook.
+    Most recently activated hooks are tried first. *)
+val activate_hook : name:string -> unit
+
+(** Deactivate a hook. If the hook wasn't registered/active,
+    this does nothing. *)
+val deactivate_hook : name:string -> unit
+
+(** Solves CS problems using the hooks *)
+val apply_hooks : hook
+
 (** Check if a canonical structure is applicable *)
 
 val check_conv_record : env -> evar_map ->

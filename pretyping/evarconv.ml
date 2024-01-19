@@ -488,6 +488,29 @@ let rec ise_stack2 no_app env evd f sk1 sk2 =
     |_, _ -> fail (UnifFailure (i,(* Maybe improve: *) NotSameHead))
   in ise_rev_stack2 false evd (List.rev sk1) (List.rev sk2)
 
+type hook = Environ.env -> Evd.evar_map -> EConstr.t -> EConstr.t -> Evd.evar_map option
+
+let all_hooks = ref (CString.Map.empty : hook CString.Map.t)
+
+let register_hook ~name ?(override=false) h =
+  if not override && CString.Map.mem name !all_hooks then
+    CErrors.anomaly ~label:"CanonicalSolution.register_hook"
+      Pp.(str "Hook already registered: \"" ++ str name ++ str "\".");
+  all_hooks := CString.Map.add name h !all_hooks
+
+let active_hooks = Summary.ref ~name:"canonical_solution_hooks" ([] : string list)
+
+let deactivate_hook ~name =
+  active_hooks := List.filter (fun s -> not (String.equal s name)) !active_hooks
+
+let activate_hook ~name =
+  assert (CString.Map.mem name !all_hooks);
+  deactivate_hook ~name;
+  active_hooks := name :: !active_hooks
+
+let apply_hooks env sigma proj pat =
+  List.find_map (fun name -> CString.Map.get name !all_hooks env sigma proj pat) !active_hooks
+
 (* Make sure that the matching suffix is the all stack *)
 let rec exact_ise_stack2 env evd f sk1 sk2 =
   let rec ise_rev_stack2 i revsk1 revsk2 =
@@ -978,7 +1001,11 @@ and evar_eqappr_x ?(rhs_is_already_stuck = false) flags env evd pbty
              else conv_record flags env
                (try check_conv_record env i appr1 appr2
                 with Not_found -> check_conv_record env i appr2 appr1)
-           with Not_found -> UnifFailure (i,NoCanonicalStructure))
+          with Not_found ->
+             let sigma = i in
+             match apply_hooks env sigma (Stack.zip sigma appr1) (Stack.zip sigma appr2) with
+             | Some sigma -> Success sigma
+             | None -> UnifFailure (i,NoCanonicalStructure))
         and f3 i =
           (* heuristic: unfold second argument first, exception made
              if the first argument is a beta-redex (expand a constant
@@ -1039,7 +1066,11 @@ and evar_eqappr_x ?(rhs_is_already_stuck = false) flags env evd pbty
           (try
              if not flags.with_cs then raise Not_found
              else conv_record flags env (check_conv_record env i appr1 appr2)
-           with Not_found -> UnifFailure (i,NoCanonicalStructure))
+           with Not_found -> let sigma = i in
+             match apply_hooks env sigma (Stack.zip sigma appr1) (Stack.zip sigma appr2) with
+             | Some sigma -> Success sigma
+             | None -> UnifFailure (i,NoCanonicalStructure))
+
         and f4 i =
           evar_eqappr_x flags env i pbty
             (whd_betaiota_deltazeta_for_iota_state
@@ -1053,7 +1084,10 @@ and evar_eqappr_x ?(rhs_is_already_stuck = false) flags env evd pbty
           (try
              if not flags.with_cs then raise Not_found
              else conv_record flags env (check_conv_record env i appr2 appr1)
-           with Not_found -> UnifFailure (i,NoCanonicalStructure))
+           with Not_found -> let sigma = i in
+             match apply_hooks env sigma (Stack.zip sigma appr1) (Stack.zip sigma appr2) with
+             | Some sigma -> Success sigma
+             | None -> UnifFailure (i,NoCanonicalStructure))
         and f4 i =
           evar_eqappr_x flags env i pbty appr1
             (whd_betaiota_deltazeta_for_iota_state
