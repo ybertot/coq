@@ -20,7 +20,7 @@ module State : sig
     sid : Stateid.t;
     proof : Proof.t option;
     time : time_output option;
-    failed_proofs : Names.Id.t list;
+    failed_proofs : (Names.Id.t * Pp.t) list;
     in_recovery : bool;
     recovery_mode : bool
   }
