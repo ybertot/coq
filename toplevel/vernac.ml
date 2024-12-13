@@ -98,7 +98,8 @@ let interp_vernac ~check ~state ({CAst.loc;_} as com) =
 
       (* Force the command  *)
       try 
-        let () = if check && not state.in_recovery then Stm.observe ~doc nsid in
+        let () = if check && not new_recovery_status then
+          Stm.observe ~doc nsid in
         let new_proof = Vernacstate.Declare.give_me_the_proof_opt () [@ocaml.warning "-3"] in
         { state with doc; sid = nsid; proof = new_proof;
           in_recovery = new_recovery_status}
@@ -256,8 +257,7 @@ let load_vernac ~echo ~check ~state ?source filename =
                         |> List.rev
                         |> prlist_with_sep fnl
                           (fun (x, y) -> Names.Id.print x ++ Pp.fnl() ++
-                            y))
-                    ++ str ".");
+                            y)));
   (* Pass for beautify *)
   if !Flags.beautify then beautify_pass ~doc:ostate.State.doc ~comments ~ids:(List.rev ids) ~filename;
   (* End pass *)
